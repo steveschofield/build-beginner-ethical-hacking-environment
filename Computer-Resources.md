@@ -8,10 +8,13 @@
 ### MacOS
 
  **Intel CPU**
-		x86 / x64 not supported
- **Apple CPU**
-		x86 / x64 not supported
-		ARM CPU only
+
+* x86 / x64 not supported
+
+**Apple CPU**
+
+* x86 / x64 not supported
+* ARM CPU only
 
 ### Virtualization options
 
@@ -21,20 +24,19 @@
 
 ### Runtime Environment
 
-**
-    Kali Linux**
-		x64
-		ARM
+Kali Linux
 
-**
-    Ubuntu**
-		x64
-		ARM
+* x64
+* ARM
+
+**Ubuntu**
+
+* x64
+* ARM
 
 ### Runtime environment for Juiceshop containers
 
-
-	**Docker**
+    **Docker**
 	https://docs.docker.com/engine/install/ubuntu/
 
     **Podman**
