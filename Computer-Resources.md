@@ -9,7 +9,7 @@
 
  **Intel CPU**
 
-* x86 / x64 not supported
+* x86 / x64 supported
 
 **Apple CPU**
 
