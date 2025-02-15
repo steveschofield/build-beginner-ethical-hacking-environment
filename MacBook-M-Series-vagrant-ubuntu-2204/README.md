@@ -6,7 +6,7 @@ The "modified project" uses Vagrant to build an Ubuntu 22.04 VM, including Ansib
 
 ## HomeBrew
 
-I use homebrew (https://brew.sh/) for package management.  
+I use homebrew (https://brew.sh/) for package management.
 
 Here are commands installing the vagrant pre-reqs
 
@@ -25,7 +25,10 @@ Here are commands installing the vagrant pre-reqs
 ## Additional Vulnerable Apps for Apple M series CPU (tested on MacBook Air M3)
 
 **#Original OWASP Juice Shop**
+
 sudo docker pull bkimminich/juice-shop
+
+[https://github.com/juice-shop/juice-shop](https://github.com/juice-shop/juice-shop) // (good to have source code locally when doing CTF)
 
 **#OWASP Juice Shop hosted by Traefik SSL Reverse Proxy and Authelia
 #Single-Sign-On (SSO) provider. Comes with Cowrie SSH honeypot too**
