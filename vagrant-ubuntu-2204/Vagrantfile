@@ -9,7 +9,7 @@ apt upgrade -y
 # Note: Storing passwords in plain text in scripts is not secure. 
 # This is for demonstration purposes only.
 
-sudo useradd -m -s /bin/bash ss
+sudo useradd -m -s /bin/bash 52pickup
 echo "52pickup:example123!" | sudo chpasswd
     
 # Optionally, add the user to sudoers to give admin privileges
