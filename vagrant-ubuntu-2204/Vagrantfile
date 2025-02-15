@@ -5,15 +5,15 @@ echo ">>>>>>>>>>>>> Installing prerequisites and Mate UI..."
 apt update -y
 apt upgrade -y
 
-# Add user 'ss' with password 'example'
+# Add user '52pickup' with password 'example123!'
 # Note: Storing passwords in plain text in scripts is not secure. 
 # This is for demonstration purposes only.
 
 sudo useradd -m -s /bin/bash ss
-echo "ss:Aspfree1!" | sudo chpasswd
+echo "52pickup:example123!" | sudo chpasswd
     
 # Optionally, add the user to sudoers to give admin privileges
-echo "ss ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ss
+echo "52pickup ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ss
 
 apt install ansible git -y
 
