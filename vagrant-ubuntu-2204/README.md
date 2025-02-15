@@ -1,8 +1,8 @@
 # Choose a Provider (This comes from https://github.com/samuraiWTF/samuraiWTF)
 
-I use a MacBook Pro M series and attempted to use SamuraiWTF locally.   The build of an OS was fine using vagrant and ran into various issues with sample apps bundled into the samuraiWTF stand-alone VM.  I'd recommend using an x86/64 machine or Windows.
+I use a MacBook Pro M series and attempted to use [SamuraiWTF](https://github.com/samuraiWTF/samuraiWTF).   This project builds an VM, it worked building a VM with Vagrant.  I ran into various issues with sample apps bundled into the samuraiWTF stand-alone VM.  I'd recommend using an x86/64 machine or Windows if you want to pursue that.  It's a safe way to have a local pentesting environment for API, Web and other apps.
 
-This project uses Vagrant to build this VM, so that is the prerequisite.  This VM is built on top of the [*bento/ubuntu-22.04* base box](https://app.vagrantup.com/bento/boxes/ubuntu-22.04) ,which supports additional providers. We have a configuration for virtualbox but if you need a different provider (e.g. vmware_fusion) then it may be possible by adding its configuration to the Vagrant file in this folder.
+This project uses Vagrant to build an Ubuntu 22.04 VM, including Ansible playbooks.  This VM is built on top of the [*bento/ubuntu-22.04* base box](https://app.vagrantup.com/bento/boxes/ubuntu-22.04) ,which supports additional providers.  I prefer using VMware Fusion for the hypervisor.  
 
 ## VMware Fusion
 
@@ -22,7 +22,7 @@ sudo docker pull bkimminich/juice-shop
 
 git clone https://github.com/14rm4nd/SecureTheJuice
 
-## Other Vagrant providers included in original documentation
+## Other providers included in original documentation
 
 ## Hyper-V (Default, Windows)
 

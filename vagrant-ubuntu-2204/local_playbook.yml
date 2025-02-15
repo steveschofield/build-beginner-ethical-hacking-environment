@@ -52,3 +52,7 @@
       ansible.builtin.pip:
         name: docker
         executable: /usr/bin/pip3
+
+    - name: Create directory /home/ss/code
+      command: mkdir -p /home/ss/code
+      become: yes  # If you need sudo privileges
