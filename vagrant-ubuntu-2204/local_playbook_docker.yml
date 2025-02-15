@@ -2,8 +2,8 @@
   hosts: 127.0.0.1
   connection: local
   vars:
-    groupname: ss
-    username: Aspfree1!
+    groupname: 52pickup
+    username: example123!
   
   tasks:
 
