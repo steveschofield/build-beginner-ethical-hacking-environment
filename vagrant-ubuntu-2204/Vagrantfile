@@ -13,7 +13,7 @@ sudo useradd -m -s /bin/bash ss
 echo "52pickup:example123!" | sudo chpasswd
     
 # Optionally, add the user to sudoers to give admin privileges
-echo "52pickup ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ss
+echo "52pickup ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/52pickup
 
 apt install ansible git -y
 
