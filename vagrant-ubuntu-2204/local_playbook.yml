@@ -53,6 +53,6 @@
         name: docker
         executable: /usr/bin/pip3
 
-    - name: Create directory /home/ss/code
-      command: mkdir -p /home/ss/code
+    - name: Create directory /home/52pickup/code
+      command: mkdir -p /home/52pickup/code
       become: yes  # If you need sudo privileges
