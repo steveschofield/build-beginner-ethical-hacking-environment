@@ -2,7 +2,9 @@
 
 Build an environment to begin Ethical Hacking journey
 
-Students and individuals have inquired "How do I get started?"
+Students and individuals have inquired **"How do I get started?"**
+
+Check out the [Cybersecurity mentoring notes](cybersecurity-mentoring-notes/README.md)
 
 This documentation shares some simple tricks and free software available to start the journey.  There are several tutorials, AI can also assist, to help setup and learn the craft.  This is an exciting, frustrating and overall challenge but is rewarding.
 
