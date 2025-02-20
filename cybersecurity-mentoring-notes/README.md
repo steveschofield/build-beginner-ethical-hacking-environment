@@ -49,3 +49,13 @@ Loooong article - probably one of the best I've seen - [https://jhalon.github.io
 (would recommend items listed above for practice)
 
 [https://https://www.professormesser.com/](https://www.professormesser.com/) (free content on YouTube for all three)
+
+# How do I get experience?
+
+This is probably one of the most asked questions.  Are certifications enough?  Is starting at the help desk a good start?   For me personally, I learned a lot on my own spending hours in my homelab, when opportunities come up, having reference to talk about a situation and what you learned.  There is a lot of articles, but these are the few I share with people who ask for guidance and experience. 
+
+* Setup a local lab at your house also know as #homelab.   I have two 2014 Dell Optiplex with 16 GB of RAM, 256 SSD and use multiple USB to Ethernet to provide more network attachments.
+* Volunteer at your local church
+* Volunteer or inquire if local non-profits need tech help
+* Write articles about your experiences in homelab
+* Network at local conferences
