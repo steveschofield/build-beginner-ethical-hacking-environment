@@ -3,7 +3,7 @@
 
 # **CyberSecurity Ethical Hacker Lessons**
 
-Load up your favorite hypervisor; Hyper-V on win10/11 or VMware Workstation or VMware fusion.   I prefer these two as well as Virtualbox is an option
+Load up a hypervisor; Hyper-V on win10/11 or VMware Workstation or VMware fusion.   I prefer these two as well as Virtualbox is an option
 
  1 - Setup Ubuntu Server
 
@@ -21,6 +21,8 @@ drive)
  7 - Setup Kali Linux VM
 
 # DevSecOps Toolset by Capability
+
+[DevSecOps Image](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/cybersecurity-mentoring-notes/image/README/1740086647034.png "Open Source tools")
 
 
 # **My Github repo**
