@@ -24,6 +24,7 @@ drive)
 
 [DevSecOps Image](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/cybersecurity-mentoring-notes/image/README/1740086647034.png "Open Source tools")
 
+![1740087028400](image/README/1740087028400.png)
 
 # **My Github repo**
 
