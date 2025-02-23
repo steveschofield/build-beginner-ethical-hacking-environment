@@ -33,7 +33,7 @@ sudo docker pull bkimminich/juice-shop
 **#OWASP Juice Shop hosted by Traefik SSL Reverse Proxy and Authelia
 #Single-Sign-On (SSO) provider. Comes with Cowrie SSH honeypot too**
 
-**git clone** [https://github.com/14rm4nd/SecureTheJuice](https://github.com/14rm4nd/SecureTheJuice)
+**git clone** [[https://github.com/14rm4nd/SecureTheJuice](https://github.com/l4rm4nd/SecureTheJuice)
 
 ## Other providers included in original documentation
 
