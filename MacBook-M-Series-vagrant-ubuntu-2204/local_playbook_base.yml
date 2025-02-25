@@ -4,8 +4,8 @@
   connection: local
   become: yes
   vars:
-    groupname: samurai
-    username: samurai
+    groupname: 52pickup
+    username: example123!
 
   tasks:
     - name: Create group
@@ -48,11 +48,8 @@
           - net-tools
         state: present
 
-    - name: Install Python Docker module
-      ansible.builtin.pip:
-        name: docker
-        executable: /usr/bin/pip3
-
-    - name: Create directory /home/52pickup/code
-      command: mkdir -p /home/52pickup/code
-      become: yes  # If you need sudo privileges
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true

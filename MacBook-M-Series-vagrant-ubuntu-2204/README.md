@@ -22,18 +22,7 @@ Here are commands installing the vagrant pre-reqs
 4. Run `vagrant reload` to restart the VM and ensure all the configuration is in place during boot.
 5. Connect to the VM and login in with user: _samurai_ , password: _samurai_
 
-## Additional Vulnerable Apps for Apple M series CPU (tested on MacBook Air M3)
-
-**#Original OWASP Juice Shop**
-
-sudo docker pull bkimminich/juice-shop
-
- **git clone** [https://github.com/juice-shop/juice-shop](https://github.com/juice-shop/juice-shop) // (good to have source code locally when doing CTF)
-
-**#OWASP Juice Shop hosted by Traefik SSL Reverse Proxy and Authelia
-#Single-Sign-On (SSO) provider. Comes with Cowrie SSH honeypot too**
-
-**git clone** [[https://github.com/14rm4nd/SecureTheJuice](https://github.com/l4rm4nd/SecureTheJuice)
+## Additional [Vulnerable Apps](READM-vulnapps-list.md) for Apple M series CPU (tested on MacBook Air M3)
 
 ## Other providers included in original documentation
 
