@@ -17,7 +17,7 @@ Build an environment to begin your Ethical Hacking journey.  This documentation 
 * [MacBook-M-Series-vagrant-ubuntu-2204](MacBook-M-Series-vagrant-ubuntu-2204/README.md)
   * [JuiceShop](https://github.com/juice-shop/juice-shop)
   * [DVWA](https://github.com/digininja/dvwa)
-  * OWASP WebGoat
+  * [OWASP WebGoat](https://github.com/WebGoat/WebGoat)
   * [VAmPI](https://github.com/erev0s/VAmPI)
   * [musashi-js](https://github.com/SamuraiWTF/musashi-js)
 
