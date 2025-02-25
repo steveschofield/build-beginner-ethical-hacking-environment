@@ -20,23 +20,24 @@
       command: docker pull bkimminich/juice-shop
       become: yes  # If you need sudo privileges
 
-    - name: webgoat # https://github.com/erev0s/VAmPI
-      command: docker pull webgoat/webgoat
+    - name: webgoat 
+      command: docker pull webgoat/webgoat #https://github.com/WebGoat/WebGoat
       become: yes
 
     - name: OWASP top 10 vuln API setup # https://github.com/erev0s/VAmPI
       command: docker pull erev0s/vampi
       become: yes
 
-    - name: dvwa and musashi-js # https://github.com/digininja/dvwa
+    - name: dvwa # https://github.com/digininja/dvwa
       shell: |
         cd /home/52pickup/code
         git clone https://github.com/digininja/dvwa
         cd /home/52pickup/code/dvwa
         sed -i 's/127.0.0.1:4280:80/0.0.0.0:4280:80/g' /home/52pickup/code/dvwa/compose.yml #replace 127.0.0.1 with 0.0.0.0 thanks grok!    
+        docker build --tag dvwa .
       become: yes
 
-      - name: musashi-js # https://github.com/SamuraiWTF/musashi-js
+    - name: musashi-js # https://github.com/SamuraiWTF/musashi-js
       shell: |
         cd /home/52pickup/code
         git clone https://github.com/SamuraiWTF/musashi-js

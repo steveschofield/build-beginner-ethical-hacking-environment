@@ -1,4 +1,4 @@
-## Automated Ubuntu build with four vuln apps using Vagrant by Hashicorp / Ansible playbooks
+## Automated Ubuntu build with five vuln apps using Vagrant by Hashicorp / Ansible playbooks
 
 I use a MacBook Pro M series (Air 24 GB Ram / M3 series) and attempted to use [SamuraiWTF](https://github.com/samuraiWTF/samuraiWTF).   **SamuraiWTF** was created by Secure Ideas builds an VM various tools and sample vulnerable apps all running locally.   When attempting to run on my MacBook M series, I ran into issues with sample apps bundled into the samuraiWTF VM.   This is a good project, I'd recommend using an x86/64 machine or Windows with Hyper-V if you want to use it.  It's a safe way to have a local pentesting environment for API, Web and other apps.
 

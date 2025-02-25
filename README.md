@@ -12,11 +12,12 @@ Build an environment to begin your Ethical Hacking journey.  This documentation 
 * Update your local VM docker instance to use network address vs. localhost : [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Adjust-juiceshop-ipaddress.md "Update Local IP address")
 * Getting started "hacking" your JuiceShop and learn more about how to solve flags: [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/getting-started-after-juiceshop-setup.md "Start Hacking your Juiceshop instance")
 
-# Automated server setup using Vagrant by Hashicorp, four embedded vuln apps
+# Automated server setup using Vagrant by Hashicorp, five embedded vuln apps
 
 * [MacBook-M-Series-vagrant-ubuntu-2204](MacBook-M-Series-vagrant-ubuntu-2204/README.md)
   * [JuiceShop](https://github.com/juice-shop/juice-shop)
   * [DVWA](https://github.com/digininja/dvwa)
+  * OWASP WebGoat
   * [VAmPI](https://github.com/erev0s/VAmPI)
   * [musashi-js](https://github.com/SamuraiWTF/musashi-js)
 

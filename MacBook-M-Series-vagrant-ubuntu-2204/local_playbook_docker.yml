@@ -36,10 +36,6 @@
         state: latest
         update_cache: true
 
-    - name: Install Docker Module for Python
-      pip:
-        name: docker
-
     - name: Create cli-plugins folder for docker-compose
       ansible.builtin.file:
         path: /usr/local/lib/docker/cli-plugins
