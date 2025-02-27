@@ -13,16 +13,16 @@ Top 5 things to get started with
 
 ### OWASP Top 10 Web
 
-https://owasp.org/www-project-top-ten/
+[https://owasp.org/www-project-top-ten/](https://owasp.org/www-project-top-ten/)
 
 ### OWASP Top 10 API
 
-https://owasp.org/www-project-developer-guide/release/training_education/api_top_ten/
+[https://owasp.org/www-project-developer-guide/release/training_education/api_top_ten/](https://owasp.org/www-project-developer-guide/release/training_education/api_top_ten/)
 
 ### Web Security Academy by Portswigger (Burp Suite Community vendor)
 
-https://portswigger.net/web-security
+[https://portswigger.net/web-security](https://portswigger.net/web-security)
 
 ### Bug Bounty Programs (Ethical Hacking and potentially get paid)
 
-https://tcm-sec.com/start-your-journey-with-bug-bounty/
+[https://tcm-sec.com/start-your-journey-with-bug-bounty/](https://tcm-sec.com/start-your-journey-with-bug-bounty/)
