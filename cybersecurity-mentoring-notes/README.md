@@ -45,7 +45,7 @@ Loooong article - probably one of the best I've seen - [https://jhalon.github.io
 **A+ > Network+ > Security** + by **Comptia** good start
 (would recommend items listed above for practice)
 
-[https://https://www.professormesser.com/](https://www.professormesser.com/) (free content on YouTube for all three)
+[https://www.professormesser.com/](https://www.professormesser.com/) (free content on YouTube for all three)
 
 # How do I get experience?
 
