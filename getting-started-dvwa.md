@@ -1,8 +1,14 @@
+# **Setup DVWA (damn vulnerable web app)**
+
+[https://github.com/digininja/DVWA](https://github.com/digininja/DVWA)
+
 # **Download Ubuntu ARM (or x86)**
 
-https://ubuntu.com/download/server/arm
+[https://ubuntu.com/download/server/arm](https://ubuntu.com/download/server/arm)
 
 # **Create VM Ubuntu (Add packages)**
+
+Open a terminal
 
 sudo apt update
 sudo apt install net-tools
