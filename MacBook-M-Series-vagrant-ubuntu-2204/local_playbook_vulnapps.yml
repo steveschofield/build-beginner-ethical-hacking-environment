@@ -28,7 +28,7 @@
       command: docker pull erev0s/vampi
       become: yes
 
-    - name: Wrong Secrets # https://github.com/OWASP/wrongsecrets
+    - name: Wrong Secrets # https://github.com/OWASP/wrongsecrets  - go to repo to for links to challenges
       command: docker pull jeroenwillemsen/wrongsecrets:latest-no-vault
       become: yes
 
