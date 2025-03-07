@@ -28,6 +28,10 @@
       command: docker pull erev0s/vampi
       become: yes
 
+    - name: Wrong Secrets # https://github.com/OWASP/wrongsecrets
+      command: docker pull jeroenwillemsen/wrongsecrets:latest-no-vault
+      become: yes
+
     - name: dvwa # https://github.com/digininja/dvwa
       shell: |
         cd /home/52pickup/code
