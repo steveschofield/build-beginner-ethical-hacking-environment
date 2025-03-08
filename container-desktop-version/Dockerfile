@@ -1,4 +1,4 @@
-FROM lscr.io/linuxserver/webtop:4.16-r0-ls95
+FROM lscr.io/linuxserver/webtop:latest
 
 RUN \
   echo "**** adding abc user to root for Docker ****" && \
@@ -8,5 +8,14 @@ RUN \
   echo "**** cleanup ****" && \
   rm -rf /tmp/*
 
-
-COPY desktop-resources/startwm.sh /defaults/startwm.sh
+  # Install Git
+  RUN apt-get update && \
+      apt-get install -y git && \
+      rm -rf /var/lib/apt/lists/*
+  
+  # Set work directory (optional)
+  WORKDIR /config
+  
+  # Default command
+  CMD ["/init"]
+# COPY desktop-resources/startwm.sh /defaults/startwm.sh
