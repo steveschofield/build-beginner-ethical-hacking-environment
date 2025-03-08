@@ -1,51 +1,41 @@
 # Build and deploy container able to RDP (remote desktop protocol)
 
-This Dockerfile uses a container image that has ability to be deployed and run with port 3389 (Microsoft Remote desktop protocol).  The container for this example uses an Ubuntu server deployed either on a MacBook M series or Windows Hyper-v.
+I learned from [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) repo ability to deploy a container and RPD from a machine.  The wrongsecrets repo / containers are built into the 
 
-The [Server used is build from a Vagrant file here](MacBook-M-Series-vagrant-ubuntu-2204) in the repo
+This Dockerfile deploys a container image and exposes port 3389 (Microsoft Remote desktop protocol).  The container uses the **rdesktop** image from [linuxserver.io](https://docs.linuxserver.io/images/docker-rdesktop/)
+
+The base virtual machine is an ubuntu s[erver used is build from a Vagrant file here](MacBook-M-Series-vagrant-ubuntu-2204)
+
+# Assumptions:
+
+* Have a windows or macbook with vmware fusion or hyper-v installed and configured
+* Vagrant providers for vmware_desktop or hyperv deployed on respective machine on MacBook or Windows machine
 
 # Commands
 
 ssh 52pickup@172.16.133.183
 
-# **#Pulled down repo**
+# **Pulled down repo**
 
-git clone https://github.com/steveschofield/build-beginner-ethical-hacking-environment
+git clone [https://github.com/steveschofield/build-beginner-ethical-hacking-environment](https://github.com/steveschofield/build-beginner-ethical-hacking-environment)
 
 cd rdesktop-container
 
-# **#Build the local container**
+# **Build the local container**
 
 sudo docker build -t basic-desktop .
 
 # **Here is the output**
 
 ```
-sudo docker build -t rdesktop .
-[+] Building 1.3s (10/10) FINISHED                                                                                                                                                                                                                             docker:default
- => [internal] load build definition from Dockerfile                                                                                                                                                                                                                     0.0s
- => => transferring dockerfile: 478B                                                                                                                                                                                                                                     0.0s
- => [internal] load metadata for lscr.io/linuxserver/rdesktop:latest                                                                                                                                                                                                     1.3s
- => [internal] load .dockerignore                                                                                                                                                                                                                                        0.0s
- => => transferring context: 2B                                                                                                                                                                                                                                          0.0s
- => [1/5] FROM lscr.io/linuxserver/rdesktop:latest@sha256:e023bc6ad754efa9674b4bcc84e3628b2437a0dbe0546fb2367a066ea22c461d                                                                                                                                               0.0s
- => [internal] load build context                                                                                                                                                                                                                                        0.0s
- => => transferring context: 87B                                                                                                                                                                                                                                         0.0s
- => CACHED [2/5] RUN   echo "**** adding abc user to root for Docker ****" &&   usermod -aG root abc &&   touch /var/run/docker.sock &&   chown abc:abc /var/run/docker.sock &&   echo "**** cleanup ****" &&   rm -rf /tmp/*                                            0.0s
- => CACHED [3/5] RUN apk add git                                                                                                                                                                                                                                         0.0s
- => CACHED [4/5] WORKDIR /config                                                                                                                                                                                                                                         0.0s
- => CACHED [5/5] COPY desktop-resources/startwm.sh /defaults/startwm.sh                                                                                                                                                                                                  0.0s
- => exporting to image                                                                                                                                                                                                                                                   0.0s
- => => exporting layers                                                                                                                                                                                                                                                  0.0s
- => => writing image sha256:7f1c0143de6dffc3074d7f1d7a4f56ea7383d690fd5518ed64fc0f4ab8ea6f3b                                                                                                                                                                             0.0s
- => => naming to docker.io/library/rdesktop                                               
+b
 ```
 
-# **#Deploy container for testing**
+# **Deploy container for testing**
 
 Here is the output including command to launch
 
-`sudo docker run -p 3389:3389 basic-desktop
+**sudo docker run -p 3389:3389 basic-desktop**
 [migrations] started
 [migrations] no migrations found
 usermod: no changes
@@ -90,7 +80,10 @@ Connection to localhost (::1) 3350 port [tcp/*] succeeded!
 Connection to localhost (::1) 3389 port [tcp/ms-wbt-server] succeeded!
 [ls.io-init] done.`
 
-# From a MacBook or windows use the RDP client
+# From a MacBook or Windows, use the RDP client
+
+the default user is abc/abc and recommendation to update if you plan to use.  This is for education purposes to show what can be done.  I plan to use the container for variety of ethical hacking. 
+
 ![RDP Login](./image/rdesktop-login.png)
 
 ![RDP desktop](./image/rdesktop-desktop.png)
