@@ -1,4 +1,4 @@
-FROM lscr.io/linuxserver/webtop:latest
+FROM lscr.io/linuxserver/rdesktop:latest
 
 RUN \
   echo "**** adding abc user to root for Docker ****" && \
@@ -9,13 +9,11 @@ RUN \
   rm -rf /tmp/*
 
   # Install Git
-  RUN apt-get update && \
-      apt-get install -y git && \
-      rm -rf /var/lib/apt/lists/*
-  
+ RUN apk add git
+
   # Set work directory (optional)
   WORKDIR /config
-  
+
   # Default command
-  CMD ["/init"]
-# COPY desktop-resources/startwm.sh /defaults/startwm.sh
+#  CMD ["/init"]
+COPY desktop-resources/startwm.sh /defaults/startwm.sh
