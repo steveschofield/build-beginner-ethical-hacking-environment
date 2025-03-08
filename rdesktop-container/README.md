@@ -1,10 +1,14 @@
 # Build and deploy container able to RDP (remote desktop protocol)
 
-I learned from [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) repo ability to deploy a container and RDP from a machine.  The wrongsecrets repo / containers are built into the 
+I learned from [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) repo ability to deploy a container and RDP from a machine.  The wrongsecrets repo / containers are built into the
 
 This Dockerfile deploys a container image and exposes port 3389 (Microsoft Remote desktop protocol).  The container uses the **rdesktop** image from [linuxserver.io](https://docs.linuxserver.io/images/docker-rdesktop/)
 
 The base virtual machine is an ubuntu s[erver used is build from a Vagrant file here](MacBook-M-Series-vagrant-ubuntu-2204)
+
+# YouTube Video
+
+[https://www.youtube.com/watch?v=z8WNsICtIIs](https://www.youtube.com/watch?v=z8WNsICtIIs)
 
 # Assumptions:
 
@@ -82,7 +86,7 @@ Connection to localhost (::1) 3389 port [tcp/ms-wbt-server] succeeded!
 
 # From a MacBook or Windows, use the RDP client
 
-the default user is abc/abc and recommendation to update if you plan to use.  This is for education purposes to show what can be done.  I plan to use the container for variety of ethical hacking. 
+the default user is abc/abc and recommendation to update if you plan to use.  This is for education purposes to show what can be done.  I plan to use the container for variety of ethical hacking.
 
 ![RDP Login](./image/rdesktop-login.png)
 
