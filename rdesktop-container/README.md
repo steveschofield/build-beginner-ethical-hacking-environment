@@ -1,6 +1,6 @@
 # Build and deploy container able to RDP (remote desktop protocol)
 
-I learned from [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) repo ability to deploy a container and RPD from a machine.  The wrongsecrets repo / containers are built into the 
+I learned from [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) repo ability to deploy a container and RDP from a machine.  The wrongsecrets repo / containers are built into the 
 
 This Dockerfile deploys a container image and exposes port 3389 (Microsoft Remote desktop protocol).  The container uses the **rdesktop** image from [linuxserver.io](https://docs.linuxserver.io/images/docker-rdesktop/)
 
