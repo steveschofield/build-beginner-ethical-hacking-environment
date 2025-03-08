@@ -2,11 +2,7 @@ FROM lscr.io/linuxserver/rdesktop:latest
 
 RUN \
   echo "**** adding abc user to root for Docker ****" && \
-  usermod -aG root abc && \
-  touch /var/run/docker.sock && \
-  chown abc:abc /var/run/docker.sock && \
-  echo "**** cleanup ****" && \
-  rm -rf /tmp/*
+  usermod -aG root abc
 
   # Install Git
  RUN apk add git
