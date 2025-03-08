@@ -1,6 +1,6 @@
 # Build a Beginner Ethical Hacking Environment
 
-Build an environment to begin your Ethical Hacking journey.  This documentation shares tricks and free software available to start the journey.  There are several tutorials, AI can also assist, to help setup and learn the craft.  This is an exciting, frustrating and overall challenge but is rewarding.
+Begin your Ethical Hacking journey.  This documentation shares tricks and free software available to start the journey.  There are several tutorials, AI can also assist, to help setup and learn the craft.  This is an exciting, frustrating and overall challenge but is rewarding.
 
 # Students and individuals have inquired **"How do I get started?"**
 
@@ -12,7 +12,7 @@ Build an environment to begin your Ethical Hacking journey.  This documentation 
 * Update your local VM docker instance to use network address vs. localhost : [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Adjust-juiceshop-ipaddress.md "Update Local IP address")
 * Getting started "hacking" your JuiceShop and learn more about how to solve flags: [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/getting-started-after-juiceshop-setup.md "Start Hacking your Juiceshop instance")
 
-# Automated server setup using Vagrant by Hashicorp, embedded vuln apps
+# Automated server building using Vagrant by Hashicorp, embedded vulnerable container apps
 
 * [YouTube covering building a machine](https://www.youtube.com/watch?v=TywK6hhFWhs)
 * [MacBook-M-Series-vagrant-ubuntu-2204](MacBook-M-Series-vagrant-ubuntu-2204/README.md)
@@ -25,4 +25,22 @@ Build an environment to begin your Ethical Hacking journey.  This documentation 
 
 # My YouTube Channel
 
-* my [YouTube channel](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
+* [YouTube channel](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
+
+# Misc Pentesting steps
+
+Part of a penetration test is checking for malware vulnerabilities. When performing a penetration test, the penetration tester follows a set of steps:
+
+1. Scan for open ports.
+2. Scan for running processes.
+3. Check for suspicious or unknown registry entries.
+4. Verify all running Windows services.
+5. Check startup programs.
+6. Look through event log for suspicious events.
+7. Verify all installed programs.
+8. Scan files and folders for manipulation.
+9. Verify that device drivers are legitimate.
+10. Check all network and DNS settings and activity.
+11. Scan for suspicious API calls.
+12. Run anti-malware scans.
+13. Document results and findings.
