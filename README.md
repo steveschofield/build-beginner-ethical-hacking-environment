@@ -25,7 +25,7 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
 
 # My YouTube Channel
 
-* [YouTube channel](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
+* [https://vagrantcloud.com/api/v2/vagrant/bento/ubuntu-22.04YouTube channel](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
 
 # Misc Pentesting steps
 

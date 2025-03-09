@@ -35,17 +35,15 @@ drive)
 
 **So You Want To Work in Cyber Security?**
 
-Loooong article - probably one of the best I've seen - [https://jhalon.github.io/breaking-into-cyber-security/](https://jhalon.github.io/breaking-into-cyber-security/)
+* Loooong article - probably one of the best I've seen - [https://jhalon.github.io/breaking-into-cyber-security/](https://jhalon.github.io/breaking-into-cyber-security/)
+* Comprehensive list of hacking tools [https://github.com/yogsec/Hacking-Tools](https://github.com/yogsec/Hacking-Tools)
 
 # Certifications
 
-**CompTIA**
-(big three)
+**A+ > Network+ > Security** + by **Comptia** is good start
+(recommend items liste for practice)
 
-**A+ > Network+ > Security** + by **Comptia** good start
-(would recommend items listed above for practice)
-
-[https://www.professormesser.com/](https://www.professormesser.com/) (free content on YouTube for all three)
+[https://www.professormesser.com/](https://www.professormesser.com/) (free content on YouTube for all three for A+, Network+ and Security+)
 
 # How do I get experience?
 
