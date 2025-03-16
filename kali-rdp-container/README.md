@@ -16,5 +16,6 @@ to run
 
 sudo docker run -p 3390:3390 kali-rdp
 
+![RDP Client](./image/rdp-client.png)
 
-![Sample RDP Kalip](./images/kali-docker-podman-rdp.png)
+![RDP Sample Desktop](./image/kali-docker-podman-rdp.png)
