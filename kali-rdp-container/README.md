@@ -1,6 +1,6 @@
 # Create kali docker or podman image
 
-Don't need a local hypervisor such as vmware, virtualbox or hyper-v
+Don't need a local hypervisor such as vmware, virtualbox or hyper-v.  I used port 3390 but you can also use 3389 (standard rdp port)
 
 ## Build container
 
