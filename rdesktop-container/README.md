@@ -31,10 +31,6 @@ sudo docker build -t basic-desktop .
 
 # **Here is the output**
 
-```
-b
-```
-
 # **Deploy container for testing**
 
 Here is the output including command to launch
@@ -87,6 +83,8 @@ Connection to localhost (::1) 3389 port [tcp/ms-wbt-server] succeeded!
 # From a MacBook or Windows, use the RDP client
 
 the default user is abc/abc and recommendation to update if you plan to use.  This is for education purposes to show what can be done.  I plan to use the container for variety of ethical hacking.
+
+![RDP client](./image/rdesktop-client.png)
 
 ![RDP Login](./image/rdesktop-login.png)
 
