@@ -7,3 +7,7 @@
 **Script-server is a Web UI for scripts.**
 
 [https://github.com/bugy/script-server](https://github.com/bugy/script-server)
+
+Dockerfile
+
+**git clone https://github.com/kovendhan5/Kali-Dockerized**
