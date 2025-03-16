@@ -21,7 +21,7 @@ echo ">>>>>>>>>>>>>>>> Running Ansible Playbook"
 pushd /vagrant
 ansible-playbook -K local_playbook_base.yml
 ansible-playbook -K local_playbook_docker.yml
-# ansible-playbook -K local_playbook_vulnapps.yml
+ansible-playbook -K local_playbook_vulnapps.yml
 popd
 
 echo ">>>>>>>>>>>>>>>> Rebooting the system"
@@ -50,6 +50,25 @@ Vagrant.configure("2") do |config|
     #ubuntu2204.vm.synced_folder '.', '/vagrant'
     ubuntu2204.vm.synced_folder ".", "/vagrant", type: "rsync"
     
+    ubuntu2204.vm.provider "hyperv" do |hv|
+        hv.vmname = "ubuntu2204-5.3"
+        hv.maxmemory = "4096"
+        hv.vm_integration_services = {
+            guest_service_interface: true
+            }
+       end
+
+       ubuntu2204.vm.provider "virtualbox" do |vb|
+        vb.gui = true
+        vb.name = "ubuntu2204-5.3"
+        vb.memory = "4096"
+        vb.customize ["modifyvm", :id, "--vram", "128"]
+        vb.customize ["modifyvm", :id, "--cpus", "2"]
+        vb.customize ["modifyvm", :id, "--vrde", "off"]
+        vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+        vb.customize ["modifyvm", :id, "--accelerate2dvideo", "on"]
+      end
+
       ubuntu2204.vm.provider "vmware_desktop" do |v|
         v.linked_clone = false
         v.vmx["name"] = "ubuntu2204"
@@ -58,9 +77,17 @@ Vagrant.configure("2") do |config|
         v.vmx["cpuid.coresPerSocket"] = "1"
         v.vmx["scsi0:1.present"] = "TRUE"
         v.vmx["scsi0:1.filename"] = "persistent-disk.vmdk"
-	v.vmx["scsi0:1.size"] = "80G" 
+	v.vmx["scsi0:1.size"] = "60G" 
         v.gui = true
-      end      
+
+    # Add a 60 GB disk
+    #v.vmx["scsi0:1.present"] = "TRUE"
+    #v.vmx["scsi0:1.filename"] = "60gb-disk.vmdk"
+    #v.vmx["scsi0:1.deviceType"] = "disk"
+    #v.vmx["scsi0:1.size"] = "60G" # Optional, for reference; size is set during creation
+ 
+
+       end      
   
   end
 
