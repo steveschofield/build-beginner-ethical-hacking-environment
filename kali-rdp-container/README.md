@@ -2,6 +2,10 @@
 
 Using a container with a functional Kali instance is easier than using a local hypervisor such as vmware, virtualbox, hyper-v and make available on MacBook, Windows or Linux.   Each solution either physical, virtual machine, virtualization or vagrat along with containers.  There are options.  I used port 3390 but you can also use 3389 (standard rdp port)
 
+## To:do
+
+Persistence of changes to container
+
 ## Build container
 
 type : 
