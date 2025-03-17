@@ -1,6 +1,6 @@
 # Create Kali docker or podman image
 
-Using a container with a functional Kali container is easier than using a ocal hypervisor such as vmware, virtualbox, hyper-v and make available on MacBook, Windows or Linux.  I used port 3390 but you can also use 3389 (standard rdp port)
+Using a container with a functional Kali instance is easier than using a local hypervisor such as vmware, virtualbox, hyper-v and make available on MacBook, Windows or Linux.   Each solution either physical, virtual machine, virtualization or vagrat along with containers.  There are options.  I used port 3390 but you can also use 3389 (standard rdp port)
 
 ## Build container
 
