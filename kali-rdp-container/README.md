@@ -8,10 +8,18 @@ Persistence of changes to container
 
 ## Build container
 
-type : 
+type :
 
 * **podman build -t kali-rdp .**
 * **sudo docker build -t kali-rdp .**
+
+To install & configure podman on MacBook - [https://podman.io/docs/installation](https://podman.io/docs/installation)
+
+To install & configure Docker on Ubuntu -[ https://docs.docker.com/engine/install/ubuntu/](https://docs.docker.com/engine/install/ubuntu/)
+
+**NOTE:** You can run docker on MacBook, it requires Docker Desktop and is free for personal use (as of March 2025)
+
+[https://www.docker.com/products/personal/](https://www.docker.com/products/personal/)
 
 ## Run container
 
@@ -22,7 +30,6 @@ type :
 * [https://www.kali.org/docs/containers/official-kalilinux-docker-images/](https://www.kali.org/docs/containers/official-kalilinux-docker-images/)
 * I tried this kali-linux image [https://docs.linuxserver.io/images/docker-kali-linux/](https://docs.linuxserver.io/images/docker-kali-linux/). Good to know for future reference and my rdesktop example uses the container image from this site.
 * [https://grok.com](https://grok.com) ( to help with order, syntax and peer guidance )
-
 
 ![RDP Login](./image/rdp-login.png)
 
