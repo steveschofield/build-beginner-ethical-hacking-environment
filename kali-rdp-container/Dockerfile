@@ -1,6 +1,7 @@
 # Use the official Kali Linux base image
-# Thank Grok for the formatting
+# Thank Grok.com for the formatting
 # Runs on podman on MacBook M3, docker (ubuntu) within vmware on MacBook M3 (tested)
+# The kali-rolling is the most current stable per the kali docs.
 
 FROM kalilinux/kali-rolling
 

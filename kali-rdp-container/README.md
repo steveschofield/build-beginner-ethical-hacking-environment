@@ -1,20 +1,24 @@
-# Create kali docker or podman image
+# Create Kali docker or podman image
 
-Don't need a local hypervisor such as vmware, virtualbox or hyper-v.  I used port 3390 but you can also use 3389 (standard rdp port)
+Using a container with a functional Kali container is easier than using a ocal hypervisor such as vmware, virtualbox, hyper-v and make available on MacBook, Windows or Linux.  I used port 3390 but you can also use 3389 (standard rdp port)
 
 ## Build container
 
-type 
+type : 
 
-podman build -t kali-rdp .
+* **podman build -t kali-rdp .**
+* **sudo docker build -t kali-rdp .**
 
-or 
+## Run container
 
-sudo docker build -t kali-rdp .
+* **sudo docker run -p 3390:3390 kali-rdp**
 
-to run
+## References
 
-sudo docker run -p 3390:3390 kali-rdp
+* [https://www.kali.org/docs/containers/official-kalilinux-docker-images/](https://www.kali.org/docs/containers/official-kalilinux-docker-images/)
+* I tried this kali-linux image [https://docs.linuxserver.io/images/docker-kali-linux/](https://docs.linuxserver.io/images/docker-kali-linux/). Good to know for future reference and my rdesktop example uses the container image from this site.
+* [https://grok.com](https://grok.com) ( to help with order, syntax and peer guidance )
+
 
 ![RDP Login](./image/rdp-login.png)
 
