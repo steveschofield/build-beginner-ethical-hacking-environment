@@ -1,0 +1,130 @@
+$bootstrapscript = <<-SCRIPT
+set -euxvo pipefail
+echo ">>>>>>>>>>>>> Installing prerequisites and Mate UI..."
+
+# Add user '52pickup' with password 'example123!'
+# Note: Storing passwords in plain text in scripts is not secure. 
+# This is for demonstration purposes only.
+
+USERNAME="52pickup"
+PASSWORD="example123!"
+
+echo "Creating user: $USERNAME"
+
+# Check if the user exists, if not, create it
+if ! pw user show "$USERNAME" >/dev/null 2>&1; then
+    pw useradd -n "$USERNAME" -m -s /bin/sh -G wheel
+    echo "$PASSWORD" | pw usermod "$USERNAME" -h 0
+    echo "User $USERNAME created."
+else
+    echo "User $USERNAME already exists."
+fi
+
+# Grant passwordless sudo (if sudo is installed)
+if [ -f /usr/local/etc/sudoers ]; then
+    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" >> /usr/local/etc/sudoers
+    echo "User $USERNAME added to sudoers."
+else
+    echo "Sudo not found. Skipping sudoers modification."
+fi
+
+echo ">>>>>>>>>>>>>>>> Rebooting the system"
+reboot
+
+SCRIPT
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+
+    config.vm.box = "bento/freebsd-14"
+    config.vm.define "freebsd-14", primary: true do |ubuntu2204|
+    ubuntu2204.vm.host_name = "freebsd-14"
+    ubuntu2204.vm.synced_folder ".", "/vagrant", type: "rsync"
+    
+      ubuntu2204.vm.provider "vmware_desktop" do |v|
+        v.linked_clone = false
+        v.vmx["name"] = "freebsd-14"
+        v.vmx["memsize"] = "4096"
+        v.vmx["numvcpus"] = "2"
+        v.vmx["cpuid.coresPerSocket"] = "1"
+        v.vmx["scsi0:1.present"] = "TRUE"
+        v.vmx["scsi0:1.filename"] = "persistent-disk.vmdk"
+	      v.vmx["scsi0:1.size"] = "80G" 
+        v.gui = true
+      end      
+  
+  end
+
+  #   config.vm.provider "virtualbox" do |v|
+  #     v.customize ["modifyvm", :id, "--memory", "2048"]
+  #   end
+  #
+  #   config.vm.provider "vmware_fusion" do |v|
+  #     v.vmx["memsize"] = "2048"
+  #   end
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # NOTE: This will enable public access to the opened port
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  # end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  # config.vm.provision "shell", inline: <<-SHELL
+  #   apt-get update
+  #   apt-get install -y apache2
+  # SHELL
+  config.vm.provision "shell", inline: $bootstrapscript
+
+end

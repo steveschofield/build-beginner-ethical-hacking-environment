@@ -4,11 +4,11 @@ Using a container with a functional Kali instance is easier than using a local h
 
 ## To:do
 
-Persistence of changes to container
+Persistenc changes of container to last reboots / restarts.
 
 ## Build container
 
-type :
+Type :
 
 * **podman build -t kali-rdp .**
 * **sudo docker build -t kali-rdp .**
