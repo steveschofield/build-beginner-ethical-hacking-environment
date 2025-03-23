@@ -1,6 +1,8 @@
 # **CyberSecurity Ethical Hacker Lessons**
 
-Load up a hypervisor; Hyper-V on win10/11 or VMware Workstation or VMware fusion.   I prefer these two as well as Virtualbox is an option
+Load up a hypervisor; Hyper-V on win10/11 or VMware Workstation or VMware fusion.   I prefer these two as well as Virtualbox is an option.    
+
+After you manually setup each a few times, use an automation tool like Vagrant or template.
 
  1 - Setup Ubuntu Server
 
@@ -11,11 +13,11 @@ drive)
 
  4 - Download from github and install DVWA vulnerable app and run within docker container
 
- 5 - Install Web tools, browse DVWA running incontainer
+ 5 - Install Web tools, browse [DVWA](https://github.com/digininja/DVWA) running in a container or [JuiceShop](https://github.com/juice-shop/juice-shop)
 
- 6 - Find Metasploitable 2 or 3 setup in hypervisor
+ 6 - Find [Metasploitable](https://docs.rapid7.com/metasploit/metasploitable-2/) 2 or [Metasploitable 3](https://github.com/rapid7/metasploitable3) virtual machines setup in your Hypervisor
 
- 7 - Setup Kali Linux VM
+ 7 - Setup Kali Linux VM or a container
 
 # DevSecOps Toolset by Capability
 
