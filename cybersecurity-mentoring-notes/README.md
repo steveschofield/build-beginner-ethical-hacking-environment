@@ -1,6 +1,6 @@
 # **CyberSecurity Ethical Hacker Lessons**
 
-Load up a hypervisor; Hyper-V on win10/11 or VMware Workstation or VMware fusion.   I prefer these two as well as Virtualbox is an option.    
+Load up a hypervisor; Hyper-V on win10/11 or VMware Workstation or VMware fusion.   I prefer these two as well as Virtualbox is an option.
 
 After you manually setup each a few times, use an automation tool like Vagrant or template.
 
@@ -56,6 +56,11 @@ This is probably one of the most asked questions.  Are certifications enough?  I
 * Volunteer or inquire if local non-profits need tech help
 * Write articles about your experiences in homelab
 * Network at local conferences
+
+# Misc Links
+
+* [https://github.com/farhanashrafdev/90DaysOfCyberSecurity](https://github.com/farhanashrafdev/90DaysOfCyberSecurity)
+
 * Sharing from @ [https://x.com/cyberchenti](https://x.com/cyberchenti)
   * [https://x.com/cyberchenti/status/1895510509920641377](https://x.com/cyberchenti/status/1895510509920641377) (five good beginner defensive articles)
 * [https://x.com/naija_cybergirl](https://x.com/naija_cybergirl) (sharing daily journey of tech)
