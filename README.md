@@ -1,5 +1,7 @@
 # Build a Beginner Ethical Hacking Environment
 
+add some text
+
 Begin your Ethical Hacking journey.  This documentation shares tricks and free software available to start the journey.  There are several tutorials, AI can also assist, to help setup and learn the craft.  This is an exciting, frustrating and overall challenge but is rewarding.
 
 # Students and individuals have inquired **"How do I get started?"**
