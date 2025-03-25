@@ -23,6 +23,10 @@ RUN apt-get update && apt-get install -y \
 	kali-tools-exploitation \
 	kali-tools-sniffing-spoofing \
 	kali-tools-post-exploitation \
+	iputils-ping \
+	iputils-tracepath \
+	iputils-arping \
+	traceroute \
     && apt-get clean
 
 # Configure XRDP to listen on port 3390 (to avoid conflicts with host systems)
