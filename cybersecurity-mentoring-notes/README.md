@@ -29,7 +29,7 @@ drive)
 
 [https://github.com/steveschofield/build-beginner-ethical-hacking-environment](https://github.com/steveschofield/build-beginner-ethical-hacking-environment)
 
-# **My YouTube playlist**
+# **My YouTube Ethical Hacking playlist**
 
 [https://www.youtube.com/watch?v=DOHsK1p25Ew&amp;list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&amp;pp=gAQB](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&pp=gAQB)
 
