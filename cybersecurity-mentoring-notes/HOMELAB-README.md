@@ -19,6 +19,7 @@ Here are some ideas:
 * My current obsession has been ethical hacking.
   * Setup VM's with sample vuln systems DVWA and Juiceshop
 * Using metasploit2 and metasploit3 VM's (search on rapid7 and github)
+* Containers using docker and podman
 
 # Goals to learn
 
