@@ -60,7 +60,8 @@ This is probably one of the most asked questions.  Are certifications enough?  I
 # Misc Links
 
 * [https://github.com/farhanashrafdev/90DaysOfCyberSecurity](https://github.com/farhanashrafdev/90DaysOfCyberSecurity)
-
 * Sharing from @ [https://x.com/cyberchenti](https://x.com/cyberchenti)
+
   * [https://x.com/cyberchenti/status/1895510509920641377](https://x.com/cyberchenti/status/1895510509920641377) (five good beginner defensive articles)
 * [https://x.com/naija_cybergirl](https://x.com/naija_cybergirl) (sharing daily journey of tech)
+* [https://github.com/stilla1ex](https://github.com/stilla1ex). (straight forward howtos)
