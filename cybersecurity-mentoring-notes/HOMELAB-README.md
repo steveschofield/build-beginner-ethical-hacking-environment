@@ -9,7 +9,7 @@ Here are some ideas:
 * Setup websites at my home
 * Setup mail servers on my domain
 * Add additional DNS records to allow me to send email from gmail, other free services to my domain.
-* Setup active directory (using eval windows systems) - I've done many many things in the microsoft.  About every service feature and role.   AD is always the foundation.
+* Setup Microsoft Active Directory (using evaluation versions) - I've done many many things in the microsoft.  About every service feature and role.   AD is always the foundation.
 * Setup Linux systems to use AD for dns
 * Setup PAT to forward to an pfsense requests from external and setup a private vlan with additional vms behind pfsense.  The pfsense had two interfaces, one external (which received requests externally) and forwarded to systems in private network PAT rules setup on pfsense.
 * Setup VPN's (wireguard and others)

@@ -49,6 +49,14 @@
         docker build --tag musashi-js .
       become: yes
 
+    - name: vuln-bank # https://github.com/Commando-X/vuln-bank
+      shell: |
+        cd /home/52pickup/code
+        git clone https://github.com/Commando-X/vuln-bank
+        cd /home/52pickup/code/vuln-bank
+        docker build --tag vuln-bank .
+      become: yes
+
     # - name: Start Juice Shop Container # https://hub.docker.com/r/bkimminich/juice-shop
     #   command: docker run -d -p 3000:3000 bkimminich/juice-shop
     #   become: yes  # If you need sudo privileges
