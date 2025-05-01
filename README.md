@@ -30,6 +30,14 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
 
 * [YouTube channel](https://www.youtube.com/playlist?list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
 
+# Here is order of videos to get started
+
+#1 - [Build Beginner Ethical Hacking Envionment with OWASP JuiceShop](https://www.youtube.com/watch?v=3UiBmQT7nF8&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=6)
+
+#2 - [Build Ubuntu server with Vagrant on MacBook with sample vulnerable applications](https://www.youtube.com/watch?v=TywK6hhFWhs&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=3)
+
+#3 - [Getting Started hacking your local JuiceShop instance](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=4)
+
 # Misc Pentesting steps
 
 Part of a penetration test is checking for malware vulnerabilities. When performing a penetration test, the penetration tester follows a set of steps:
