@@ -25,6 +25,11 @@ To install & configure Docker on Ubuntu -[ https://docs.docker.com/engine/instal
 
 * **sudo docker run -p 3390:3390 kali-rdp**
 
+**
+    I run podman on my local Mac and need to add the --privilieged flag to get nmap to work within the container**
+
+* **sudo podman run --privileged -d -p 3390:3390 localhost/kali-rdp**
+
 ## References
 
 * [https://www.kali.org/docs/containers/official-kalilinux-docker-images/](https://www.kali.org/docs/containers/official-kalilinux-docker-images/)
