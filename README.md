@@ -1,7 +1,5 @@
 # Build a Beginner Ethical Hacking Environment
 
-add some text
-
 Begin your Ethical Hacking journey.  This documentation shares tricks and free software available to start the journey.  There are several tutorials, AI can also assist, to help setup and learn the craft.  This is an exciting, frustrating and overall challenge but is rewarding.
 
 # Students and individuals have inquired **"How do I get started?"**
@@ -28,15 +26,14 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
 
 # My YouTube Channel
 
-* [YouTube channel](https://www.youtube.com/playlist?list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
+* [YouTube channel](https://www.youtube.com/playlist?list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos and other things I have became obsessed with and share.
 
-# Here is order of videos to get started
+## Here is order of videos to get started
 
-#1 - [Build Beginner Ethical Hacking Envionment with OWASP JuiceShop](https://www.youtube.com/watch?v=3UiBmQT7nF8&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=6)
+* #1 - [Build Beginner Ethical Hacking Envionment with OWASP JuiceShop](https://www.youtube.com/watch?v=3UiBmQT7nF8&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=6)
+* #2 - [Build Ubuntu server with Vagrant on MacBook with sample vulnerable applications](https://www.youtube.com/watch?v=TywK6hhFWhs&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=3)
 
-#2 - [Build Ubuntu server with Vagrant on MacBook with sample vulnerable applications](https://www.youtube.com/watch?v=TywK6hhFWhs&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=3)
-
-#3 - [Getting Started hacking your local JuiceShop instance](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=4)
+* #3 - [Getting Started hacking your local JuiceShop instance](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=4)
 
 # Misc Pentesting steps
 
