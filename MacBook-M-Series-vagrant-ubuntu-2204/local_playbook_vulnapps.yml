@@ -49,13 +49,12 @@
         docker build --tag musashi-js .
       become: yes
 
-    #if running on a mac port 5000 / 7000 could block this from working, switch to 5001
+    #if running on a MacBook port 5000 / 7000 could block this from working, switch to 5001
     - name: vuln-bank # https://github.com/Commando-X/vuln-bank
       shell: |
         cd /home/52pickup/code
         git clone https://github.com/Commando-X/vuln-bank
         cd /home/52pickup/code/vuln-bank
-        
         docker build --tag vuln-bank .
       become: yes
 
