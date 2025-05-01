@@ -13,6 +13,7 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
 * Setup your environment : get started here [Computer Resources](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Computer-Resources.md "Resources on Github")
 * Update your local VM docker instance to use network address vs. localhost : [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Adjust-juiceshop-ipaddress.md "Update Local IP address")
 * Getting started "hacking" your JuiceShop and learn more about how to solve flags: [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/getting-started-after-juiceshop-setup.md "Start Hacking your Juiceshop instance")
+* [https://vagrantcloud.com/api/v2/vagrant/bento/ubuntu-22.04](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS)
 
 # Automated server building using Vagrant by Hashicorp, embedded vulnerable container apps
 
@@ -27,7 +28,7 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
 
 # My YouTube Channel
 
-* [https://vagrantcloud.com/api/v2/vagrant/bento/ubuntu-22.04YouTube channel](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
+* [YouTube channel](https://www.youtube.com/playlist?list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos
 
 # Misc Pentesting steps
 

@@ -21,7 +21,7 @@ echo ">>>>>>>>>>>>>>>> Running Ansible Playbook"
 pushd /vagrant
 ansible-playbook -K local_playbook_base.yml
 ansible-playbook -K local_playbook_docker.yml
-# ansible-playbook -K local_playbook_vulnapps.yml
+ansible-playbook -K local_playbook_vulnapps.yml
 popd
 
 echo ">>>>>>>>>>>>>>>> Rebooting the system"
