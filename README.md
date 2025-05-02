@@ -9,8 +9,8 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
 # Checklist for setting up your own environment.
 
 * Setup your environment : get started here [Computer Resources](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Computer-Resources.md "Resources on Github")
-* Update your local VM docker instance to use network address vs. localhost : [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Adjust-juiceshop-ipaddress.md "Update Local IP address")
-* Getting started "hacking" your JuiceShop and learn more about how to solve flags: [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/getting-started-after-juiceshop-setup.md "Start Hacking your Juiceshop instance")
+* Update your local VM docker instance to use network address vs. localhost for JuiceShop : [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Adjust-juiceshop-ipaddress.md "Update Local IP address")
+* Getting started **hacking ** your JuiceShop and learn more about how to solve flags: [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/getting-started-after-juiceshop-setup.md "Start Hacking your Juiceshop instance")
 * [https://vagrantcloud.com/api/v2/vagrant/bento/ubuntu-22.04](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS)
 
 # Automated server building using Vagrant by Hashicorp, embedded vulnerable container apps
@@ -23,16 +23,16 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
   * [OWASP WebGoat](https://github.com/WebGoat/WebGoat)
   * [VAmPI](https://github.com/erev0s/VAmPI)
   * [musashi-js](https://github.com/SamuraiWTF/musashi-js)
+  * [vuln-bank](https://github.com/Commando-X/vuln-bank)
 
 # My YouTube Channel
 
-* [YouTube channel](https://www.youtube.com/playlist?list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos and other things I have became obsessed with and share.
+* [YouTube channel](https://www.youtube.com/playlist?list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos and other things I have became obsessed with.
 
-## Here is order of videos to get started
+## YouTube videos to get started in order
 
 * #1 - [Build Beginner Ethical Hacking Envionment with OWASP JuiceShop](https://www.youtube.com/watch?v=3UiBmQT7nF8&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=6)
 * #2 - [Build Ubuntu server with Vagrant on MacBook with sample vulnerable applications](https://www.youtube.com/watch?v=TywK6hhFWhs&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=3)
-
 * #3 - [Getting Started hacking your local JuiceShop instance](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=4)
 
 # Misc Pentesting steps
