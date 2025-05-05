@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 	kali-tools-exploitation \
 	kali-tools-sniffing-spoofing \
 	kali-tools-post-exploitation \
-	t \
+	iputils-ping \
 	iputils-tracepath \
 	iputils-arping \
 	traceroute \
