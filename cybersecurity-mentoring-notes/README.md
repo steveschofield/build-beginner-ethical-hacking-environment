@@ -39,6 +39,7 @@ drive)
 
 * Loooong article - probably one of the best I've seen - [https://jhalon.github.io/breaking-into-cyber-security/](https://jhalon.github.io/breaking-into-cyber-security/)
 * Comprehensive list of hacking tools [https://github.com/yogsec/Hacking-Tools](https://github.com/yogsec/Hacking-Tools)
+* [Pentesting repo reference](https://github.com/m14r41/PentestingEverything). (Pentest everything lots of info)
 
 # Certifications
 
@@ -65,3 +66,4 @@ This is probably one of the most asked questions.  Are certifications enough?  I
   * [https://x.com/cyberchenti/status/1895510509920641377](https://x.com/cyberchenti/status/1895510509920641377) (five good beginner defensive articles)
 * [https://x.com/naija_cybergirl](https://x.com/naija_cybergirl) (sharing daily journey of tech)
 * [https://github.com/stilla1ex](https://github.com/stilla1ex). (straight forward howtos)
+* https://github.com/m14r41/PentestingEverything
