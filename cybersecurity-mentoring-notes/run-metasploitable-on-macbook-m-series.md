@@ -35,4 +35,4 @@ https://naveenrajm7.github.io/vagrant_utm/
 
 # How to apply
 
-Install Nessus Essentials locally https://localhost:8834.  (Here is [article](run-nessus-esstenials.md) Nessus Essentials)
+Install Nessus Essentials locally https://localhost:8834.  (Here is [article](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/cybersecurity-mentoring-notes/run-nessus-essentials.md) Nessus Essentials)
