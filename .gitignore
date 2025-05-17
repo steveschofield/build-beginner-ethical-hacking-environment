@@ -1,4 +1,4 @@
 .DS_Store
 MacBook-M-Series-vagrant-ubuntu-2204/.vagrant
 vagrant-images/freebsd/.vagrant
-vagrant-images/ubuntu/.vagrant
+vagrant-images/ubuntu-utm/.vagrant
