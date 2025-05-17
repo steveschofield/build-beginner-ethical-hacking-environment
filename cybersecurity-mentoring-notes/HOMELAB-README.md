@@ -23,6 +23,6 @@ Here are some ideas:
 
 # Goals to learn
 
-* Learn internet protocols like DNS, SMTP, TCP/IP, FTP (scp)
+* Learn internet protocols like DNS, SMTP, TCP/IP, FTP (scp (secure copy))
 * How websites work
 * Secure infrastructure and setup your own servers
