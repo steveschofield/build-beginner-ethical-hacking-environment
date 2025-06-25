@@ -2,10 +2,6 @@
 
 Using a container with a functional Kali instance is easier than using a local hypervisor such as vmware, virtualbox, hyper-v and make available on MacBook, Windows or Linux.   Each solution either physical, virtual machine, virtualization or vagrat along with containers.  There are options.  I used port 3390 but you can also use 3389 (standard rdp port)
 
-## To:do
-
-Persistenc changes of container to last reboots / restarts.
-
 ## Build container
 
 Type :
@@ -29,6 +25,45 @@ To install & configure Docker on Ubuntu -[ https://docs.docker.com/engine/instal
     I run podman on my local Mac and need to add the --privilieged flag to get nmap to work within the container**
 
 * **sudo podman run --privileged -d -p 3390:3390 localhost/kali-rdp**
+
+## If you want Persisent Storage 
+
+Install Podman CLI on mac from [podman.io](http://podman.io/)
+
+**#make folder where data will reside on local system**
+
+* mkdir ~/kali-rdp-data
+
+**#this will create a mount inside the VM**
+**#run podman machine ssh to view**
+
+* podman machine init --volume /Users/$(whoami)/kali-rdp-data:/kali-rdp-data
+* podman machine start
+
+**#download source code and build kali-rdp container**
+
+* mkdir -p ~/code/personal
+* cd ~/code/personal
+* git clone [https://github.com/steveschofield/build-beginner-ethical-hacking-environment](https://github.com/steveschofield/build-beginner-ethical-hacking-environment)
+* cd ~/code/personal/build-beginner-ethical-hacking-environment/kali-rdp-container
+* podman build -t kali-rdp .
+
+**#should be tagged**
+
+*Successfully tagged localhost/kali-rdp:latest*
+
+**#Verify container is built**
+
+* podman images
+
+REPOSITORY                        TAG         IMAGE ID      CREATED       SIZE
+
+localhost/kali-rdp                latest      d6e774facea6  14 hours ago  15.4 GB
+[docker.io/kalilinux/kali-rolling](http://docker.io/kalilinux/kali-rolling)  latest      8759ea0e0ae1  3 days ago    149 MB
+
+**#run the container and mount --volume**
+
+* podman run -d -p 3390:3390 --privileged --volume /kali-rdp-data:/kali-rdp-data localhost/kali-rdp
 
 ## References
 

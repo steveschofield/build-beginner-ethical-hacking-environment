@@ -54,3 +54,9 @@ sudo apt update
 What is metapackage
 
 https://www.kali.org/docs/general-use/metapackages/
+
+tool list
+
+arachni-web-application
+
+https://ecsypno.com/pages/arachni-web-application-security-scanner-framework
