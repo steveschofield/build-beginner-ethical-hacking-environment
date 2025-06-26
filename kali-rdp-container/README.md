@@ -76,3 +76,9 @@ localhost/kali-rdp                latest      d6e774facea6  14 hours ago  15.4 G
 ![RDP Client](./image/rdp-client.png)
 
 ![RDP Sample Desktop](./image/kali-docker-podman-rdp.png)
+
+**Persistence**
+
+![Persistence local to MacBook](./image/persistence1.png)
+
+![Persistence inside container](./image/persistence2.png)
