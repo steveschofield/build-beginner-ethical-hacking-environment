@@ -4,19 +4,19 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
 
 # Students and individuals have inquired **"How do I get started?"**
 
-* Check out the [Cybersecurity mentoring notes](cybersecurity-mentoring-notes/README.md)
+* Check out the [Cybersecurity mentoring notes](resources/mentoring-notes/README.md)
 
 # Checklist for setting up your own environment.
 
-* Setup your environment : get started here [Computer Resources](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Computer-Resources.md "Resources on Github")
-* Update your local VM docker instance to use network address vs. localhost for JuiceShop : [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/Adjust-juiceshop-ipaddress.md "Update Local IP address")
-* Getting started **hacking ** your JuiceShop and learn more about how to solve flags: [start here](https://github.com/steveschofield/build-beginner-ethical-hacking-environment/blob/main/getting-started-after-juiceshop-setup.md "Start Hacking your Juiceshop instance")
+* Setup your environment : get started here [Computer Resources](docs/getting-started/computer-resources.md "Resources on Github")
+* Update your local VM docker instance to use network address vs. localhost for JuiceShop : [start here](docs/troubleshooting/network-configuration.md "Update Local IP address")
+* Getting started **hacking ** your JuiceShop and learn more about how to solve flags: [start here](docs/getting-started/juice-shop-setup.md "Start Hacking your Juiceshop instance")
 * [https://vagrantcloud.com/api/v2/vagrant/bento/ubuntu-22.04](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS)
 
 # Automated server building using Vagrant by Hashicorp, embedded vulnerable container apps
 
 * [YouTube covering building a machine](https://www.youtube.com/watch?v=TywK6hhFWhs)
-* [MacBook-M-Series-vagrant-ubuntu-2204](MacBook-M-Series-vagrant-ubuntu-2204/README.md)
+* [Ubuntu 22.04 Vagrant Environment for M-Series MacBooks](environments/vagrant/ubuntu-22-04-m-series/README.md)
 
   * [JuiceShop](https://github.com/juice-shop/juice-shop)
   * [DVWA](https://github.com/digininja/dvwa)

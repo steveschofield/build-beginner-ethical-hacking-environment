@@ -45,7 +45,7 @@ Install Podman CLI on mac from [podman.io](http://podman.io/)
 * mkdir -p ~/code/personal
 * cd ~/code/personal
 * git clone [https://github.com/steveschofield/build-beginner-ethical-hacking-environment](https://github.com/steveschofield/build-beginner-ethical-hacking-environment)
-* cd ~/code/personal/build-beginner-ethical-hacking-environment/kali-rdp-container
+* cd ~/code/personal/build-beginner-ethical-hacking-environment/environments/containers/kali-rdp
 * podman build -t kali-rdp .
 
 **#should be tagged**
