@@ -12,3 +12,10 @@ echo 'eval "$(pyenv init - bash)"' >> ~/.profile
 echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.profile
 source ~/.profile
 pyenv install 3.13.0
+
+# Sample setting up pyenv
+#
+# ss@Steves-MacBook-Air Passhunt % pyenv virtualenv 3.13.0 passhunt
+# ss@Steves-MacBook-Air Passhunt % pyenv ocal passhunt
+# ss@Steves-MacBook-Air Passhunt % pyenv local passhunt
+#(passhunt) ss@Steves-MacBook-Air Passhunt % 
