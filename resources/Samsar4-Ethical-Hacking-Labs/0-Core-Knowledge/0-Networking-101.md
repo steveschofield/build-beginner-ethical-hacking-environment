@@ -17,7 +17,7 @@
 ## So, what the heck is a Network?
 A network consists of two or more computers that are linked in order to share resources. Computer networks are the basis of communication in IT. They are used in a huge variety of ways and can include many different types of network. A computer network is a set of computers that are connected together so that they can share information. The earliest examples of computer networks are from the 1960s, but they have come a long way in the half-century since then.
 
-![net](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/5edc8fbef915a17c93fa91c95877134c8fac324c/net2.jpg)
+![net](../images/net2.jpg)
 
 <sub><sup>LAN Network Topology - SOHO / Small Home Network</sup></sub>
 
@@ -39,13 +39,13 @@ There are many different types of network, which can be used for different purpo
 * WAN is a multiple LANs or additional WANs with routing functionality for interconnectivity.
 
 <p align="center">
-<img width="70%" src="https://gist.github.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/a3f9b5f3f243467208da83e0d0e543b32233c5d6/wan-topo.jpg" />
+<img width="70%" src="../images/a3f9b5f3f243467208da83e0d0e543b32233c5d6/wan-topo.jpg" />
 </p>
 
 ### MAN - Metropolitan Area Network 
 
 <p align="center">
-<img width="70%" src="https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/f37cec4e00f726cb4be3661f20ccad77751e003a/man-topo.jpg" />
+<img width="70%" src="../images/f37cec4e00f726cb4be3661f20ccad77751e003a/man-topo.jpg" />
 </p>
 
 ### Internet
@@ -54,7 +54,7 @@ Connecting WANs through WANs until complete the entire world = Internet.
 * The protocol which runs the internet is TCP/IP
 * As long you're using legitimate IPv4 address or IPv6
 <p align="center">
-<img width="70%" src="https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/8c176b8a798fb5749c4391c45015ee5d14d56f13/internet.png" />
+<img width="70%" src="../images/8c176b8a798fb5749c4391c45015ee5d14d56f13/internet.png" />
 </p>
 
 ### Intranet
@@ -63,7 +63,7 @@ If you're using the TCP/IP stack and making your own LAN or WAN = Intranet.
 * Intranet is a private network which still runs TCP/IP
 
 <p align="center">
-<img width="70%" src="https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/8c176b8a798fb5749c4391c45015ee5d14d56f13/intranet.png" />
+<img width="70%" src="../images/8c176b8a798fb5749c4391c45015ee5d14d56f13/intranet.png" />
 </p>
 
 ## Common Terms in Networking
@@ -100,7 +100,7 @@ An IP address is a unique address that identifies a device on the internet or a 
 1. If you are using Linux or MacOS you can open your terminal and type `ifconfig` command
 2. For Windows machine you can open up the cmd prompt or powershell, then type `ipconfig /all`
 
-![inet](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/5a56240010acbc33026413ad6b5c6f66e9450413/inet.png)
+![inet](/resources/Samsar4-Ethical-Hacking-Labs/images/5a56240010acbc33026413ad6b5c6f66e9450413/inet.png)
 
 - inet IPv4: `192.168.64.3`
    - `inet` --> The inet (Internet protocol family) show the local IP address. This is IP version 4 (IPv4) Using 32-bit decimal number.
@@ -170,7 +170,7 @@ Private addresses include IP addresses from the following subnets:
 ## NAT - Network Address Translation
 NAT stands for network address translation. It’s a way to map multiple local private addresses to a public one before transferring the information. Organizations that want multiple devices to employ a single IP address use NAT, as do most home routers. 
 
-![nat2](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/8275f73b57bdcb982b1d69aa8d213d2bdb384657/nat2.png)
+![nat2](/resources/Samsar4-Ethical-Hacking-Labs/images/8275f73b57bdcb982b1d69aa8d213d2bdb384657/nat2.png)
 
 1. **Static NAT**
 
@@ -184,7 +184,7 @@ NAT stands for network address translation. It’s a way to map multiple local p
 
 *Note: This module will cover OSI model later.*
 
-![osi3](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/b9d7f33be654d299f6618feeacb97fc5fd5bd7d2/OSI_L3.png)
+![osi3](/resources/Samsar4-Ethical-Hacking-Labs/images/b9d7f33be654d299f6618feeacb97fc5fd5bd7d2/OSI_L3.png)
 
 # 3. Subnetting
 ### Why subnetting?
@@ -196,7 +196,7 @@ Because an IP address is limited to indicating the network and the device addres
 
 ## Cheat sheet makes easier for subnetting
 
-![subnetting](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/5ce4b7daa9c2c10ccd44675eadaceae646e487e2/cyber-mentor-subnetting.png)
+![subnetting](/resources/Samsar4-Ethical-Hacking-Labs/images/5ce4b7daa9c2c10ccd44675eadaceae646e487e2/cyber-mentor-subnetting.png)
 
 * CyberMentor Subnetting Sheet: https://twitter.com/thecybermentor/status/1211335431406727169
 
@@ -221,7 +221,7 @@ IP range | Subnet | Hosts | Network | Broadcast
    - Subnet masks can be 0, 128, 192, 224, 240, 248, 252, 254 and 255. 
    - To understand the basics of math behind the bits, check the next figure below:
 
-![bits](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/c1e01e29aedc394f2d75c4ccf57e72606775103a/bits.png)
+![bits](/resources/Samsar4-Ethical-Hacking-Labs/images/c1e01e29aedc394f2d75c4ccf57e72606775103a/bits.png)
 
 - The number of hosts is `2^(n) - 2`. 
    - `n = off bits`
@@ -267,19 +267,19 @@ ________ ________
 ```
 ## Checking vendor behind MAC addresse
 1. Check your MAC address use the command `ifconfig` (Linux) or `/ipconfig` (Windows)
-![mac](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/214242916f8947f09fc15d5bdde6a668fd4a4c1f/mac2.png)
+![mac](/resources/Samsar4-Ethical-Hacking-Labs/images/214242916f8947f09fc15d5bdde6a668fd4a4c1f/mac2.png)
 
 2. Copy and save the **first three bytes** of your address. *(The first three bytes from image above is `00:0c:29`)*
 
 3. Validate the information by performing a **MAC Address Lookup** on the internet. For this example I'm using: https://aruljohn.com/
-![mac2](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/c82686452d3e671f9a4d351cd5c02171914dd16d/mac2lookup.png)
+![mac2](/resources/Samsar4-Ethical-Hacking-Labs/images/c82686452d3e671f9a4d351cd5c02171914dd16d/mac2lookup.png)
 
 4. As you can see the OUI lookup identify a virtual network interface provided by VMware 
 
 *So, to summarize, the **first three bytes** are assigned to a manufacturer of networking equipment and the manufacturer assigns the last three bytes of an address.*
 
 ### ⚠️ MAC Addresses operates on Layer 2 of OSI Model
-![osil2](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/b9d7f33be654d299f6618feeacb97fc5fd5bd7d2/OSI_L2.png)
+![osil2](/resources/Samsar4-Ethical-Hacking-Labs/images/b9d7f33be654d299f6618feeacb97fc5fd5bd7d2/OSI_L2.png)
 
 # 4. TCP/IP, UDP and 3-Way-Handshake
 
@@ -300,7 +300,7 @@ TCP means Transmission Control Protocol, which is a communications standard for 
    - Reverse Address Resolution Protocol (RARP)
    - User Datagram Protocol (UDP)
 
-![tcpmod](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/bccff9a7c15aa11636c03686ef344ae2d433f699/tcpmodel.png)
+![tcpmod](/resources/Samsar4-Ethical-Hacking-Labs/images/bccff9a7c15aa11636c03686ef344ae2d433f699/tcpmodel.png)
 
 <sub><sup>TCP/IP Model</sup></sub>
 
@@ -327,7 +327,7 @@ TCP uses a three-way handshake to establish a reliable connection. The connectio
 2. SYN-ACK
 3. ACK 
 
-![3wayhandshake](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/bd38a6a2d83ea02a4715d6cb7fd8e0d74af3bd26/3wayhs.jpg)
+![3wayhandshake](/resources/Samsar4-Ethical-Hacking-Labs/images/bd38a6a2d83ea02a4715d6cb7fd8e0d74af3bd26/3wayhs.jpg)
 
 The three message mechanism is designed so that two computers that want to pass information back and forth to each other can negotiate the parameters of the connection before transmitting data such as HTTP browser requests.
 
@@ -346,7 +346,7 @@ The three message mechanism is designed so that two computers that want to pass 
 
 - The figure below shows the 3-way-handshake packets captured by [Wireshark](https://www.wireshark.org/)
 
-![wireshark](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/5213becc28e3f9f46c976d05cd090ffd070ff5d1/wireshark0.png)
+![wireshark](/resources/Samsar4-Ethical-Hacking-Labs/images/5213becc28e3f9f46c976d05cd090ffd070ff5d1/wireshark0.png)
 
 # 5. Ports & Protocols
 ## What is a Port?
@@ -400,7 +400,7 @@ As a penetration tester or ethical hacker you should be familiar with the common
 # 6. OSI Model
 OSI Model is a hypothetical networking framework that uses specific protocols and mechanisms in every layer of it. This model is used to divide the network architecture into seven different layers conceptually. These layers are:
 
-![osi-model](https://gist.githubusercontent.com/Samsar4/62886aac358c3d484a0ec17e8eb11266/raw/3e2dc59e7c341f4d79b2b93bac03fd8378c7ae3a/tcpmo.jpg)
+![osi-model](/resources/Samsar4-Ethical-Hacking-Labs/images/3e2dc59e7c341f4d79b2b93bac03fd8378c7ae3a/tcpmo.jpg)
 
 There also involves some security postures and mechanisms that a security professional must know to detect and put the security method effectively in every layer.
 
