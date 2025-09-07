@@ -255,7 +255,7 @@ IP range | Subnet | Hosts | Network | Broadcast
 
 -  MAC (Media Access Control) address is provided by NIC Card'd manufacturer and gives the physical address of a computer.
 
-![macphys](https://i1.wp.com/learntomato.flashrouters.com/wp-content/uploads/MAC-address-hardware.jpg?resize=560%2C315&ssl=1)
+![macphys](/resources/Samsar4-Ethical-Hacking-Labs/images/macaddress.png)
 
 The first three bytes of a MAC address were originally known as **OUI’s, or Organizational Unique Identifiers.  Each manufacturer of networking equipment was assigned an OUI, and was free to assign their own numbers in that block.**
 
