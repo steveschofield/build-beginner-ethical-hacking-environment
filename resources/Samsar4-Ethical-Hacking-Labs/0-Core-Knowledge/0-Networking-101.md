@@ -170,7 +170,7 @@ Private addresses include IP addresses from the following subnets:
 ## NAT - Network Address Translation
 NAT stands for network address translation. It’s a way to map multiple local private addresses to a public one before transferring the information. Organizations that want multiple devices to employ a single IP address use NAT, as do most home routers. 
 
-![nat2](/resources/Samsar4-Ethical-Hacking-Labs/images/8275f73b57bdcb982b1d69aa8d213d2bdb384657/nat2.png)
+![nat2](/resources/Samsar4-Ethical-Hacking-Labs/images/nat2.png)
 
 1. **Static NAT**
 
@@ -221,7 +221,7 @@ IP range | Subnet | Hosts | Network | Broadcast
    - Subnet masks can be 0, 128, 192, 224, 240, 248, 252, 254 and 255. 
    - To understand the basics of math behind the bits, check the next figure below:
 
-![bits](/resources/Samsar4-Ethical-Hacking-Labs/images/c1e01e29aedc394f2d75c4ccf57e72606775103a/bits.png)
+![bits](/resources/Samsar4-Ethical-Hacking-Labs/images/bits.png)
 
 - The number of hosts is `2^(n) - 2`. 
    - `n = off bits`
@@ -267,19 +267,19 @@ ________ ________
 ```
 ## Checking vendor behind MAC addresse
 1. Check your MAC address use the command `ifconfig` (Linux) or `/ipconfig` (Windows)
-![mac](/resources/Samsar4-Ethical-Hacking-Labs/images/214242916f8947f09fc15d5bdde6a668fd4a4c1f/mac2.png)
+![mac](/resources/Samsar4-Ethical-Hacking-Labs/images/mac2.png)
 
-2. Copy and save the **first three bytes** of your address. *(The first three bytes from image above is `00:0c:29`)*
+1. Copy and save the **first three bytes** of your address. *(The first three bytes from image above is `00:0c:29`)*
 
-3. Validate the information by performing a **MAC Address Lookup** on the internet. For this example I'm using: https://aruljohn.com/
-![mac2](/resources/Samsar4-Ethical-Hacking-Labs/images/c82686452d3e671f9a4d351cd5c02171914dd16d/mac2lookup.png)
+2. Validate the information by performing a **MAC Address Lookup** on the internet. For this example I'm using: https://aruljohn.com/
+![mac2](/resources/Samsar4-Ethical-Hacking-Labs/images/mac2lookup.png)
 
-4. As you can see the OUI lookup identify a virtual network interface provided by VMware 
+1. As you can see the OUI lookup identify a virtual network interface provided by VMware 
 
 *So, to summarize, the **first three bytes** are assigned to a manufacturer of networking equipment and the manufacturer assigns the last three bytes of an address.*
 
 ### ⚠️ MAC Addresses operates on Layer 2 of OSI Model
-![osil2](/resources/Samsar4-Ethical-Hacking-Labs/images/b9d7f33be654d299f6618feeacb97fc5fd5bd7d2/OSI_L2.png)
+![osil2](/resources/Samsar4-Ethical-Hacking-Labs/images/OSI_L2.png)
 
 # 4. TCP/IP, UDP and 3-Way-Handshake
 
@@ -300,7 +300,7 @@ TCP means Transmission Control Protocol, which is a communications standard for 
    - Reverse Address Resolution Protocol (RARP)
    - User Datagram Protocol (UDP)
 
-![tcpmod](/resources/Samsar4-Ethical-Hacking-Labs/images/bccff9a7c15aa11636c03686ef344ae2d433f699/tcpmodel.png)
+![tcpmod](/resources/Samsar4-Ethical-Hacking-Labs/images/tcpmodel.png)
 
 <sub><sup>TCP/IP Model</sup></sub>
 
@@ -327,7 +327,7 @@ TCP uses a three-way handshake to establish a reliable connection. The connectio
 2. SYN-ACK
 3. ACK 
 
-![3wayhandshake](/resources/Samsar4-Ethical-Hacking-Labs/images/bd38a6a2d83ea02a4715d6cb7fd8e0d74af3bd26/3wayhs.jpg)
+![3wayhandshake](/resources/Samsar4-Ethical-Hacking-Labs/images/3wayhs.jpg)
 
 The three message mechanism is designed so that two computers that want to pass information back and forth to each other can negotiate the parameters of the connection before transmitting data such as HTTP browser requests.
 
@@ -346,7 +346,7 @@ The three message mechanism is designed so that two computers that want to pass 
 
 - The figure below shows the 3-way-handshake packets captured by [Wireshark](https://www.wireshark.org/)
 
-![wireshark](/resources/Samsar4-Ethical-Hacking-Labs/images/5213becc28e3f9f46c976d05cd090ffd070ff5d1/wireshark0.png)
+![wireshark](/resources/Samsar4-Ethical-Hacking-Labs/images/wireshark0.png)
 
 # 5. Ports & Protocols
 ## What is a Port?
@@ -400,7 +400,7 @@ As a penetration tester or ethical hacker you should be familiar with the common
 # 6. OSI Model
 OSI Model is a hypothetical networking framework that uses specific protocols and mechanisms in every layer of it. This model is used to divide the network architecture into seven different layers conceptually. These layers are:
 
-![osi-model](/resources/Samsar4-Ethical-Hacking-Labs/images/3e2dc59e7c341f4d79b2b93bac03fd8378c7ae3a/tcpmo.jpg)
+![osi-model](/resources/Samsar4-Ethical-Hacking-Labs/images/tcpmo.jpg)
 
 There also involves some security postures and mechanisms that a security professional must know to detect and put the security method effectively in every layer.
 
