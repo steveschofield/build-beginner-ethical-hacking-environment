@@ -1,8 +1,6 @@
 ###### Credit for this content goes to : This was originally found on CodeBerg ([https://codeberg.org/mMONTAGEe_Workshop/Ethical-Hacking-Labs]()) and was a fork of this repo on Github. [https://github.com/Samsar4/Ethical-Hacking-Labs/blob/master/README.md]()
 
-# `<p align="center">`Ethical Hacking Labs`</p>`
-
-</p>
+# Ethical Hacking Labs
 
 ![h](/resources/Samsar4-Ethical-Hacking-Labs/images/header-ehl.jpg)
 
