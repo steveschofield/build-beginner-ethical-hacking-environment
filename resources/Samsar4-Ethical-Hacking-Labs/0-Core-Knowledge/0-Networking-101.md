@@ -45,7 +45,7 @@ There are many different types of network, which can be used for different purpo
 ### MAN - Metropolitan Area Network 
 
 <p align="center">
-<img width="70%" src="../images/f37cec4e00f726cb4be3661f20ccad77751e003a/man-topo.jpg" />
+<img width="70%" src="../images/man-topo.jpg" />
 </p>
 
 ### Internet
@@ -54,7 +54,7 @@ Connecting WANs through WANs until complete the entire world = Internet.
 * The protocol which runs the internet is TCP/IP
 * As long you're using legitimate IPv4 address or IPv6
 <p align="center">
-<img width="70%" src="../images/8c176b8a798fb5749c4391c45015ee5d14d56f13/internet.png" />
+<img width="70%" src="../images/internet.png" />
 </p>
 
 ### Intranet
@@ -63,7 +63,7 @@ If you're using the TCP/IP stack and making your own LAN or WAN = Intranet.
 * Intranet is a private network which still runs TCP/IP
 
 <p align="center">
-<img width="70%" src="../images/8c176b8a798fb5749c4391c45015ee5d14d56f13/intranet.png" />
+<img width="70%" src="../images/intranet.png" />
 </p>
 
 ## Common Terms in Networking
@@ -100,7 +100,7 @@ An IP address is a unique address that identifies a device on the internet or a 
 1. If you are using Linux or MacOS you can open your terminal and type `ifconfig` command
 2. For Windows machine you can open up the cmd prompt or powershell, then type `ipconfig /all`
 
-![inet](/resources/Samsar4-Ethical-Hacking-Labs/images/5a56240010acbc33026413ad6b5c6f66e9450413/inet.png)
+![inet](/resources/Samsar4-Ethical-Hacking-Labs/images/inet.png)
 
 - inet IPv4: `192.168.64.3`
    - `inet` --> The inet (Internet protocol family) show the local IP address. This is IP version 4 (IPv4) Using 32-bit decimal number.
@@ -184,7 +184,7 @@ NAT stands for network address translation. It’s a way to map multiple local p
 
 *Note: This module will cover OSI model later.*
 
-![osi3](/resources/Samsar4-Ethical-Hacking-Labs/images/b9d7f33be654d299f6618feeacb97fc5fd5bd7d2/OSI_L3.png)
+![osi3](/resources/Samsar4-Ethical-Hacking-Labs/images/OSI_L3.png)
 
 # 3. Subnetting
 ### Why subnetting?
@@ -196,7 +196,7 @@ Because an IP address is limited to indicating the network and the device addres
 
 ## Cheat sheet makes easier for subnetting
 
-![subnetting](/resources/Samsar4-Ethical-Hacking-Labs/images/5ce4b7daa9c2c10ccd44675eadaceae646e487e2/cyber-mentor-subnetting.png)
+![subnetting](/resources/Samsar4-Ethical-Hacking-Labs/images/cyber-mentor-subnetting.png)
 
 * CyberMentor Subnetting Sheet: https://twitter.com/thecybermentor/status/1211335431406727169
 
