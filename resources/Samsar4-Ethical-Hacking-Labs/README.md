@@ -1,4 +1,5 @@
-###### Credit for this content goes to : This was originally found on CodeBerg ([https://codeberg.org/mMONTAGEe_Workshop/Ethical-Hacking-Labs]()) and was a fork of this repo on Github. [https://github.com/Samsar4/Ethical-Hacking-Labs/blob/master/README.md]()
+###### Credit for this content goes to : This was originally found on CodeBerg [Codeberg](https://codeberg.org/mMONTAGEe_Workshop/Ethical-Hacking-Labs) and was a fork of this repo on Github. [Ethical Hacking Labs](https://github.com/Samsar4/Ethical-Hacking-Labs/blob/master/README.md)
+
 
 # Ethical Hacking Labs
 
