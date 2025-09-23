@@ -1,3 +1,32 @@
+**Ethical Hacking GPT's reference**
+
+**List of uncensored LLM's on hackingBuddyGPT (which runs local)**
+
+https://github.com/ipa-lab/hackingBuddyGPT/issues/77
+
+**Local hacking "buddy"** 
+
+https://docs.hackingbuddy.ai/
+
+https://github.com/ipa-lab/hackingBuddyGPT
+
+**GetCyber** 
+
+https://github.com/Dan-Duran?tab=repositories
+
+**Run local LLM's reference to ethical hacking**
+
+https://www.youtube.com/watch?v=D8-Dd3mVYCQ&t=1001s
+
+**Uncensored LLM's**
+
+https://ollama.com/gdisney
+
+**Cybersecurity tools**
+
+https://github.com/Dan-Duran/cybersecurity-tools
+
+
 sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
 sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
 
