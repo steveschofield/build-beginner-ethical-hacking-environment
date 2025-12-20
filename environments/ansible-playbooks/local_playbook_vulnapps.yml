@@ -5,15 +5,16 @@
   become: yes
   vars:
     groupname: 52pickup
-    username: example123!
+    username: samurai
 
   tasks:
-    - name: Create directory /home/52pickup/code
-      command: mkdir -p /home/52pickup/code
-      become: yes  # If you need sudo privileges
-
-    - name: Change perms on code to 52pickup
-      command: chown 52pickup:52pickup -R /home/52pickup/code
+    - name: Ensure code directory exists
+      ansible.builtin.file:
+        path: "/home/{{ username }}/code"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: "0755"
       become: yes  # If you need sudo privileges
 
     - name: Pull Juice Shop Container # https://hub.docker.com/r/bkimminich/juice-shop
@@ -34,27 +35,27 @@
 
     - name: dvwa # https://github.com/digininja/dvwa
       shell: |
-        cd /home/52pickup/code
+        cd "/home/{{ username }}/code"
         git clone https://github.com/digininja/dvwa
-        cd /home/52pickup/code/dvwa
-        sed -i 's/127.0.0.1:4280:80/0.0.0.0:4280:80/g' /home/52pickup/code/dvwa/compose.yml #replace 127.0.0.1 with 0.0.0.0 thanks grok!    
+        cd "/home/{{ username }}/code/dvwa"
+        sed -i 's/127.0.0.1:4280:80/0.0.0.0:4280:80/g' "/home/{{ username }}/code/dvwa/compose.yml" #replace 127.0.0.1 with 0.0.0.0 thanks grok!    
         docker build --tag dvwa .
       become: yes
 
     - name: musashi-js # https://github.com/SamuraiWTF/musashi-js
       shell: |
-        cd /home/52pickup/code
+        cd "/home/{{ username }}/code"
         git clone https://github.com/SamuraiWTF/musashi-js
-        cd /home/52pickup/code/musashi-js
+        cd "/home/{{ username }}/code/musashi-js"
         docker build --tag musashi-js .
       become: yes
 
     #if running on a MacBook port 5000 / 7000 could block this from working, switch to 5001
     - name: vuln-bank # https://github.com/Commando-X/vuln-bank
       shell: |
-        cd /home/52pickup/code
+        cd "/home/{{ username }}/code"
         git clone https://github.com/Commando-X/vuln-bank
-        cd /home/52pickup/code/vuln-bank
+        cd "/home/{{ username }}/code/vuln-bank"
         docker build --tag vuln-bank .
       become: yes
 
