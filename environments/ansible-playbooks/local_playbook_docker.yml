@@ -48,6 +48,6 @@
         mode: "0755"
 
     - name: Install Python Docker module
-      ansible.builtin.pip:
-        name: docker
-        executable: /usr/bin/pip3
+      ansible.builtin.apt:
+        name: python3-docker
+        state: present
