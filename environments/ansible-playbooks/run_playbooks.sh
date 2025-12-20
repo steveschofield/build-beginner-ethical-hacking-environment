@@ -50,6 +50,17 @@ EOF
 }
 
 run_playbooks() {
+  local become_args=()
+
+  # If not running as root, request or inject a become password so sudo works.
+  if [[ "$EUID" -ne 0 ]]; then
+    if [[ -n "${ANSIBLE_BECOME_PASSWORD:-}" ]]; then
+      become_args+=("--extra-vars" "ansible_become_password=${ANSIBLE_BECOME_PASSWORD}")
+    else
+      become_args+=("--ask-become-pass")
+    fi
+  fi
+
   for pb in "${PLAYBOOKS[@]}"; do
     if [[ ! -f "$pb" ]]; then
       echo "Playbook not found: $pb" >&2
@@ -57,7 +68,7 @@ run_playbooks() {
     fi
 
     echo "Running $pb..."
-    ansible-playbook -i "$INVENTORY" "$pb" "$@"
+    ansible-playbook -i "$INVENTORY" "${become_args[@]}" "$pb" "$@"
   done
 }
 

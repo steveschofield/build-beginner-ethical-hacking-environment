@@ -3,14 +3,34 @@
   hosts: 127.0.0.1
   connection: local
   become: yes
+  gather_facts: false
   vars:
     groupname: 52pickup
     username: example123!
 
+  pre_tasks:
+    - name: Ensure Python and apt dependencies are present (minimal Ubuntu)
+      raw: apt-get update -y && apt-get install -y python3 python3-apt sudo
+      args:
+        warn: false
+
+    - name: Gather facts
+      ansible.builtin.setup:
+
   tasks:
+    - name: Abort when not on Debian/Ubuntu
+      ansible.builtin.fail:
+        msg: "This playbook is intended for Debian/Ubuntu hosts because it relies on apt."
+      when: ansible_os_family | lower != "debian"
+
     - name: Create group
       ansible.builtin.group:
         name: "{{ groupname }}"
+        state: present
+
+    - name: Ensure sudo group exists
+      ansible.builtin.group:
+        name: sudo
         state: present
 
     - name: Ensure samurai user is present
