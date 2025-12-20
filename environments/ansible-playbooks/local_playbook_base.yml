@@ -6,7 +6,7 @@
   gather_facts: false
   vars:
     groupname: 52pickup
-    username: example123!
+    username: samurai
 
   pre_tasks:
     - name: Ensure Python and apt dependencies are present (minimal Ubuntu)
@@ -92,7 +92,7 @@
 
     - name: Configure environment variables for pyenv
       blockinfile:
-        path: /home/52pickup/.profile
+        path: "/home/{{ username }}/.profile"
         block: |
           export PYENV_ROOT="$HOME/.pyenv"
           [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
@@ -102,15 +102,15 @@
         create: yes
 
     - name: Apply profile changes
-      shell: source /home/52pickup/.profile
+      shell: source "/home/{{ username }}/.profile"
       args:
         executable: /bin/bash
 
     - name: Add Pyenv
       shell: |
-        cd /home/52pickup
+        cd "/home/{{ username }}"
         curl https://pyenv.run | bash
       args:
-        creates: /home/52pickup/.pyenv
+        creates: "/home/{{ username }}/.pyenv"
       become: yes
-      become_user: "{{ groupname }}"
+      become_user: "{{ username }}"
