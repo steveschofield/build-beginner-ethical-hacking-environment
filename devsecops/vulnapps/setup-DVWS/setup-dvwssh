@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# - This shell script will setup some basic components on Ubuntu server
+# - The minimized installation was used as research to see how secure an Ubuntu server could be used
+# - To run docker, docker and docker.io packages need to be run. The SNAP provided errors.
+# - The goal of this machine is host both web apps, docker containers for VA testing 
+#
+# Assumptions
+#
+# -Ubuntu Server is setup
+# -Network connectivty / DNS setup
+# -sudo mkdir /apps
+# -cd /apps
+# -sudo apt install git –y 
+# -sudo apt install vim -y
+# -sudo chmod 777 /apps/devsecops/setup-dvws.sh
+
+echo "setting up DevSecOps DVWA damn vulnerable web application"
+cd /apps
+
+sudo apt install apache2 -y 
+sudo apt install docker -y
+#sudo apt install podman-docker -y
+sudo apt install docker.io -y
+sudo apt install mysql-server -y
+sudo apt install php -y
+#
+#sed 's|/|\n|g' replaces all occurrences of '/' with a new line character '\n'.
+#steve = php --version | grep built
+#steve | sed 's/.* \([0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}\) .*/\1/'
+
+phpVer=$(echo "/etc/php/8.1/apache2/php.ini" | sed 's/.*php\///;s/\/.*//')
+sudo apt install php${phpVer}-gd -y
+sudo apt install php${phpVer}-mysql -y
+sudo cp /etc/php/${phpVer}/apache2/php.ini /etc/php/${phpVer}/apache2/php.ini.original
+sudo apt install net-tools -y 
+sudo apt install nano -y 
+sudo apt install net-tools -y
+sudo apt install iputils-ping -y
+sudo apt install dnsutils -y
+
+sudo mkdir /apps/webapps
+sudo mkdir /apps/dockerapps
+sudo chmod -R 777 /apps
+
+echo "Done"

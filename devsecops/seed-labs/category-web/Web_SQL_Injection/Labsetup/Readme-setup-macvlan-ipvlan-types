@@ -1,0 +1,14 @@
+#Manually from for macvlan and remote mode 
+#assumptions
+#   : your home network is 192.168.2.0/24
+#   : the individual IP's in the docker-compose file are available
+sudo docker network create --gateway 192.168.2.1 --subnet 192.168.2.0/24 --driver macvlan -o parent=eth0 Web_SQL_Injection
+
+
+┌──(kali㉿hacker-kali)-[~]
+└─$ sudo docker network create --gateway 192.168.2.1 --subnet 192.168.2.0/24 --driver macvlan -o parent=eth0 Web_SQL_Injection
+ceb37508a5fabdb325a4e7076a466cba15d01e5d65f0546c5a356c763c734a20
+                                                
+                                                                          Web_SQL_Injection
+#creates ipvlan L2 (default), add L3 for layer 3
+sudo docker network create -d ipvlan --subnet 192.168.2.0/24 --gateway 192.168.2.1 -o parent=eth0 Web_SQL_Injection
