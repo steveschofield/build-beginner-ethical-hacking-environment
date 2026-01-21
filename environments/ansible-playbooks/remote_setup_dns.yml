@@ -1,0 +1,37 @@
+- name: Configure DNS settings
+  hosts: guardian_workers
+  become: yes
+  
+  tasks:
+    - name: Configure netplan DNS
+      copy:
+        content: |
+          network:
+            version: 2
+            ethernets:
+              eth0:
+                dhcp4: true
+                nameservers:
+                  addresses:
+                    - 192.168.1.126
+                  search:
+                    - ss.hackme
+        dest: /etc/netplan/01-netcfg.yaml
+        mode: '0644'
+      notify: Apply netplan
+
+    - name: Disable systemd-resolved stub listener
+      lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?DNSStubListener='
+        line: 'DNSStubListener=no'
+      notify: Restart systemd-resolved
+
+  handlers:
+    - name: Apply netplan
+      command: netplan apply
+
+    - name: Restart systemd-resolved
+      systemd:
+        name: systemd-resolved
+        state: restarted

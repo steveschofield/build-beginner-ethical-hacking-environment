@@ -1,9 +1,10 @@
 - name: Run thee playbook tasks on the localhost from the /vagrant folder
-  hosts: 127.0.0.1
-  connection: local
+  hosts: guardian_workers
+  become: yes
+
   vars:
     groupname: 52f1pickup
-    username: example123!
+    username: 52f1pickup
   
   tasks:
 

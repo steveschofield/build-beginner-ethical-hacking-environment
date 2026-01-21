@@ -1,12 +1,12 @@
 ---
-- name: Run theee playbook tasks on the localhost from the /vagrant folder
-  hosts: 127.0.0.1
-  connection: local
+- name: Run playbook on remote ubuntu servers
+  hosts: guardian_workers
   become: yes
   gather_facts: false
   vars:
     groupname: 52f1pickup
     username: 52f1pickup
+    ansible_common_remote_group: "{{ groupname }}"  # Add this line
 
   pre_tasks:
     - name: Ensure Python and apt dependencies are present (minimal Ubuntu)
@@ -33,7 +33,7 @@
         name: sudo
         state: present
 
-    - name: Ensure samurai user is present
+    - name: Ensure user is present
       ansible.builtin.user:
         name: "{{ username }}"
         groups: "{{ groupname }},sudo"
@@ -81,12 +81,11 @@
           - libffi-dev 
           - liblzma-dev    
           - python3-openssl
-          - net-tools
           - iputils-ping 
           - iputils-tracepath
           - iputils-arping
           - dnsutils
-          
+          - git
         state: present
 
     - name: Install aptitude
@@ -94,6 +93,14 @@
         name: aptitude
         state: latest
         update_cache: true
+
+    - name: Create user home directory if missing
+      file:
+        path: "/home/{{ username }}"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: '0755'
 
     - name: Configure environment variables for pyenv
       blockinfile:
@@ -105,17 +112,22 @@
           eval "$(pyenv virtualenv-init -)"
         marker: "# {mark} ANSIBLE MANAGED BLOCK"
         create: yes
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: '0644'
 
-    - name: Apply profile changes
-      shell: source "/home/{{ username }}/.profile"
-      args:
-        executable: /bin/bash
-
-    - name: Add Pyenv
+    - name: Install Pyenv
       shell: |
-        cd "/home/{{ username }}"
         curl https://pyenv.run | bash
       args:
-        creates: "/home/{{ username }}/.pyenv"
-      become: yes
-      become_user: "{{ username }}"
+        creates: "/home/{{ username }}/.pyenv/bin/pyenv"
+        executable: /bin/bash
+      environment:
+        HOME: "/home/{{ username }}"
+        
+    - name: Fix pyenv ownership
+      file:
+        path: "/home/{{ username }}/.pyenv"
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        recurse: yes

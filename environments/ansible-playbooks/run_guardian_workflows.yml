@@ -1,0 +1,270 @@
+---
+- name: Run Guardian workflows and publish results
+  hosts: guardian_workers
+  become: yes
+  gather_facts: yes
+
+  vars:
+    default_user: "{{ ansible_user | default(ansible_user_id) }}"
+    guardian_user: ""
+    guardian_dir: ""
+    guardian_dir_candidates:
+      - "/root/code/guardian-cli-deluxe"
+      - "/home/{{ default_user }}/code/guardian-cli-deluxe"
+    github_repo: "https://github.com/steveschofield/guardian-cli-deluxe.git"
+    github_branch: "main"
+    guardian_force_update: true
+
+    results_dir: "/apps/results"
+    results_web_port: 8080
+    results_server_name: "_"
+    guardian_reports_dir: "{{ guardian_dir }}/reports"
+    guardian_reports_public_dir: "{{ results_dir }}/reports"
+
+    target_url: "https://juiceshop.ss.hackme"
+    workflow_targets:
+      recon: "192.168.1.232"
+      web: "https://juiceshop.ss.hackme"
+      network: "192.168.1.244"
+      autonomous: "https://juiceshop.ss.hackme"
+    run_id: "{{ ansible_date_time.iso8601_basic_short }}"
+    run_dir: "{{ results_dir }}/{{ run_id }}"
+    latest_link: "{{ results_dir }}/latest"
+    job_log: "{{ run_dir }}/job.log"
+    bootstrap_log: "{{ run_dir }}/bootstrap.log"
+
+    workflows:
+      - recon
+      - web
+      - network
+      - autonomous
+
+  tasks:
+    - name: Detect Guardian directory (if not provided)
+      stat:
+        path: "{{ item }}"
+      loop: "{{ guardian_dir_candidates }}"
+      register: guardian_dir_candidates_stat
+      when: guardian_dir | length == 0
+
+    - name: Set Guardian directory from candidates
+      set_fact:
+        guardian_dir: "{{ (guardian_dir_candidates_stat.results | selectattr('stat.exists','equalto',true) | map(attribute='item') | list | first) | default('') }}"
+      when: guardian_dir | length == 0
+
+    - name: Fail if Guardian directory is not set
+      fail:
+        msg: "Guardian repo not found in any of: {{ guardian_dir_candidates | join(', ') }}. Set guardian_dir explicitly if needed."
+      when: guardian_dir | length == 0
+
+    - name: Set Guardian user default from install location
+      set_fact:
+        guardian_user: "{{ 'root' if guardian_dir | regex_search('^/root/') else default_user }}"
+      when: guardian_user | length == 0
+
+    - name: Set Guardian venv Python path
+      set_fact:
+        guardian_python: "{{ guardian_dir }}/venv/bin/python"
+
+    - name: Ensure /apps exists
+      file:
+        path: "/apps"
+        state: directory
+        mode: '0755'
+
+    - name: Ensure results directory exists
+      file:
+        path: "{{ results_dir }}"
+        state: directory
+        owner: "{{ guardian_user }}"
+        group: "{{ guardian_user }}"
+        mode: '0755'
+
+    - name: Ensure Guardian reports directory exists
+      file:
+        path: "{{ guardian_reports_dir }}"
+        state: directory
+        owner: "{{ guardian_user }}"
+        group: "{{ guardian_user }}"
+        mode: '0755'
+
+    - name: Ensure public reports directory exists
+      file:
+        path: "{{ guardian_reports_public_dir }}"
+        state: directory
+        owner: "{{ guardian_user }}"
+        group: "{{ guardian_user }}"
+        mode: '0755'
+
+    - name: Ensure per-run directory exists
+      file:
+        path: "{{ run_dir }}"
+        state: directory
+        owner: "{{ guardian_user }}"
+        group: "{{ guardian_user }}"
+        mode: '0755'
+
+    - name: Initialize job log
+      become_user: "{{ guardian_user }}"
+      shell: |
+        set -euo pipefail
+        umask 022
+        printf "Guardian run: %s\n" "{{ run_id }}" > "{{ job_log }}"
+        printf "Guardian dir: %s\n" "{{ guardian_dir }}" >> "{{ job_log }}"
+        printf "Bootstrap log: %s\n" "{{ bootstrap_log }}" >> "{{ job_log }}"
+      args:
+        executable: /bin/bash
+
+    - name: Verify Guardian directory exists
+      stat:
+        path: "{{ guardian_dir }}"
+      register: guardian_dir_stat
+
+    - name: Fail if Guardian directory is missing
+      fail:
+        msg: "Guardian repo not found at {{ guardian_dir }}. Run setup_guardian_testing.yml first or set guardian_dir."
+      when: not guardian_dir_stat.stat.exists
+
+    - name: Verify Guardian venv exists
+      stat:
+        path: "{{ guardian_python }}"
+      register: guardian_venv_stat
+
+    - name: Fail if Guardian venv is missing
+      fail:
+        msg: "Guardian venv not found at {{ guardian_python }}. Run setup_guardian_testing.yml first."
+      when: not guardian_venv_stat.stat.exists
+
+    - name: Update Guardian repo before running
+      become_user: "{{ guardian_user }}"
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ guardian_dir }}"
+        version: "{{ github_branch }}"
+        force: "{{ guardian_force_update | bool }}"
+
+    - name: Refresh editable install (pip install -e .)
+      become_user: "{{ guardian_user }}"
+      shell: |
+        set -euo pipefail
+        umask 022
+        echo "=== pip install -e . ===" | tee -a "{{ bootstrap_log }}" | tee -a "{{ job_log }}"
+        "{{ guardian_python }}" -m pip install -e . 2>&1 | tee -a "{{ bootstrap_log }}" | tee -a "{{ job_log }}"
+      args:
+        chdir: "{{ guardian_dir }}"
+        executable: /bin/bash
+
+    - name: Check if setup.sh exists
+      stat:
+        path: "{{ guardian_dir }}/setup.sh"
+      register: guardian_setup_sh
+
+    - name: Run setup.sh
+      become_user: "{{ guardian_user }}"
+      shell: |
+        set -euo pipefail
+        umask 022
+        echo "=== setup.sh ===" | tee -a "{{ bootstrap_log }}" | tee -a "{{ job_log }}"
+        source "{{ guardian_dir }}/venv/bin/activate"
+        ./setup.sh 2>&1 | tee -a "{{ bootstrap_log }}" | tee -a "{{ job_log }}"
+      args:
+        chdir: "{{ guardian_dir }}"
+        executable: /bin/bash
+      when: guardian_setup_sh.stat.exists
+
+    - name: Run workflows and capture logs
+      become_user: "{{ guardian_user }}"
+      shell: |
+        set -euo pipefail
+        umask 022
+        echo "=== workflow: {{ item }} target: {{ workflow_targets[item] | default(target_url) }} ===" | tee -a "{{ job_log }}"
+        "{{ guardian_python }}" -m cli.main workflow run --name "{{ item }}" --target "{{ workflow_targets[item] | default(target_url) }}" 2>&1 | tee "{{ run_dir }}/{{ item }}.log" | tee -a "{{ job_log }}"
+      args:
+        chdir: "{{ guardian_dir }}"
+        executable: /bin/bash
+      loop: "{{ workflows }}"
+
+    - name: Publish reports for browsing
+      shell: |
+        set -euo pipefail
+        umask 022
+        if command -v rsync >/dev/null 2>&1; then
+          rsync -a --delete "{{ guardian_reports_dir }}/" "{{ guardian_reports_public_dir }}/"
+        else
+          rm -rf "{{ guardian_reports_public_dir }}"
+          mkdir -p "{{ guardian_reports_public_dir }}"
+          cp -a "{{ guardian_reports_dir }}/." "{{ guardian_reports_public_dir }}/"
+        fi
+      args:
+        executable: /bin/bash
+
+    - name: Update latest symlink
+      file:
+        src: "{{ run_dir }}"
+        dest: "{{ latest_link }}"
+        state: link
+        force: yes
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Configure nginx to serve results
+      copy:
+        dest: /etc/nginx/sites-available/guardian-results.conf
+        mode: '0644'
+        content: |
+          server {
+            listen {{ results_web_port }};
+            server_name {{ results_server_name }};
+            root {{ results_dir }};
+            default_type text/plain;
+            types {
+              text/plain log jsonl txt md;
+              application/json json;
+            }
+            autoindex on;
+            autoindex_exact_size off;
+            autoindex_localtime on;
+
+            location / {
+              try_files $uri $uri/ =404;
+            }
+            location /reports/ {
+              alias {{ guardian_reports_public_dir }}/;
+              autoindex on;
+              autoindex_exact_size off;
+              autoindex_localtime on;
+            }
+            location /results/ {
+              alias {{ results_dir }}/;
+              autoindex on;
+              autoindex_exact_size off;
+              autoindex_localtime on;
+            }
+          }
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/guardian-results.conf
+        dest: /etc/nginx/sites-enabled/guardian-results.conf
+        state: link
+        force: yes
+
+    - name: Verify nginx configuration
+      command: nginx -t
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Display access information
+      debug:
+        msg:
+          - "Guardian workflow logs saved to: {{ run_dir }}"
+          - "Browse results index at: http://{{ inventory_hostname }}:{{ results_web_port }}/"
+          - "Browse reports at: http://{{ inventory_hostname }}:{{ results_web_port }}/reports/"
+          - "Browse logs at: http://{{ inventory_hostname }}:{{ results_web_port }}/results/"

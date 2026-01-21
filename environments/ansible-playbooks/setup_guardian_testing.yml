@@ -1,0 +1,143 @@
+---
+- name: Setup Guardian CLI Deluxe on Ubuntu Server
+  hosts: guardian_workers
+  become: yes  # Run as regular user, not root
+  
+  vars:
+    code_dir: "{{ ansible_env.HOME }}/code"
+    guardian_dir: "{{ code_dir }}/guardian-cli-deluxe"
+    github_repo: "https://github.com/steveschofield/guardian-cli-deluxe.git"
+    github_branch: "main"
+    guardian_force_update: true
+    results_dir: "/apps/results"
+    setup_logs_dir: "{{ results_dir }}/setup"
+    
+  tasks:
+    - name: Ensure prerequisites are installed
+      become: yes
+      apt:
+        name:
+          - git
+          - python3
+          - python3-pip
+          - python3-venv
+        state: present
+        update_cache: yes
+      tags: prerequisites
+
+    - name: Check if docker is available
+      command: docker --version
+      register: docker_check
+      changed_when: false
+      failed_when: false
+      tags: zap
+
+    - name: Pull ZAP stable image
+      command: docker pull ghcr.io/zaproxy/zaproxy:stable
+      when: docker_check.rc == 0
+      tags: zap
+
+    - name: Create ~/code directory
+      file:
+        path: "{{ code_dir }}"
+        state: directory
+        mode: '0755'
+      tags: setup
+
+    - name: Ensure setup logs directory exists
+      file:
+        path: "{{ setup_logs_dir }}"
+        state: directory
+        mode: '0755'
+      tags: setup
+
+    - name: Clone guardian-cli-deluxe repository
+      git:
+        repo: "{{ github_repo }}"
+        dest: "{{ guardian_dir }}"
+        version: "{{ github_branch }}"
+        force: "{{ guardian_force_update | bool }}"  # Overwrite local changes when requested
+      tags: clone
+
+    - name: Create Python virtual environment
+      command: python3 -m venv venv
+      args:
+        chdir: "{{ guardian_dir }}"
+        creates: "{{ guardian_dir }}/venv/bin/activate"
+      tags: venv
+
+    - name: Install guardian package in editable mode (logged)
+      shell: |
+        set -euo pipefail
+        umask 022
+        echo "=== pip install -e . ===" | tee "{{ setup_logs_dir }}/pip-install.log"
+        "{{ guardian_dir }}/venv/bin/python" -m pip install -e . 2>&1 | tee -a "{{ setup_logs_dir }}/pip-install.log"
+      args:
+        chdir: "{{ guardian_dir }}"
+        executable: /bin/bash
+      tags: install
+
+    - name: Check if setup.sh exists
+      stat:
+        path: "{{ guardian_dir }}/setup.sh"
+      register: setup_script
+      tags: setup_script
+
+    - name: Make setup.sh executable
+      file:
+        path: "{{ guardian_dir }}/setup.sh"
+        mode: '0755'
+      when: setup_script.stat.exists
+      tags: setup_script
+
+    - name: Run setup.sh script
+      shell: |
+        source {{ guardian_dir }}/venv/bin/activate
+        ./setup.sh 2>&1 | tee setup.log | tee "{{ setup_logs_dir }}/setup.sh.log"
+      args:
+        chdir: "{{ guardian_dir }}"
+        executable: /bin/bash
+      when: setup_script.stat.exists
+      register: setup_output
+      tags: setup_script
+
+    - name: Create config directory
+      file:
+        path: "{{ guardian_dir }}/config"
+        state: directory
+        mode: '0755'
+      tags: config
+
+    - name: Check if guardian.yaml exists in root
+      stat:
+        path: "{{ guardian_dir }}/guardian.yaml"
+      register: guardian_yaml_root
+      tags: config
+
+    - name: Copy guardian.yaml to config directory
+      copy:
+        src: "{{ guardian_dir }}/guardian.yaml"
+        dest: "{{ guardian_dir }}/config/guardian.yaml"
+        remote_src: yes
+        force: no
+      when: guardian_yaml_root.stat.exists
+      tags: config
+
+    - name: Display setup summary
+      debug:
+        msg: |
+          Guardian CLI Deluxe setup complete!
+          
+          Installation directory: {{ guardian_dir }}
+          Configuration: {{ guardian_dir }}/config/guardian.yaml
+          
+          To use Guardian:
+          1. cd {{ guardian_dir }}
+          2. source venv/bin/activate
+          3. python -m cli.main --help
+          
+          Next steps:
+          - Edit {{ guardian_dir }}/config/guardian.yaml to configure AI provider
+        
+          Setup log: {{ guardian_dir }}/setup.log
+      tags: always

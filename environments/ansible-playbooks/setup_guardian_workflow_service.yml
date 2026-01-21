@@ -1,0 +1,329 @@
+---
+- name: Install Guardian workflow service and optional timer
+  hosts: guardian_workers
+  become: yes
+  gather_facts: yes
+
+  vars:
+    default_user: "{{ ansible_user | default(ansible_user_id) }}"
+    guardian_user: ""
+    guardian_dir: ""
+    guardian_dir_candidates:
+      - "/root/code/guardian-cli-deluxe"
+      - "/home/{{ default_user }}/code/guardian-cli-deluxe"
+    github_branch: "main"
+    guardian_force_update: true
+
+    results_dir: "/apps/results"
+    results_web_port: 8080
+    results_server_name: "_"
+    guardian_reports_dir: "{{ guardian_dir }}/reports"
+    guardian_reports_public_dir: "{{ results_dir }}/reports"
+
+    target_url: "https://juiceshop.ss.hackme"
+    workflow_targets:
+      recon: "192.168.1.232"
+      web: "https://juiceshop.ss.hackme"
+      network: "192.168.1.244"
+      autonomous: "https://juiceshop.ss.hackme"
+    workflows:
+      - recon
+      - web
+      - network
+      - autonomous
+
+    timer_oncalendar: "daily"
+    enable_timer: false
+    start_now: false
+
+  tasks:
+    - name: Detect Guardian directory (if not provided)
+      stat:
+        path: "{{ item }}"
+      loop: "{{ guardian_dir_candidates }}"
+      register: guardian_dir_candidates_stat
+      when: guardian_dir | length == 0
+
+    - name: Set Guardian directory from candidates
+      set_fact:
+        guardian_dir: "{{ (guardian_dir_candidates_stat.results | selectattr('stat.exists','equalto',true) | map(attribute='item') | list | first) | default('') }}"
+      when: guardian_dir | length == 0
+
+    - name: Fail if Guardian directory is not set
+      fail:
+        msg: "Guardian repo not found in any of: {{ guardian_dir_candidates | join(', ') }}. Set guardian_dir explicitly if needed."
+      when: guardian_dir | length == 0
+
+    - name: Set Guardian user default from install location
+      set_fact:
+        guardian_user: "{{ 'root' if guardian_dir | regex_search('^/root/') else default_user }}"
+      when: guardian_user | length == 0
+
+    - name: Ensure /apps exists
+      file:
+        path: "/apps"
+        state: directory
+        mode: '0755'
+
+    - name: Ensure results directory exists
+      file:
+        path: "{{ results_dir }}"
+        state: directory
+        owner: "{{ guardian_user }}"
+        group: "{{ guardian_user }}"
+        mode: '0755'
+
+    - name: Ensure Guardian reports directory exists
+      file:
+        path: "{{ guardian_reports_dir }}"
+        state: directory
+        owner: "{{ guardian_user }}"
+        group: "{{ guardian_user }}"
+        mode: '0755'
+
+    - name: Ensure public reports directory exists
+      file:
+        path: "{{ guardian_reports_public_dir }}"
+        state: directory
+        owner: "{{ guardian_user }}"
+        group: "{{ guardian_user }}"
+        mode: '0755'
+
+    - name: Verify Guardian directory exists
+      stat:
+        path: "{{ guardian_dir }}"
+      register: guardian_dir_stat
+
+    - name: Fail if Guardian directory is missing
+      fail:
+        msg: "Guardian repo not found at {{ guardian_dir }}. Run setup_guardian_testing.yml first or set guardian_dir."
+      when: not guardian_dir_stat.stat.exists
+
+    - name: Set Guardian venv Python path
+      set_fact:
+        guardian_python: "{{ guardian_dir }}/venv/bin/python"
+
+    - name: Verify Guardian venv exists
+      stat:
+        path: "{{ guardian_python }}"
+      register: guardian_venv_stat
+
+    - name: Fail if Guardian venv is missing
+      fail:
+        msg: "Guardian venv not found at {{ guardian_python }}. Run setup_guardian_testing.yml first."
+      when: not guardian_venv_stat.stat.exists
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure git is installed
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Ensure rsync is installed (for publishing reports)
+      apt:
+        name: rsync
+        state: present
+        update_cache: yes
+
+    - name: Configure nginx to serve results
+      copy:
+        dest: /etc/nginx/sites-available/guardian-results.conf
+        mode: '0644'
+        content: |
+          server {
+            listen {{ results_web_port }};
+            server_name {{ results_server_name }};
+            root {{ results_dir }};
+            default_type text/plain;
+            types {
+              text/plain log jsonl txt md;
+              application/json json;
+            }
+            autoindex on;
+            autoindex_exact_size off;
+            autoindex_localtime on;
+
+            location / {
+              try_files $uri $uri/ =404;
+            }
+            location /reports/ {
+              alias {{ guardian_reports_public_dir }}/;
+              autoindex on;
+              autoindex_exact_size off;
+              autoindex_localtime on;
+            }
+            location /results/ {
+              alias {{ results_dir }}/;
+              autoindex on;
+              autoindex_exact_size off;
+              autoindex_localtime on;
+            }
+          }
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/guardian-results.conf
+        dest: /etc/nginx/sites-enabled/guardian-results.conf
+        state: link
+        force: yes
+
+    - name: Verify nginx configuration
+      command: nginx -t
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Ensure nginx is enabled and running
+      systemd:
+        name: nginx
+        enabled: yes
+        state: started
+
+    - name: Install workflow runner script
+      copy:
+        dest: /usr/local/bin/guardian-run-workflows.sh
+        mode: '0755'
+        content: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+          umask 022
+
+          GUARDIAN_DIR="{{ guardian_dir }}"
+          GUARDIAN_PYTHON="{{ guardian_python }}"
+          RESULTS_DIR="{{ results_dir }}"
+          TARGET_URL="{{ target_url }}"
+          declare -A TARGETS=(
+          {% for name, target in workflow_targets.items() %}
+            ["{{ name }}"]="{{ target }}"
+          {% endfor %}
+          )
+
+          if [[ ! -x "$GUARDIAN_PYTHON" ]]; then
+            echo "Guardian Python not found at $GUARDIAN_PYTHON" >&2
+            exit 1
+          fi
+
+          run_id="$(date -u +'%Y%m%dT%H%M%SZ')"
+          run_dir="$RESULTS_DIR/$run_id"
+          job_log="$run_dir/job.log"
+          bootstrap_log="$run_dir/bootstrap.log"
+
+          mkdir -p "$run_dir"
+
+          if command -v git >/dev/null 2>&1; then
+            if [[ -d "$GUARDIAN_DIR/.git" ]]; then
+              (
+                cd "$GUARDIAN_DIR"
+                echo "=== repo update ===" | tee -a "$job_log"
+                git fetch --all --prune 2>&1 | tee -a "$job_log"
+                if [[ "{{ guardian_force_update | bool }}" == "True" ]]; then
+                  git checkout "{{ github_branch }}" 2>&1 | tee -a "$job_log"
+                  git reset --hard "origin/{{ github_branch }}" 2>&1 | tee -a "$job_log"
+                else
+                  git pull --ff-only 2>&1 | tee -a "$job_log"
+                fi
+              )
+            fi
+          fi
+
+          (
+            cd "$GUARDIAN_DIR"
+            echo "=== pip install -e . ===" | tee -a "$bootstrap_log" | tee -a "$job_log"
+            "$GUARDIAN_PYTHON" -m pip install -e . 2>&1 | tee -a "$bootstrap_log" | tee -a "$job_log"
+          )
+
+          if [[ -f "$GUARDIAN_DIR/setup.sh" ]]; then
+            (
+              cd "$GUARDIAN_DIR"
+              echo "=== setup.sh ===" | tee -a "$bootstrap_log" | tee -a "$job_log"
+              source "$GUARDIAN_DIR/venv/bin/activate"
+              ./setup.sh 2>&1 | tee -a "$bootstrap_log" | tee -a "$job_log"
+            )
+          fi
+
+          WORKFLOWS=(
+          {% for wf in workflows %}
+            "{{ wf }}"
+          {% endfor %}
+          )
+
+          for wf in "${WORKFLOWS[@]}"; do
+            target="${TARGETS[$wf]:-$TARGET_URL}"
+            echo "=== workflow: $wf target: $target ===" | tee -a "$job_log"
+            "$GUARDIAN_PYTHON" -m cli.main workflow run --name "$wf" --target "$target" 2>&1 | tee "$run_dir/$wf.log" | tee -a "$job_log"
+          done
+
+          if [[ -d "$GUARDIAN_DIR/reports" ]]; then
+            echo "=== publish reports ===" | tee -a "$job_log"
+            rsync -a --delete "$GUARDIAN_DIR/reports/" "{{ guardian_reports_public_dir }}/" 2>&1 | tee -a "$job_log" || true
+          fi
+
+          ln -sfn "$run_dir" "$RESULTS_DIR/latest"
+
+    - name: Install systemd service
+      copy:
+        dest: /etc/systemd/system/guardian-workflows.service
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Run Guardian workflows
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          Type=oneshot
+          User={{ guardian_user }}
+          Group={{ guardian_user }}
+          WorkingDirectory={{ guardian_dir }}
+          UMask=0022
+          ExecStart=/usr/local/bin/guardian-run-workflows.sh
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Install systemd timer
+      copy:
+        dest: /etc/systemd/system/guardian-workflows.timer
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Schedule Guardian workflow runs
+
+          [Timer]
+          OnCalendar={{ timer_oncalendar }}
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable timer (optional)
+      systemd:
+        name: guardian-workflows.timer
+        enabled: yes
+        state: started
+      when: enable_timer
+
+    - name: Start workflow run without blocking (optional)
+      command: systemctl start --no-block guardian-workflows.service
+      when: start_now
+
+    - name: Display access information
+      debug:
+        msg:
+          - "Guardian workflow service installed."
+          - "Trigger a run: systemctl start --no-block guardian-workflows.service"
+          - "Browse results index at: http://{{ inventory_hostname }}:{{ results_web_port }}/"
+          - "Browse reports at: http://{{ inventory_hostname }}:{{ results_web_port }}/reports/"
+          - "Browse logs at: http://{{ inventory_hostname }}:{{ results_web_port }}/results/"
