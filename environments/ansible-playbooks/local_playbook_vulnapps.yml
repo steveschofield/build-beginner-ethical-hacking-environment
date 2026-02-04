@@ -5,7 +5,7 @@
   become: yes
   vars:
     groupname: 52pickup
-    username: samurai
+    username: 52pickup
 
   tasks:
     - name: Ensure code directory exists

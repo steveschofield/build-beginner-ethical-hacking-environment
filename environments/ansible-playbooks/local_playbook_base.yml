@@ -5,8 +5,8 @@
   become: yes
   gather_facts: false
   vars:
-    groupname: 52f1pickup
-    username: 52f1pickup
+    groupname: 52pickup
+    username: 52pickup
 
   pre_tasks:
     - name: Ensure Python and apt dependencies are present (minimal Ubuntu)
