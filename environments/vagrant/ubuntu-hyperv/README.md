@@ -1,6 +1,8 @@
-# Ubuntu 22.04 Ethical Hacking Lab - Hyper-V / VirtualBox
+# Ubuntu 20.04 Ethical Hacking Lab - Hyper-V / VirtualBox / VMware
 
-This Vagrant environment provisions an Ubuntu 22.04 VM with pre-installed ethical hacking tools and vulnerable applications for educational purposes.
+This Vagrant environment provisions an Ubuntu 20.04 VM with pre-installed ethical hacking tools and vulnerable applications for educational purposes.
+
+> **Note:** We use Ubuntu 20.04 because `bento/ubuntu-22.04` does not have a Hyper-V box available.
 
 ## Prerequisites
 
@@ -85,6 +87,10 @@ vagrant destroy   # Delete the VM completely
 ```
 
 ## What Gets Installed
+
+### VM Specs (Hyper-V)
+- 6 GB RAM (up to 8 GB dynamic)
+- 4 vCPUs
 
 ### Base System
 - Python 3 with pyenv
