@@ -59,3 +59,15 @@
       ansible.builtin.apt:
         name: python3-docker
         state: present
+
+    - name: Install Ansible Docker collection (for root - provisioning)
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install community.docker --force
+      changed_when: true
+
+    - name: Install Ansible Docker collection (for user)
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install community.docker --force
+      become_user: "{{ username }}"
+      changed_when: true
+      ignore_errors: yes
