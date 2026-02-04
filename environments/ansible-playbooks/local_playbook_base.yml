@@ -33,14 +33,6 @@
         name: sudo
         state: present
 
-    - name: Ensure samurai user is present
-      ansible.builtin.user:
-        name: "{{ username }}"
-        groups: "{{ groupname }},sudo"
-        password: "$1$XF.06J/n$A1G6zX5AF33pQQOTcH0Ix."
-        shell: /bin/bash
-        state: present
-
     - name: Install prerequisite packages
       ansible.builtin.apt:
         name:

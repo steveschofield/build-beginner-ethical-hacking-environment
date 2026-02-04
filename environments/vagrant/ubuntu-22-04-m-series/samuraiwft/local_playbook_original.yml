@@ -4,8 +4,8 @@
   connection: local
   become: yes
   vars:
-    groupname: samurai
-    username: samurai
+    groupname: 52pickup
+    username: 52pickup
 
   tasks:
     - name: Create group
@@ -13,7 +13,7 @@
         name: "{{ groupname }}"
         state: present
 
-    - name: Ensure samurai user is present
+    - name: Ensure 52pickup user is present
       ansible.builtin.user:
         name: "{{ username }}"
         groups: "{{ groupname }},sudo"

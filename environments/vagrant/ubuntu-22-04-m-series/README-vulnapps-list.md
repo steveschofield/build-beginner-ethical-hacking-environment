@@ -45,13 +45,13 @@ cd /home/52pickup/code
 
 become: yes
 
-**name: musashi-js# [https://github.com/SamuraiWTF/musashi-js](https://github.com/SamuraiWTF/musashi-js)**
+**name: musashi-js# [https://github.com/52pickupWTF/musashi-js](https://github.com/52pickupWTF/musashi-js)**
 
 shell: |
 
 cd /home/52pickup/code
 
-  git clone https://github.com/SamuraiWTF/musashi-js
+  git clone https://github.com/52pickupWTF/musashi-js
 
   cd /home/52pickup/code/musashi-js
 

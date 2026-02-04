@@ -101,19 +101,19 @@
       command: docker pull jeroenwillemsen/wrongsecrets:latest-no-vault
       become: yes
 
-    # - name: dvwa # https://github.com/digininja/dvwa
-    #   shell: |
-    #     cd "/home/{{ username }}/code"
-    #     git clone https://github.com/digininja/dvwa
-    #     cd "/home/{{ username }}/code/dvwa"
-    #     sed -i 's/127.0.0.1:4280:80/0.0.0.0:4280:80/g' "/home/{{ username }}/code/dvwa/compose.yml" #replace 127.0.0.1 with 0.0.0.0 thanks grok!    
-    #     docker build --tag dvwa .
-    #   become: yes
-
-    - name: musashi-js # https://github.com/SamuraiWTF/musashi-js
+    - name: dvwa # https://github.com/digininja/dvwa
       shell: |
         cd "/home/{{ username }}/code"
-        git clone https://github.com/SamuraiWTF/musashi-js
+        git clone https://github.com/digininja/dvwa
+        cd "/home/{{ username }}/code/dvwa"
+        sed -i 's/127.0.0.1:4280:80/0.0.0.0:4280:80/g' "/home/{{ username }}/code/dvwa/compose.yml" #replace 127.0.0.1 with 0.0.0.0 thanks grok!
+        docker build --tag dvwa .
+      become: yes
+
+    - name: musashi-js # https://github.com/52pickupWTF/musashi-js
+      shell: |
+        cd "/home/{{ username }}/code"
+        git clone https://github.com/52pickupWTF/musashi-js
         cd "/home/{{ username }}/code/musashi-js"
         docker build --tag musashi-js .
       become: yes
@@ -144,13 +144,13 @@
       command: docker run -d -p 8889:8888 jeroenwillemsen/wrongsecrets:latest-no-vault
       become: yes
 
-    # - name: Start DVWA # https://github.com/digininja/DVWA
-    #   shell: |
-    #     cd "/home/{{ username }}/code/dvwa"
-    #     /usr/bin/docker-compose up -d
-    #   become: yes
+    - name: Start DVWA # https://github.com/digininja/DVWA
+      shell: |
+        cd "/home/{{ username }}/code/dvwa"
+        /usr/local/bin/docker-compose up -d
+      become: yes
 
-    - name: Start Musashi JS # https://github.com/SamuraiWTF/musashi-js
+    - name: Start Musashi JS # https://github.com/52pickupWTF/musashi-js
       shell: |
         cd "/home/{{ username }}/code/musashi-js"
         docker run -d -p 8083:8080 musashi-js

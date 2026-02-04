@@ -2,7 +2,7 @@
 
 Here is the [YouTube video](https://www.youtube.com/watch?v=TywK6hhFWhs) covering steps below. 
 
-I use a MacBook Pro M series (Air 24 GB Ram / M3 series) and attempted to use [SamuraiWTF](https://github.com/samuraiWTF/samuraiWTF).   **SamuraiWTF** was created by Secure Ideas builds an VM various tools and sample vulnerable apps all running locally.   When attempting to run on my MacBook M series, I ran into issues with sample apps bundled into the samuraiWTF VM.   This is a good project, I'd recommend using an x86/64 machine or Windows with Hyper-V if you want to use it.  It's a safe way to have a local pentesting environment for API, Web and other apps.
+I use a MacBook Pro M series (Air 24 GB Ram / M3 series) and attempted to use [52pickupWTF](https://github.com/52pickupWTF/52pickupWTF).   **52pickupWTF** was created by Secure Ideas builds an VM various tools and sample vulnerable apps all running locally.   When attempting to run on my MacBook M series, I ran into issues with sample apps bundled into the 52pickupWTF VM.   This is a good project, I'd recommend using an x86/64 machine or Windows with Hyper-V if you want to use it.  It's a safe way to have a local pentesting environment for API, Web and other apps.
 
 The "modified project" uses Vagrant to build an Ubuntu 22.04 VM, including Ansible playbooks.  This VM is built on top of the [*bento/ubuntu-22.04* base box](https://app.vagrantup.com/bento/boxes/ubuntu-22.04) , which supports additional providers.  I prefer using VMware Fusion for the hypervisor.  My goal is to evaluate and learn / add additional vulnerable apps running on MacBook M series.   My #homelab also includes Windows 10 w/Hyper-V.  I like a challenge and share what others could benefit from.   If you have sample apps, please share!
 
@@ -22,7 +22,7 @@ Here are commands installing the vagrant pre-reqs
 2. From the command line, navigate to this folder and run `vagrant up --provider=vmware_desktop`
 3. The VMware provider will automatically open a new window/vm in vmware workstation. Ignore that window for now and wait for the script to complete. This may take a long time (20-30 minutes, possibly longer when running alongside Hyper-V).
 4. Run `vagrant reload` to restart the VM and ensure all the configuration is in place during boot.
-5. Connect to the VM and login in with user: _samurai_ , password: _samurai_
+5. Connect to the VM and login in with user: _52pickup_ , password: _52pickup_
 
 ## Additional [Vulnerable Apps](README-vulnapps-list.md) for Apple M series CPU (tested on MacBook Air M3)
 
@@ -34,11 +34,11 @@ Here are commands installing the vagrant pre-reqs
 2. Select the _Default Switch_ when prompted to select which switch to use. If you don't have a _Default Switch_ option then you will need to create or use a switch that will allow the VM to access the Internet.
 3. Wait for the script to complete. This may take a long time (20-30 minutes).
 4. Run `vagrant reload` to restart the VM and ensure all the configuration is in place during boot.
-5. Connect to the VM and login in with user: _samurai_ , password: _samurai_
+5. Connect to the VM and login in with user: _52pickup_ , password: _52pickup_
 
 ## VirtualBox
 
 1. From the command line, navigate to this folder and run `vagrant up --provider=virtualbox`
 2. The VirtualBox provider will automatically open a new window. Ignore that window for now and wait for the script to complete. This may take a long time (20-30 minutes, possibly longer when running alongside Hyper-V).
 3. Run `vagrant reload` to restart the VM and ensure all the configuration is in place during boot.
-4. Connect to the VM and login in with user: _samurai_ , password: _samurai_
+4. Connect to the VM and login in with user: _52pickup_ , password: _52pickup_

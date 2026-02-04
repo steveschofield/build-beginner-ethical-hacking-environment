@@ -109,7 +109,7 @@ docker run -d -p 8081:8080 jeroenwillemsen/wrongsecrets:latest-no-vault
 
 ## Network Configuration
 
-- **VM Default User**: `samurai:samurai` (for connection)
+- **VM Default User**: `52pickup:52pickup` (for connection)
 - **Kali Container User**: `kali:kali` 
 - **Custom VM User**: `52pickup:example123!`
 - **RDP Access**: Port 3390 (non-standard to avoid conflicts)

@@ -22,7 +22,7 @@ Begin your Ethical Hacking journey.  This documentation shares tricks and free s
   * [DVWA](https://github.com/digininja/dvwa)
   * [OWASP WebGoat](https://github.com/WebGoat/WebGoat)
   * [VAmPI](https://github.com/erev0s/VAmPI)
-  * [musashi-js](https://github.com/SamuraiWTF/musashi-js)
+  * [musashi-js](https://github.com/52pickupWTF/musashi-js)
   * [vuln-bank](https://github.com/Commando-X/vuln-bank)
 
 # My YouTube Channel

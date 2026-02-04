@@ -13,24 +13,24 @@ pushd /vagrant
 ansible-playbook -K ubuntu-20/local_playbook.yml
 popd
 
-# TODO: This doesn't seem to be doing anything. Prefs may need to be set locally for the samurai user.
+# TODO: This doesn't seem to be doing anything. Prefs may need to be set locally for the 52pickup user.
 # echo ">>>>>>>>>>>>>>>> Update Firefox Prefs"
 # ff_preferences="/etc/firefox/syspref.js"
 # touch $ff_preferences
 # echo "pref('browser.startup.homepage', 'https://katana.test:8443');" >> $ff_preferences
 
 echo ">>>>>>>>>>>>>>>> Initializing certificates"
-openssl genrsa -out /etc/samurai.d/certs/rootCAKey.pem 2048
-openssl req -x509 -sha256 -new -nodes -key /etc/samurai.d/certs/rootCAKey.pem -days 365 -out /etc/samurai.d/certs/rootCACert.pem -subj "/C=US/ST=Hacking/L=Springfield/O=SamuraiWTF/CN=samuraiwtf"
-openssl req -new -newkey rsa:4096 -nodes -keyout /etc/samurai.d/certs/katana.test.key -out /etc/samurai.d/certs/katana.test.csr -subj "/C=US/ST=Hacking/L=Springfield/O=SamuraiWTF/CN=katana.test"
-openssl x509 -inform pem -outform der -in /etc/samurai.d/certs/rootCACert.pem -out /etc/samurai.d/certs/localRootCA.crt
-cp /etc/samurai.d/certs/localRootCA.crt /usr/local/share/ca-certificates/
+openssl genrsa -out /etc/52pickup.d/certs/rootCAKey.pem 2048
+openssl req -x509 -sha256 -new -nodes -key /etc/52pickup.d/certs/rootCAKey.pem -days 365 -out /etc/52pickup.d/certs/rootCACert.pem -subj "/C=US/ST=Hacking/L=Springfield/O=52pickupWTF/CN=52pickupwtf"
+openssl req -new -newkey rsa:4096 -nodes -keyout /etc/52pickup.d/certs/katana.test.key -out /etc/52pickup.d/certs/katana.test.csr -subj "/C=US/ST=Hacking/L=Springfield/O=52pickupWTF/CN=katana.test"
+openssl x509 -inform pem -outform der -in /etc/52pickup.d/certs/rootCACert.pem -out /etc/52pickup.d/certs/localRootCA.crt
+cp /etc/52pickup.d/certs/localRootCA.crt /usr/local/share/ca-certificates/
 update-ca-certificates
 
 echo ">>>>>>>>>>>>>>>> Installing Katana"
 katana --update
 katana install katana
-systemctl enable samurai-katana
+systemctl enable 52pickup-katana
 katana start katana
 
 echo ">>>>>>>>>>>>>>>> Setting default session to graphical.target"
@@ -54,21 +54,21 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "bento/ubuntu-20.04"
 
-  config.vm.define "samuraiwtf", primary: true do |samuraiwtf|
-      samuraiwtf.vm.host_name = "SamuraiWTF"
-      samuraiwtf.vm.synced_folder "..", "/vagrant", type: "rsync", rsync_exclude: ".git/"
+  config.vm.define "52pickupwtf", primary: true do |52pickupwtf|
+      52pickupwtf.vm.host_name = "52pickupWTF"
+      52pickupwtf.vm.synced_folder "..", "/vagrant", type: "rsync", rsync_exclude: ".git/"
 
-      samuraiwtf.vm.provider "hyperv" do |hv|
-        hv.vmname = "SamuraiWTF-5.3"
+      52pickupwtf.vm.provider "hyperv" do |hv|
+        hv.vmname = "52pickupWTF-5.3"
         hv.maxmemory = "4096"
         hv.vm_integration_services = {
             guest_service_interface: true
             }
        end
 
-      samuraiwtf.vm.provider "virtualbox" do |vb|
+      52pickupwtf.vm.provider "virtualbox" do |vb|
         vb.gui = true
-        vb.name = "SamuraiWTF-5.3"
+        vb.name = "52pickupWTF-5.3"
         vb.memory = "4096"
         vb.customize ["modifyvm", :id, "--vram", "128"]
         vb.customize ["modifyvm", :id, "--cpus", "2"]
@@ -77,8 +77,8 @@ Vagrant.configure("2") do |config|
         vb.customize ["modifyvm", :id, "--accelerate2dvideo", "on"]
       end
 
-      samuraiwtf.vm.provider "vmware_desktop" do |v|
-        v.vmx["name"] = "SamuraiWTF-5.3"
+      52pickupwtf.vm.provider "vmware_desktop" do |v|
+        v.vmx["name"] = "52pickupWTF-5.3"
         v.vmx["memsize"] = "4096"
         v.vmx["numvcpus"] = "2"
         v.vmx["cpuid.coresPerSocket"] = "1"

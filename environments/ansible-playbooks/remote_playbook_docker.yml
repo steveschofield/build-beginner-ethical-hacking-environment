@@ -3,8 +3,8 @@
   become: yes
 
   vars:
-    groupname: 52f1pickup
-    username: 52f1pickup
+    groupname: 52pickup
+    username: 52pickup
   
   tasks:
 

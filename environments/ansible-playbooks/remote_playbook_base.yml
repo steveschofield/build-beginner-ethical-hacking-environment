@@ -4,13 +4,20 @@
   become: yes
   gather_facts: false
   vars:
-    groupname: 52f1pickup
-    username: 52f1pickup
+    groupname: 52pickup
+    username: 52pickup
     ansible_common_remote_group: "{{ groupname }}"  # Add this line
+    ansible_python_interpreter: /usr/bin/python3.10
 
   pre_tasks:
-    - name: Ensure Python and apt dependencies are present (minimal Ubuntu)
-      raw: apt-get update -y && apt-get install -y python3 python3-apt sudo
+    - name: Ensure Python 3.10+ and apt dependencies are present (minimal Ubuntu)
+      raw: |
+        set -e
+        apt-get update -y
+        apt-get install -y sudo software-properties-common
+        add-apt-repository -y ppa:deadsnakes/ppa || true
+        apt-get update -y
+        apt-get install -y python3.10 python3.10-venv python3.10-distutils python3-apt
       args:
         warn: false
 
