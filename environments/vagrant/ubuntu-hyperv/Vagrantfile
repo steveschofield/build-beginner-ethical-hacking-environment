@@ -21,6 +21,9 @@
 # Read SSH public key from environment variable
 SSH_PUBLIC_KEY = ENV['SSH_PUBLIC_KEY'] || ''
 
+# Get the absolute path to ansible-playbooks directory (works on Windows and Unix)
+ANSIBLE_PLAYBOOKS_PATH = File.expand_path("../../ansible-playbooks", __dir__)
+
 $bootstrapscript = <<-SCRIPT
 set -euxo pipefail
 
@@ -86,7 +89,8 @@ Vagrant.configure("2") do |config|
 
     # Sync the ansible-playbooks directory to /vagrant
     # Using rsync for better Hyper-V compatibility
-    vm.vm.synced_folder "../../ansible-playbooks", "/vagrant", type: "rsync"
+    # ANSIBLE_PLAYBOOKS_PATH resolves to absolute path for Windows compatibility
+    vm.vm.synced_folder ANSIBLE_PLAYBOOKS_PATH, "/vagrant", type: "rsync"
 
     # Hyper-V provider configuration
     vm.vm.provider "hyperv" do |hv|
