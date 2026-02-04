@@ -1,12 +1,14 @@
-- name: Run thee playbook tasks on the localhost from the /vagrant folder
+---
+- name: Install Docker and Docker Compose
   hosts: 127.0.0.1
   connection: local
+  become: yes
+  gather_facts: true
   vars:
-    groupname: 52f1pickup
-    username: example123!
-  
-  tasks:
+    groupname: 52pickup
+    username: 52pickup
 
+  tasks:
     - name: Install required system packages
       apt:
         pkg:
@@ -17,7 +19,7 @@
           - python3-pip
           - virtualenv
           - python3-setuptools
-        state: latest
+        state: present
         update_cache: true
 
     - name: Add Docker GPG apt Key
@@ -27,25 +29,31 @@
 
     - name: Add Docker Repository
       apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
 
     - name: Update apt and install docker-ce
       apt:
-        name: docker-ce
-        state: latest
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
         update_cache: true
 
-    - name: Create cli-plugins folder for docker-compose
-      ansible.builtin.file:
-        path: /usr/local/lib/docker/cli-plugins
-        state: directory
+    - name: Add user to docker group
+      user:
+        name: "{{ username }}"
+        groups: docker
+        append: yes
 
-    - name: Download and install docker-compose
-      ansible.builtin.get_url:
-        url: https://github.com/docker/compose/releases/download/v2.9.0/docker-compose-linux-aarch64
-        dest: /usr/local/lib/docker/cli-plugins/docker-compose
-        mode: "0755"
+    - name: Ensure Docker service is started and enabled
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
 
     - name: Install Python Docker module
       ansible.builtin.apt:
