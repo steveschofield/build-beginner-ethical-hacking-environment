@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Hand Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: #000; 
+            overflow: hidden; 
+            color: white;
+        }
+        
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .intro-screen h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .enable-camera-btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .enable-camera-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        #video {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(-1);
+            width: 256px;
+            height: 144px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            z-index: 10;
+        }
+        
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            padding: 10px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .shortcuts {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="intro-screen" id="introScreen">
+        <h1>Particle Hand Tracker</h1>
+        <button class="enable-camera-btn" onclick="startApp()">Enable Camera</button>
+    </div>
+    
+    <canvas id="canvas"></canvas>
+    <video id="video" autoplay muted playsinline class="hidden"></video>
+    
+    <div class="controls hidden" id="controls">
+        <button class="control-btn" onclick="toggleMode()">Mode: <span id="modeText">Attract</span></button>
+        <button class="control-btn" onclick="cycleTheme()">Theme: <span id="themeText">Rainbow</span></button>
+    </div>
+    
+    <div class="status hidden" id="status">Loading...</div>
+    
+    <div class="shortcuts hidden" id="shortcuts">
+        <div><strong>Shortcuts:</strong></div>
+        <div>SPACE - Toggle Mode</div>
+        <div>V - Toggle Camera</div>
+        <div>Fist - Cycle Theme</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
