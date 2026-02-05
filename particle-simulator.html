@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Particle Flow Simulator</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: #000;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Intro Screen */
+#intro {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at center, #0a0a2e 0%, #000 70%);
+    z-index: 100;
+    transition: opacity 0.5s;
+}
+#intro h1 {
+    font-size: clamp(28px, 5vw, 56px);
+    background: linear-gradient(135deg, #00d4ff, #ff006e, #ffbe0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+#intro p { color: #888; margin-bottom: 30px; font-size: 16px; }
+#enableBtn {
+    padding: 16px 48px;
+    font-size: 18px;
+    border: 2px solid #00d4ff;
+    background: transparent;
+    color: #00d4ff;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+}
+#enableBtn:hover {
+    background: #00d4ff;
+    color: #000;
+    box-shadow: 0 0 30px rgba(0,212,255,0.5);
+}
+.perf-note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #555;
+}
+
+/* Main Canvas */
+#particleCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Camera Preview */
+#cameraPreview {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 256px;
+    height: 144px;
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    background: #111;
+    display: none;
+}
+#cameraVideo {
+    width: 256px;
+    height: 144px;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+#overlayCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 256px;
+    height: 144px;
+}
+
+/* UI Controls */
+#modeToggle {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 20;
+    display: none;
+}
+#modeToggle button {
+    padding: 8px 16px;
+    margin-right: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+#modeToggle button.active {
+    border-color: #00d4ff;
+    background: rgba(0,212,255,0.15);
+    color: #00d4ff;
+}
+#modeToggle button:hover { border-color: #00d4ff; }
+
+#status {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 20;
+    font-size: 13px;
+    padding: 6px 14px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: none;
+}
+
+#shortcuts {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    z-index: 20;
+    font-size: 11px;
+    color: #555;
+    text-align: right;
+    display: none;
+}
+#shortcuts kbd {
+    background: rgba(255,255,255,0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-family: monospace;
+    color: #888;
+}
+
+#themeLabel {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    z-index: 20;
+    font-size: 13px;
+    color: #555;
+    display: none;
+}
+
+#fps {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    font-size: 11px;
+    color: #333;
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<!-- Intro Screen -->
+<div id="intro">
+    <h1>Particle Flow</h1>
+    <p>Real-time particle simulation with face & hand tracking</p>
+    <button id="enableBtn" onclick="startApp()">Enable Camera</button>
+    <div class="perf-note">Optimized for smooth performance on all hardware</div>
+</div>
+
+<!-- Main App -->
+<canvas id="particleCanvas"></canvas>
+
+<div id="cameraPreview">
+    <video id="cameraVideo" autoplay playsinline muted></video>
+    <canvas id="overlayCanvas" width="256" height="144"></canvas>
+</div>
+
+<div id="modeToggle">
+    <button id="btnAttract" class="active" onclick="setMode('attract')">Attract</button>
+    <button id="btnRepel" onclick="setMode('repel')">Repel</button>
+</div>
+
+<div id="status">Loading...</div>
+
+<div id="shortcuts">
+    <kbd>SPACE</kbd> Toggle mode<br>
+    <kbd>V</kbd> Toggle camera<br>
+    <kbd>T</kbd> Cycle theme
+</div>
+
+<div id="themeLabel"></div>
+<div id="fps"></div>
+
+<!-- MediaPipe CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4/face_mesh.js"></script>
+
+<script>
+// ================================================
+// CONFIGURATION - Tuned for older hardware
+// ================================================
+const CONFIG = {
+    // Particle counts - reduced for performance
+    MIN_PARTICLES: 4000,
+    MAX_PARTICLES: 8000,
+    PARTICLE_SIZE: 1.5,
+    TRAIL_ALPHA: 0.12,         // Fade amount per frame (higher = less trail)
+
+    // Physics
+    ATTRACT_FORCE: 0.06,
+    REPEL_FORCE: 0.08,
+    FRICTION: 0.92,
+    WANDER_STRENGTH: 0.3,
+    MAX_SPEED: 6,
+
+    // Face
+    FACE_PARTICLE_SPREAD: 1.8,
+    FACE_DEPTH_MULTIPLIER: 2.5,
+
+    // Hands
+    FINGERTIP_SPREAD: 3,
+    FINGER_SPREAD: 6,
+    PALM_SPREAD: 12,
+
+    // Performance
+    DETECTION_INTERVAL: 3,     // Process every Nth frame
+    SPATIAL_GRID_SIZE: 80,
+};
+
+// ================================================
+// STATE
+// ================================================
+let particles = [];
+let landmarks = { hands: [], face: null };
+let attractTargets = [];
+let mode = 'attract';
+let cameraVisible = true;
+let currentTheme = 0;
+let frameCount = 0;
+let fistDetected = false;
+let lastFistTime = 0;
+let running = false;
+
+// Canvas refs
+let canvas, ctx, overlayCtx;
+let videoEl;
+
+// Color themes
+const THEMES = [
+    {
+        name: 'Rainbow',
+        colors: (i, total) => {
+            const h = (i / total) * 360;
+            return `hsl(${h}, 90%, 60%)`;
+        }
+    },
+    {
+        name: 'Fire',
+        colors: (i, total) => {
+            const t = i / total;
+            const r = 255;
+            const g = Math.floor(t * 180);
+            const b = Math.floor(t * 40);
+            return `rgb(${r},${g},${b})`;
+        }
+    },
+    {
+        name: 'Ocean',
+        colors: (i, total) => {
+            const t = i / total;
+            const r = Math.floor(t * 30);
+            const g = Math.floor(100 + t * 155);
+            const b = Math.floor(200 + t * 55);
+            return `rgb(${r},${g},${b})`;
+        }
+    },
+    {
+        name: 'Galaxy',
+        colors: (i, total) => {
+            const t = i / total;
+            const r = Math.floor(120 + t * 135);
+            const g = Math.floor(t * 80);
+            const b = Math.floor(180 + t * 75);
+            return `rgb(${r},${g},${b})`;
+        }
+    },
+    {
+        name: 'Matrix',
+        colors: (i, total) => {
+            const t = i / total;
+            const g = Math.floor(120 + t * 135);
+            return `rgb(0,${g},${Math.floor(t * 40)})`;
+        }
+    }
+];
+
+// Face landmark groups for depth boost
+const NOSE_INDICES = [1, 2, 3, 4, 5, 6, 195, 197, 168];
+const CHEEK_INDICES = [234, 454, 93, 132, 323, 361, 50, 280];
+const EYE_SOCKET_INDICES = [33, 133, 362, 263, 159, 386, 145, 374];
+const LIP_INDICES = [61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 409, 270, 269, 267, 0, 37, 39, 40, 185];
+const EYE_OUTLINE_LEFT = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246];
+const EYE_OUTLINE_RIGHT = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398];
+const FACE_OVAL = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
+
+// Hand skeleton connections
+const HAND_CONNECTIONS = [
+    [0,1],[1,2],[2,3],[3,4],       // thumb
+    [0,5],[5,6],[6,7],[7,8],       // index
+    [0,9],[9,10],[10,11],[11,12],   // middle
+    [0,13],[13,14],[14,15],[15,16], // ring
+    [0,17],[17,18],[18,19],[19,20], // pinky
+    [5,9],[9,13],[13,17]            // palm
+];
+const FINGERTIPS = [4, 8, 12, 16, 20];
+const FINGER_SEGMENTS = [3, 7, 11, 15, 19, 2, 6, 10, 14, 18];
+const PALM_POINTS = [0, 1, 5, 9, 13, 17];
+
+// Golden ratio for organic distribution
+const PHI = (1 + Math.sqrt(5)) / 2;
+const TWO_PI = Math.PI * 2;
+
+// ================================================
+// PARTICLE CLASS
+// ================================================
+class Particle {
+    constructor() {
+        this.x = Math.random() * window.innerWidth;
+        this.y = Math.random() * window.innerHeight;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        this.targetX = this.x;
+        this.targetY = this.y;
+        this.hasTarget = false;
+        this.size = CONFIG.PARTICLE_SIZE;
+        this.colorIdx = 0;
+    }
+
+    update() {
+        if (this.hasTarget) {
+            const dx = this.targetX - this.x;
+            const dy = this.targetY - this.y;
+            const force = mode === 'attract' ? CONFIG.ATTRACT_FORCE : -CONFIG.REPEL_FORCE;
+            this.vx += dx * force;
+            this.vy += dy * force;
+        } else {
+            // Wander
+            this.vx += (Math.random() - 0.5) * CONFIG.WANDER_STRENGTH;
+            this.vy += (Math.random() - 0.5) * CONFIG.WANDER_STRENGTH;
+        }
+
+        this.vx *= CONFIG.FRICTION;
+        this.vy *= CONFIG.FRICTION;
+
+        // Clamp speed
+        const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+        if (speed > CONFIG.MAX_SPEED) {
+            const scale = CONFIG.MAX_SPEED / speed;
+            this.vx *= scale;
+            this.vy *= scale;
+        }
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Wrap around edges
+        const w = canvas.width;
+        const h = canvas.height;
+        if (this.x < -10) this.x = w + 10;
+        if (this.x > w + 10) this.x = -10;
+        if (this.y < -10) this.y = h + 10;
+        if (this.y > h + 10) this.y = -10;
+
+        this.hasTarget = false;
+    }
+}
+
+// ================================================
+// INIT PARTICLES
+// ================================================
+function initParticles(count) {
+    particles = [];
+    for (let i = 0; i < count; i++) {
+        const p = new Particle();
+        p.colorIdx = i;
+        particles.push(p);
+    }
+}
+
+// ================================================
+// DISTRIBUTE TARGETS TO PARTICLES
+// ================================================
+function distributeTargets() {
+    if (attractTargets.length === 0) return;
+
+    const totalWeight = attractTargets.reduce((s, t) => s + (t.weight || 1), 0);
+    let pIdx = 0;
+
+    for (const target of attractTargets) {
+        const share = Math.floor(particles.length * (target.weight || 1) / totalWeight);
+        const spread = target.spread || 2;
+
+        for (let i = 0; i < share && pIdx < particles.length; i++, pIdx++) {
+            // Golden ratio based spiral distribution for organic feel
+            const angle = i * PHI * TWO_PI;
+            const radius = Math.sqrt(i / share) * spread;
+            const ox = Math.cos(angle) * radius;
+            const oy = Math.sin(angle) * radius;
+
+            particles[pIdx].targetX = target.x + ox;
+            particles[pIdx].targetY = target.y + oy;
+            particles[pIdx].hasTarget = true;
+        }
+    }
+}
+
+// ================================================
+// BUILD ATTRACT TARGETS FROM LANDMARKS
+// ================================================
+function buildTargets() {
+    attractTargets = [];
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // Face landmarks
+    if (landmarks.face) {
+        for (let i = 0; i < landmarks.face.length; i++) {
+            const lm = landmarks.face[i];
+            // Mirror X for mirrored camera feed
+            const x = (1 - lm.x) * w;
+            const y = lm.y * h;
+
+            let spread = CONFIG.FACE_PARTICLE_SPREAD;
+            let weight = 1;
+
+            // Depth boost for facial features
+            if (NOSE_INDICES.includes(i)) {
+                weight = 2.5;
+                spread = 1;
+            } else if (EYE_SOCKET_INDICES.includes(i)) {
+                weight = 2;
+                spread = 1.2;
+            } else if (CHEEK_INDICES.includes(i)) {
+                weight = 1.8;
+                spread = 1.5;
+            } else if (LIP_INDICES.includes(i)) {
+                weight = 1.5;
+                spread = 1;
+            }
+
+            attractTargets.push({ x, y, spread, weight });
+        }
+    }
+
+    // Hand landmarks
+    for (const hand of landmarks.hands) {
+        for (let i = 0; i < hand.length; i++) {
+            const lm = hand[i];
+            const x = (1 - lm.x) * w;
+            const y = lm.y * h;
+
+            let spread, weight;
+            if (FINGERTIPS.includes(i)) {
+                spread = CONFIG.FINGERTIP_SPREAD;
+                weight = 2;
+            } else if (FINGER_SEGMENTS.includes(i)) {
+                spread = CONFIG.FINGER_SPREAD;
+                weight = 1.5;
+            } else {
+                spread = CONFIG.PALM_SPREAD;
+                weight = 1;
+            }
+
+            attractTargets.push({ x, y, spread, weight });
+        }
+
+        // Add bone midpoints for smooth coverage
+        for (const [a, b] of HAND_CONNECTIONS) {
+            if (a < hand.length && b < hand.length) {
+                const mx = ((1 - hand[a].x) + (1 - hand[b].x)) / 2 * w;
+                const my = (hand[a].y + hand[b].y) / 2 * h;
+                let spread = CONFIG.FINGER_SPREAD;
+                if (PALM_POINTS.includes(a) && PALM_POINTS.includes(b)) {
+                    spread = CONFIG.PALM_SPREAD;
+                }
+                attractTargets.push({ x: mx, y: my, spread, weight: 0.8 });
+            }
+        }
+    }
+}
+
+// ================================================
+// FIST DETECTION (for theme cycling)
+// ================================================
+function detectFist(handLandmarks) {
+    if (!handLandmarks || handLandmarks.length === 0) return false;
+
+    for (const hand of handLandmarks) {
+        // Check if all fingertips are below their base joints (curled)
+        const tips = [8, 12, 16, 20];
+        const bases = [6, 10, 14, 18];
+        let curled = 0;
+        for (let i = 0; i < tips.length; i++) {
+            if (hand[tips[i]].y > hand[bases[i]].y) curled++;
+        }
+        // Thumb: check if tip is close to index base
+        const thumbDist = Math.abs(hand[4].x - hand[6].x) + Math.abs(hand[4].y - hand[6].y);
+        if (curled >= 3 && thumbDist < 0.08) return true;
+    }
+    return false;
+}
+
+// ================================================
+// DRAW OVERLAY (hand skeleton + face mesh on preview)
+// ================================================
+function drawOverlay() {
+    if (!overlayCtx) return;
+    const ow = 256;
+    const oh = 144;
+    overlayCtx.clearRect(0, 0, ow, oh);
+
+    // Draw hand skeletons
+    const handColors = ['rgba(0,255,255,', 'rgba(255,100,200,'];
+    landmarks.hands.forEach((hand, hIdx) => {
+        const baseColor = handColors[hIdx % 2];
+
+        // Bones
+        overlayCtx.lineWidth = 1.5;
+        for (const [a, b] of HAND_CONNECTIONS) {
+            if (a < hand.length && b < hand.length) {
+                overlayCtx.strokeStyle = baseColor + '0.7)';
+                overlayCtx.shadowColor = baseColor + '0.5)';
+                overlayCtx.shadowBlur = 4;
+                overlayCtx.beginPath();
+                overlayCtx.moveTo((1 - hand[a].x) * ow, hand[a].y * oh);
+                overlayCtx.lineTo((1 - hand[b].x) * ow, hand[b].y * oh);
+                overlayCtx.stroke();
+            }
+        }
+        overlayCtx.shadowBlur = 0;
+
+        // Joints
+        for (let i = 0; i < hand.length; i++) {
+            const x = (1 - hand[i].x) * ow;
+            const y = hand[i].y * oh;
+            const r = FINGERTIPS.includes(i) ? 3 : (i === 0 ? 3 : 1.5);
+            overlayCtx.fillStyle = baseColor + '0.9)';
+            overlayCtx.beginPath();
+            overlayCtx.arc(x, y, r, 0, TWO_PI);
+            overlayCtx.fill();
+        }
+    });
+
+    // Draw face mesh outlines
+    if (landmarks.face) {
+        const f = landmarks.face;
+
+        const drawOutline = (indices, color) => {
+            overlayCtx.strokeStyle = color;
+            overlayCtx.lineWidth = 0.8;
+            overlayCtx.beginPath();
+            for (let i = 0; i < indices.length; i++) {
+                const idx = indices[i];
+                if (idx < f.length) {
+                    const x = (1 - f[idx].x) * ow;
+                    const y = f[idx].y * oh;
+                    if (i === 0) overlayCtx.moveTo(x, y);
+                    else overlayCtx.lineTo(x, y);
+                }
+            }
+            overlayCtx.closePath();
+            overlayCtx.stroke();
+        };
+
+        drawOutline(EYE_OUTLINE_LEFT, 'rgba(0,200,200,0.6)');
+        drawOutline(EYE_OUTLINE_RIGHT, 'rgba(0,200,200,0.6)');
+        drawOutline(LIP_INDICES, 'rgba(255,100,180,0.6)');
+        drawOutline(FACE_OVAL, 'rgba(0,200,255,0.3)');
+    }
+}
+
+// ================================================
+// RENDER PARTICLES
+// ================================================
+function render() {
+    // Semi-transparent fill for trails
+    ctx.fillStyle = `rgba(0, 0, 0, ${CONFIG.TRAIL_ALPHA})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const theme = THEMES[currentTheme];
+    const total = particles.length;
+
+    // Batch draw particles using small rects (faster than arcs)
+    for (let i = 0; i < total; i++) {
+        const p = particles[i];
+        ctx.fillStyle = theme.colors(p.colorIdx, total);
+        ctx.fillRect(p.x - 0.75, p.y - 0.75, CONFIG.PARTICLE_SIZE, CONFIG.PARTICLE_SIZE);
+    }
+}
+
+// ================================================
+// MAIN LOOP
+// ================================================
+let lastTime = 0;
+let fpsCounter = 0;
+let fpsTime = 0;
+
+function mainLoop(timestamp) {
+    if (!running) return;
+
+    // FPS counter
+    fpsCounter++;
+    if (timestamp - fpsTime > 1000) {
+        document.getElementById('fps').textContent = `${fpsCounter} FPS`;
+        fpsCounter = 0;
+        fpsTime = timestamp;
+    }
+
+    // Build targets and distribute
+    buildTargets();
+    distributeTargets();
+
+    // Update particles
+    for (const p of particles) {
+        p.update();
+    }
+
+    // Render
+    render();
+    drawOverlay();
+
+    requestAnimationFrame(mainLoop);
+}
+
+// ================================================
+// MEDIAPIPE SETUP
+// ================================================
+let hands, faceMesh, camera;
+
+async function setupMediaPipe() {
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = 'Loading hand tracking...';
+
+    // Hands
+    hands = new Hands({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/${file}`
+    });
+    hands.setOptions({
+        maxNumHands: 2,
+        modelComplexity: 0,        // Lite model for performance
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
+    hands.onResults((results) => {
+        landmarks.hands = results.multiHandLandmarks || [];
+
+        // Fist detection for theme cycling
+        const isFist = detectFist(landmarks.hands);
+        const now = Date.now();
+        if (isFist && !fistDetected && (now - lastFistTime > 1500)) {
+            currentTheme = (currentTheme + 1) % THEMES.length;
+            document.getElementById('themeLabel').textContent = THEMES[currentTheme].name;
+            lastFistTime = now;
+        }
+        fistDetected = isFist;
+    });
+
+    statusEl.textContent = 'Loading face tracking...';
+
+    // Face Mesh
+    faceMesh = new FaceMesh({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4/${file}`
+    });
+    faceMesh.setOptions({
+        maxNumFaces: 1,
+        refineLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
+    faceMesh.onResults((results) => {
+        if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+            landmarks.face = results.multiFaceLandmarks[0];
+        } else {
+            landmarks.face = null;
+        }
+    });
+
+    statusEl.textContent = 'Starting camera...';
+}
+
+// ================================================
+// START APP
+// ================================================
+async function startApp() {
+    const intro = document.getElementById('intro');
+    intro.style.opacity = '0';
+    setTimeout(() => intro.style.display = 'none', 500);
+
+    // Show UI
+    document.getElementById('cameraPreview').style.display = 'block';
+    document.getElementById('modeToggle').style.display = 'block';
+    document.getElementById('status').style.display = 'block';
+    document.getElementById('shortcuts').style.display = 'block';
+    document.getElementById('themeLabel').style.display = 'block';
+    document.getElementById('fps').style.display = 'block';
+    document.getElementById('themeLabel').textContent = THEMES[currentTheme].name;
+
+    // Setup canvas
+    canvas = document.getElementById('particleCanvas');
+    ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const oc = document.getElementById('overlayCanvas');
+    overlayCtx = oc.getContext('2d');
+
+    // Init particles (adaptive count based on screen)
+    const screenArea = canvas.width * canvas.height;
+    const count = Math.min(CONFIG.MAX_PARTICLES, Math.max(CONFIG.MIN_PARTICLES,
+        Math.floor(screenArea / 300)));
+    initParticles(count);
+
+    // Setup MediaPipe
+    await setupMediaPipe();
+
+    videoEl = document.getElementById('cameraVideo');
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { ideal: 320 },   // Low res for performance
+                height: { ideal: 240 },
+                frameRate: { ideal: 24 }  // Cap framerate
+            }
+        });
+        videoEl.srcObject = stream;
+        await videoEl.play();
+    } catch (err) {
+        document.getElementById('status').textContent = 'Camera error: ' + err.message;
+        document.getElementById('status').style.borderColor = 'red';
+        return;
+    }
+
+    document.getElementById('status').textContent = 'Show your hands!';
+
+    // Process video frames with throttling
+    running = true;
+    let processingFrame = false;
+
+    async function processFrame() {
+        if (!running) return;
+
+        frameCount++;
+
+        // Only run detection every Nth frame for performance
+        if (frameCount % CONFIG.DETECTION_INTERVAL === 0 && !processingFrame) {
+            processingFrame = true;
+            try {
+                await hands.send({ image: videoEl });
+                await faceMesh.send({ image: videoEl });
+            } catch (e) {
+                // Silently handle frame errors
+            }
+            processingFrame = false;
+
+            // Update status
+            const hasHands = landmarks.hands.length > 0;
+            const hasFace = landmarks.face !== null;
+            const statusEl = document.getElementById('status');
+            if (hasHands && hasFace) {
+                statusEl.textContent = `Tracking face + ${landmarks.hands.length} hand(s)`;
+                statusEl.style.color = '#0f0';
+            } else if (hasHands) {
+                statusEl.textContent = `Tracking ${landmarks.hands.length} hand(s)`;
+                statusEl.style.color = '#0f0';
+            } else if (hasFace) {
+                statusEl.textContent = 'Tracking face';
+                statusEl.style.color = '#0f0';
+            } else {
+                statusEl.textContent = 'Show your hands!';
+                statusEl.style.color = '#888';
+            }
+        }
+
+        requestAnimationFrame(processFrame);
+    }
+
+    requestAnimationFrame(processFrame);
+    requestAnimationFrame(mainLoop);
+}
+
+// ================================================
+// CONTROLS
+// ================================================
+function setMode(m) {
+    mode = m;
+    document.getElementById('btnAttract').classList.toggle('active', m === 'attract');
+    document.getElementById('btnRepel').classList.toggle('active', m === 'repel');
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        setMode(mode === 'attract' ? 'repel' : 'attract');
+    } else if (e.code === 'KeyV') {
+        cameraVisible = !cameraVisible;
+        document.getElementById('cameraPreview').style.display = cameraVisible ? 'block' : 'none';
+    } else if (e.code === 'KeyT') {
+        currentTheme = (currentTheme + 1) % THEMES.length;
+        document.getElementById('themeLabel').textContent = THEMES[currentTheme].name;
+    }
+});
+
+// Handle resize
+window.addEventListener('resize', () => {
+    if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+});
+</script>
+</body>
+</html>
