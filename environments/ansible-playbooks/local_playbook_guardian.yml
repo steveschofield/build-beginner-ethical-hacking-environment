@@ -79,7 +79,11 @@
 
     - name: Create Python virtual environment for Guardian
       ansible.builtin.command:
-        cmd: python3 -m venv venv
+        argv:
+          - python3
+          - -m
+          - venv
+          - venv
         chdir: "{{ guardian_dir }}"
         creates: "{{ guardian_dir }}/venv"
       become_user: "{{ username }}"
