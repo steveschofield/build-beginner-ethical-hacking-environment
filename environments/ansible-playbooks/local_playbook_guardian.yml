@@ -176,23 +176,49 @@
         creates: "/home/{{ username }}/.local/bin/uv"
       become_user: "{{ username }}"
 
-    - name: Install Python 3.12 via uv (user-local)
+    - name: Install Python 3.13 via uv (user-local)
       ansible.builtin.command:
         argv:
           - /bin/bash
           - -lc
-          - "/home/{{ username }}/.local/bin/uv python install 3.12"
+          - "/home/{{ username }}/.local/bin/uv python install 3.13"
       become_user: "{{ username }}"
 
-    - name: Create Python 3.12 virtual environment for Guardian (uv)
+    - name: Remove existing venv if wrong Python version
+      ansible.builtin.shell:
+        cmd: |
+          if [ -f "{{ guardian_dir }}/venv/bin/python" ]; then
+            CURRENT_VER=$({{ guardian_dir }}/venv/bin/python --version 2>&1 | awk '{print $2}')
+            if echo "$CURRENT_VER" | grep -qv "^3\.13"; then
+              echo "Removing old venv (Python $CURRENT_VER) to rebuild with 3.13"
+              rm -rf "{{ guardian_dir }}/venv"
+            fi
+          fi
+      become_user: "{{ username }}"
+
+    - name: Create Python 3.13 virtual environment for Guardian (uv)
       ansible.builtin.command:
         argv:
           - /bin/bash
           - -lc
-          - "/home/{{ username }}/.local/bin/uv venv -p 3.12 venv"
+          - "/home/{{ username }}/.local/bin/uv venv -p 3.13 --seed venv"
         chdir: "{{ guardian_dir }}"
         creates: "{{ guardian_dir }}/venv/bin/python"
       become_user: "{{ username }}"
+
+    - name: Verify venv Python version is 3.13
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - "{{ guardian_dir }}/venv/bin/python --version"
+      become_user: "{{ username }}"
+      register: venv_python_version
+      changed_when: false
+
+    - name: Display venv Python version
+      ansible.builtin.debug:
+        msg: "Guardian venv Python version: {{ venv_python_version.stdout }}"
 
     - name: Ensure pip exists in Guardian venv
       ansible.builtin.command:
@@ -201,6 +227,13 @@
           - -lc
           - "cd {{ guardian_dir }} && ./venv/bin/python -m ensurepip --upgrade && ./venv/bin/python -m pip install --upgrade pip setuptools wheel"
       become_user: "{{ username }}"
+
+    - name: Write .python-version file for pyenv/uv compatibility
+      ansible.builtin.copy:
+        content: "3.13"
+        dest: "{{ guardian_dir }}/.python-version"
+        owner: "{{ username }}"
+        mode: "0644"
 
     - name: Check for Guardian setup script
       ansible.builtin.stat:
@@ -510,10 +543,32 @@
     # ===========================================
     # Create Quick Scan Aliases
     # ===========================================
-    - name: Add Guardian aliases to user bashrc
+    - name: Add Guardian aliases and auto-activate venv to user bashrc
       ansible.builtin.blockinfile:
         path: "/home/{{ username }}/.bashrc"
         block: |
+          # Guardian virtual environment auto-activation
+          # Activate when logging in or when cd'ing into the guardian directory
+          GUARDIAN_VENV="{{ guardian_dir }}/venv/bin/activate"
+
+          # Auto-activate on cd into guardian-cli-deluxe (or any subdirectory)
+          guardian_auto_venv() {
+              builtin cd "$@" || return
+              if [[ "$PWD" == {{ guardian_dir }}* ]] && [[ -f "$GUARDIAN_VENV" ]]; then
+                  if [[ -z "$VIRTUAL_ENV" || "$VIRTUAL_ENV" != "{{ guardian_dir }}/venv" ]]; then
+                      source "$GUARDIAN_VENV"
+                  fi
+              elif [[ -n "$VIRTUAL_ENV" && "$VIRTUAL_ENV" == "{{ guardian_dir }}/venv" ]]; then
+                  deactivate
+              fi
+          }
+          alias cd='guardian_auto_venv'
+
+          # Also activate on login if we start in or navigate to the guardian dir
+          if [[ "$PWD" == {{ guardian_dir }}* ]] && [[ -f "$GUARDIAN_VENV" ]]; then
+              source "$GUARDIAN_VENV"
+          fi
+
           # Guardian CLI aliases
           alias guardian='cd {{ guardian_dir }} && ./venv/bin/python -m cli.main'
           alias guardian-recon='guardian-lab-assess recon'
