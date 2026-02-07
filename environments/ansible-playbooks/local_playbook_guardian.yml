@@ -197,11 +197,14 @@
       become_user: "{{ username }}"
 
     - name: Verify venv Python version is {{ guardian_python_version }}
-      ansible.builtin.shell:
-        cmd: |
-          VER=$({{ guardian_dir }}/venv/bin/python --version 2>&1)
-          echo "$VER"
-          echo "$VER" | grep -q "{{ guardian_python_version }}" || { echo "FAIL: expected {{ guardian_python_version }}"; exit 1; }
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - |
+            VER=$({{ guardian_dir }}/venv/bin/python --version 2>&1)
+            echo "$VER"
+            echo "$VER" | grep -q "{{ guardian_python_version }}" || { echo "FAIL: expected {{ guardian_python_version }}"; exit 1; }
       become_user: "{{ username }}"
       register: venv_python_version
       changed_when: false
