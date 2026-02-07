@@ -34,39 +34,42 @@
     # Pull Docker Images
     # ===========================================
     - name: Pull Juice Shop image
-      community.docker.docker_image:
-        name: bkimminich/juice-shop
-        source: pull
+      ansible.builtin.command:
+        argv:
+          - docker
+          - pull
+          - bkimminich/juice-shop
 
     - name: Pull WebGoat image
-      community.docker.docker_image:
-        name: webgoat/webgoat
-        source: pull
+      ansible.builtin.command:
+        argv:
+          - docker
+          - pull
+          - webgoat/webgoat
 
     - name: Pull VAmPI image
-      community.docker.docker_image:
-        name: erev0s/vampi
-        source: pull
-        tag: latest
+      ansible.builtin.command:
+        argv:
+          - docker
+          - pull
+          - erev0s/vampi:latest
 
     - name: Pull WrongSecrets image
-      community.docker.docker_image:
-        name: jeroenwillemsen/wrongsecrets
-        source: pull
-        tag: latest-no-vault
+      ansible.builtin.command:
+        argv:
+          - docker
+          - pull
+          - jeroenwillemsen/wrongsecrets:latest-no-vault
 
     - name: Pull OWASP Security Shepherd image
-      community.docker.docker_image:
-        name: owasp/security-shepherd
-        source: pull
-
-    - name: Pull NodeGoat image
-      community.docker.docker_image:
-        name: nodegoat/nodegoat
-        source: pull
+      ansible.builtin.command:
+        argv:
+          - docker
+          - pull
+          - owasp/security-shepherd
 
     # ===========================================
-    # Build Local Images (DVWA, Musashi, Vuln-Bank)
+    # Build Local Images (DVWA, Musashi, Vuln-Bank, NodeGoat)
     # ===========================================
     - name: Clone DVWA repository
       ansible.builtin.git:
@@ -82,12 +85,14 @@
         replace: '0.0.0.0:4280:80'
 
     - name: Build DVWA Docker image
-      community.docker.docker_image:
-        name: dvwa
-        source: build
-        build:
-          path: "{{ code_dir }}/dvwa"
-        force_source: yes
+      ansible.builtin.command:
+        argv:
+          - docker
+          - build
+          - --tag
+          - dvwa
+          - .
+        chdir: "{{ code_dir }}/dvwa"
 
     - name: Clone Musashi-js repository
       ansible.builtin.git:
@@ -97,12 +102,14 @@
       become_user: "{{ username }}"
 
     - name: Build Musashi-js Docker image
-      community.docker.docker_image:
-        name: musashi-js
-        source: build
-        build:
-          path: "{{ code_dir }}/musashi-js"
-        force_source: yes
+      ansible.builtin.command:
+        argv:
+          - docker
+          - build
+          - --tag
+          - musashi-js
+          - .
+        chdir: "{{ code_dir }}/musashi-js"
 
     - name: Clone Vuln-Bank repository
       ansible.builtin.git:
@@ -112,97 +119,106 @@
       become_user: "{{ username }}"
 
     - name: Build Vuln-Bank Docker image
-      community.docker.docker_image:
-        name: vuln-bank
-        source: build
-        build:
-          path: "{{ code_dir }}/vuln-bank"
-        force_source: yes
+      ansible.builtin.command:
+        argv:
+          - docker
+          - build
+          - --tag
+          - vuln-bank
+          - .
+        chdir: "{{ code_dir }}/vuln-bank"
+
+    - name: Clone NodeGoat repository
+      ansible.builtin.git:
+        repo: https://github.com/OWASP/NodeGoat
+        dest: "{{ code_dir }}/nodegoat"
+        force: yes
+      become_user: "{{ username }}"
+
+    - name: Build NodeGoat Docker image
+      ansible.builtin.command:
+        argv:
+          - docker
+          - build
+          - --tag
+          - nodegoat
+          - .
+        chdir: "{{ code_dir }}/nodegoat"
 
     # ===========================================
     # Start Vulnerable Application Containers
     # ===========================================
+    - name: Remove existing Juice Shop container
+      command: docker rm -f juice-shop
+      failed_when: false
+      changed_when: false
+
     - name: Start Juice Shop container
-      community.docker.docker_container:
-        name: juice-shop
-        image: bkimminich/juice-shop
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "3000:3000"
+      command: docker run -d --name juice-shop --restart unless-stopped -p 3000:3000 bkimminich/juice-shop
+
+    - name: Remove existing WebGoat container
+      command: docker rm -f webgoat
+      failed_when: false
+      changed_when: false
 
     - name: Start WebGoat container
-      community.docker.docker_container:
-        name: webgoat
-        image: webgoat/webgoat
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "8080:8080"
-          - "9090:9090"
+      command: docker run -d --name webgoat --restart unless-stopped -p 8080:8080 -p 9090:9090 webgoat/webgoat
+
+    - name: Remove existing VAmPI container
+      command: docker rm -f vampi
+      failed_when: false
+      changed_when: false
 
     - name: Start VAmPI container
-      community.docker.docker_container:
-        name: vampi
-        image: erev0s/vampi:latest
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "5000:5000"
+      command: docker run -d --name vampi --restart unless-stopped -p 5000:5000 erev0s/vampi:latest
+
+    - name: Remove existing WrongSecrets container
+      command: docker rm -f wrongsecrets
+      failed_when: false
+      changed_when: false
 
     - name: Start WrongSecrets container
-      community.docker.docker_container:
-        name: wrongsecrets
-        image: jeroenwillemsen/wrongsecrets:latest-no-vault
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "8081:8080"
+      command: docker run -d --name wrongsecrets --restart unless-stopped -p 8081:8080 jeroenwillemsen/wrongsecrets:latest-no-vault
+
+    - name: Remove existing DVWA container
+      command: docker rm -f dvwa
+      failed_when: false
+      changed_when: false
 
     - name: Start DVWA container
-      community.docker.docker_container:
-        name: dvwa
-        image: dvwa
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "4280:80"
+      command: docker run -d --name dvwa --restart unless-stopped -p 4280:80 dvwa
+
+    - name: Remove existing Musashi-js container
+      command: docker rm -f musashi-js
+      failed_when: false
+      changed_when: false
 
     - name: Start Musashi-js container
-      community.docker.docker_container:
-        name: musashi-js
-        image: musashi-js
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "8082:8220"
+      command: docker run -d --name musashi-js --restart unless-stopped -p 8082:8220 musashi-js
+
+    - name: Remove existing Vuln-Bank container
+      command: docker rm -f vuln-bank
+      failed_when: false
+      changed_when: false
 
     - name: Start Vuln-Bank container
-      community.docker.docker_container:
-        name: vuln-bank
-        image: vuln-bank
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "5001:5000"
+      command: docker run -d --name vuln-bank --restart unless-stopped -p 5001:5000 vuln-bank
+
+    - name: Remove existing Security Shepherd container
+      command: docker rm -f security-shepherd
+      failed_when: false
+      changed_when: false
 
     - name: Start Security Shepherd container
-      community.docker.docker_container:
-        name: security-shepherd
-        image: owasp/security-shepherd
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "8083:80"
+      command: docker run -d --name security-shepherd --restart unless-stopped -p 8083:80 owasp/security-shepherd
+
+    - name: Remove existing NodeGoat container
+      command: docker rm -f nodegoat
+      failed_when: false
+      changed_when: false
 
     - name: Start NodeGoat container
-      community.docker.docker_container:
-        name: nodegoat
-        image: nodegoat/nodegoat
-        state: started
-        restart_policy: unless-stopped
-        ports:
-          - "4000:4000"
+      command: docker run -d --name nodegoat --restart unless-stopped -p 4000:4000 nodegoat
 
     # ===========================================
     # Create vuln-apps helper script
@@ -257,7 +273,7 @@
               printf "%-20s %-10s %-8s %s\n" "----" "------" "----" "---"
               for app in "${APPS[@]}"; do
                   IFS=':' read -r name port desc <<< "$app"
-                  if docker ps --format '{{.Names}}' | grep -q "^${name}$"; then
+                  if docker ps --format '{% raw %}{{.Names}}{% endraw %}' | grep -q "^${name}$"; then
                       status="${GREEN}Running${NC}"
                       url="http://${IP}:${port}"
                   else
@@ -273,7 +289,7 @@
               echo -e "${BLUE}Starting all vulnerable applications...${NC}"
               for app in "${APPS[@]}"; do
                   IFS=':' read -r name port desc <<< "$app"
-                  if docker ps --format '{{.Names}}' | grep -q "^${name}$"; then
+                  if docker ps --format '{% raw %}{{.Names}}{% endraw %}' | grep -q "^${name}$"; then
                       echo -e "  ${YELLOW}$name${NC} - already running"
                   else
                       docker start "$name" 2>/dev/null && \
@@ -288,7 +304,7 @@
               echo -e "${BLUE}Stopping all vulnerable applications...${NC}"
               for app in "${APPS[@]}"; do
                   IFS=':' read -r name port desc <<< "$app"
-                  if docker ps --format '{{.Names}}' | grep -q "^${name}$"; then
+                  if docker ps --format '{% raw %}{{.Names}}{% endraw %}' | grep -q "^${name}$"; then
                       docker stop "$name" 2>/dev/null && \
                           echo -e "  ${YELLOW}$name${NC} - stopped" || \
                           echo -e "  ${RED}$name${NC} - failed to stop"

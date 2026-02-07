@@ -58,7 +58,6 @@
           - dirb
           - gobuster
           - whatweb
-          - wpscan
           - dnsutils
           - whois
           - curl
@@ -66,6 +65,19 @@
           - bc
         state: present
         update_cache: true
+
+    - name: Install optional wpscan package (if available)
+      apt:
+        name: wpscan
+        state: present
+      register: wpscan_install
+      failed_when: false
+      changed_when: "'No package matching' not in (wpscan_install.msg | default(''))"
+
+    - name: Warn when wpscan package is unavailable
+      ansible.builtin.debug:
+        msg: "Optional package 'wpscan' is not available on this distro; continuing without it."
+      when: "'No package matching' in (wpscan_install.msg | default(''))"
 
     # ===========================================
     # Clone Guardian CLI Repository
@@ -88,24 +100,36 @@
         creates: "{{ guardian_dir }}/venv"
       become_user: "{{ username }}"
 
-    - name: Install Guardian Python dependencies
+    - name: Check for Guardian setup script
+      ansible.builtin.stat:
+        path: "{{ guardian_dir }}/setup.sh"
+      register: guardian_setup_script
+
+    - name: Run Guardian setup script
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - "cd {{ guardian_dir }} && source venv/bin/activate && chmod +x setup.sh && ./setup.sh 2>&1 | tee setup.log"
+      become_user: "{{ username }}"
+      when: guardian_setup_script.stat.exists
+
+    - name: Check for Guardian requirements.txt
+      ansible.builtin.stat:
+        path: "{{ guardian_dir }}/requirements.txt"
+      register: guardian_requirements_file
+
+    - name: Install Guardian Python dependencies from requirements.txt
       ansible.builtin.pip:
         requirements: "{{ guardian_dir }}/requirements.txt"
         virtualenv: "{{ guardian_dir }}/venv"
       become_user: "{{ username }}"
+      when: guardian_requirements_file.stat.exists
 
-    - name: Run Guardian setup script
-      ansible.builtin.shell: |
-        cd {{ guardian_dir }}
-        source venv/bin/activate
-        if [ -f setup.sh ]; then
-          chmod +x setup.sh
-          ./setup.sh 2>&1 | tee setup.log || true
-        fi
-      become_user: "{{ username }}"
-      args:
-        executable: /bin/bash
-      ignore_errors: yes
+    - name: Fail when setup.sh is missing
+      ansible.builtin.fail:
+        msg: "Expected {{ guardian_dir }}/setup.sh, but it was not found."
+      when: not guardian_setup_script.stat.exists
 
     # ===========================================
     # Create Guardian Configuration
