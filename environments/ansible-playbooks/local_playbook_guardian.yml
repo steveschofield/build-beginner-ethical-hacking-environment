@@ -7,6 +7,7 @@
   vars:
     username: 52pickup
     guardian_dir: "/home/{{ username }}/guardian-cli-deluxe"
+    guardian_python_version: "3.13.12"
     # Ubuntu 20.04 ships an old Go; guardian-cli-deluxe's setup uses `go install pkg@latest`
     # which requires module-aware mode and a modern Go toolchain (>= 1.17).
     go_version: "1.22.0"
@@ -167,43 +168,36 @@
         force: yes
       become_user: "{{ username }}"
 
-    - name: Install uv (user-local)
+    - name: Install Python {{ guardian_python_version }} via pyenv
       ansible.builtin.command:
         argv:
           - /bin/bash
           - -lc
-          - "curl -LsSf https://astral.sh/uv/install.sh | sh"
-        creates: "/home/{{ username }}/.local/bin/uv"
+          - |
+            export PYENV_ROOT="$HOME/.pyenv"
+            export PATH="$PYENV_ROOT/bin:$PATH"
+            eval "$(pyenv init --path)"
+            pyenv install -s {{ guardian_python_version }}
       become_user: "{{ username }}"
 
-    - name: Install Python 3.13 via uv (user-local)
+    - name: Remove existing Guardian virtual environment
+      ansible.builtin.file:
+        path: "{{ guardian_dir }}/venv"
+        state: absent
+      become_user: "{{ username }}"
+
+    - name: Create Python {{ guardian_python_version }} virtual environment for Guardian
       ansible.builtin.command:
         argv:
           - /bin/bash
           - -lc
-          - "/home/{{ username }}/.local/bin/uv python install 3.13"
-      become_user: "{{ username }}"
-
-    - name: Remove existing venv if wrong Python version
-      ansible.builtin.shell:
-        cmd: |
-          if [ -f "{{ guardian_dir }}/venv/bin/python" ]; then
-            CURRENT_VER=$({{ guardian_dir }}/venv/bin/python --version 2>&1 | awk '{print $2}')
-            if echo "$CURRENT_VER" | grep -qv "^3\.13"; then
-              echo "Removing old venv (Python $CURRENT_VER) to rebuild with 3.13"
-              rm -rf "{{ guardian_dir }}/venv"
-            fi
-          fi
-      become_user: "{{ username }}"
-
-    - name: Create Python 3.13 virtual environment for Guardian (uv)
-      ansible.builtin.command:
-        argv:
-          - /bin/bash
-          - -lc
-          - "/home/{{ username }}/.local/bin/uv venv -p 3.13 --seed venv"
-        chdir: "{{ guardian_dir }}"
-        creates: "{{ guardian_dir }}/venv/bin/python"
+          - |
+            export PYENV_ROOT="$HOME/.pyenv"
+            export PATH="$PYENV_ROOT/bin:$PATH"
+            eval "$(pyenv init --path)"
+            cd {{ guardian_dir }}
+            pyenv shell {{ guardian_python_version }}
+            python -m venv venv
       become_user: "{{ username }}"
 
     - name: Verify venv Python version is 3.13
@@ -228,9 +222,9 @@
           - "cd {{ guardian_dir }} && ./venv/bin/python -m ensurepip --upgrade && ./venv/bin/python -m pip install --upgrade pip setuptools wheel"
       become_user: "{{ username }}"
 
-    - name: Write .python-version file for pyenv/uv compatibility
+    - name: Write .python-version file for pyenv compatibility
       ansible.builtin.copy:
-        content: "3.13"
+        content: "{{ guardian_python_version }}"
         dest: "{{ guardian_dir }}/.python-version"
         owner: "{{ username }}"
         mode: "0644"

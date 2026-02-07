@@ -116,3 +116,19 @@
       become: yes
       become_user: "{{ username }}"
       failed_when: false
+
+    - name: Ensure .ssh directory exists for user
+      ansible.builtin.file:
+        path: "/home/{{ username }}/.ssh"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: "0700"
+
+    - name: Ensure authorized_keys file exists for user
+      ansible.builtin.file:
+        path: "/home/{{ username }}/.ssh/authorized_keys"
+        state: touch
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: "0600"

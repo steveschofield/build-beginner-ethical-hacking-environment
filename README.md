@@ -52,3 +52,18 @@ Part of a penetration test is checking for malware vulnerabilities. When perform
 11. Scan for suspicious API calls.
 12. Run anti-malware scans.
 13. Document results and findings.
+14. Run a full TCP port sweep with `masscan` to quickly identify exposed services at scale.
+15. Validate `masscan` findings with `nmap -sV -sC` to confirm versions and default script results.
+16. Use `nmap -O` and service fingerprinting to identify unexpected operating systems and hosts.
+17. Run targeted `nmap` NSE vulnerability checks (for SMB, RDP, HTTP, SSL/TLS, and DNS).
+18. Use `nmap` UDP scans (`-sU`) for high-risk services like DNS, SNMP, and NTP.
+19. Identify weak TLS ciphers and certificate issues on exposed HTTPS services.
+20. Check SMB shares, signing settings, and anonymous access exposures.
+21. Audit RDP and SSH hardening (MFA, lockout policy, weak auth settings, legacy protocol support).
+22. Enumerate local admins and privileged groups for unauthorized or stale accounts.
+23. Verify scheduled tasks and cron jobs for persistence mechanisms and suspicious commands.
+24. Inspect PowerShell logs and command history for encoded or obfuscated execution patterns.
+25. Baseline outbound connections and detect beaconing to unknown IPs/domains.
+26. Inspect DNS query logs for tunneling patterns, DGA-like domains, and unusual record types.
+27. Check endpoint security controls (EDR/AV/firewall) for tampering, disabled agents, or policy drift.
+28. Re-test remediated findings and record evidence (commands, output, timestamps, and risk ratings).
