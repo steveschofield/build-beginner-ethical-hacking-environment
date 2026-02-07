@@ -7,6 +7,7 @@
   vars:
     username: 52pickup
     guardian_dir: "/home/{{ username }}/guardian-cli-deluxe"
+    guardian_python_version: "3.13.12"
     # Ubuntu 20.04 ships an old Go; guardian-cli-deluxe's setup uses `go install pkg@latest`
     # which requires module-aware mode and a modern Go toolchain (>= 1.17).
     go_version: "1.22.0"
@@ -167,31 +168,36 @@
         force: yes
       become_user: "{{ username }}"
 
-    - name: Install uv (user-local)
+    - name: Install Python {{ guardian_python_version }} via pyenv
       ansible.builtin.command:
         argv:
           - /bin/bash
           - -lc
-          - "curl -LsSf https://astral.sh/uv/install.sh | sh"
-        creates: "/home/{{ username }}/.local/bin/uv"
+          - |
+            export PYENV_ROOT="$HOME/.pyenv"
+            export PATH="$PYENV_ROOT/bin:$PATH"
+            eval "$(pyenv init --path)"
+            pyenv install -s {{ guardian_python_version }}
       become_user: "{{ username }}"
 
-    - name: Install Python 3.12 via uv (user-local)
-      ansible.builtin.command:
-        argv:
-          - /bin/bash
-          - -lc
-          - "/home/{{ username }}/.local/bin/uv python install 3.12"
+    - name: Remove existing Guardian virtual environment
+      ansible.builtin.file:
+        path: "{{ guardian_dir }}/venv"
+        state: absent
       become_user: "{{ username }}"
 
-    - name: Create Python 3.12 virtual environment for Guardian (uv)
+    - name: Create Python {{ guardian_python_version }} virtual environment for Guardian
       ansible.builtin.command:
         argv:
           - /bin/bash
           - -lc
-          - "/home/{{ username }}/.local/bin/uv venv -p 3.12 venv"
-        chdir: "{{ guardian_dir }}"
-        creates: "{{ guardian_dir }}/venv/bin/python"
+          - |
+            export PYENV_ROOT="$HOME/.pyenv"
+            export PATH="$PYENV_ROOT/bin:$PATH"
+            eval "$(pyenv init --path)"
+            cd {{ guardian_dir }}
+            pyenv shell {{ guardian_python_version }}
+            python -m venv venv
       become_user: "{{ username }}"
 
     - name: Ensure pip exists in Guardian venv

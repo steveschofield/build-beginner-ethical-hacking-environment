@@ -71,7 +71,7 @@ pushd /vagrant
 ansible-playbook local_playbook_base.yml
 ansible-playbook local_playbook_docker.yml
 ansible-playbook local_playbook_vulnapps.yml
-ansible-playbook local_playbook_guardian.yml
+# ansible-playbook local_playbook_guardian.yml
 
 popd
 
