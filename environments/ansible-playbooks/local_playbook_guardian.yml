@@ -7,6 +7,11 @@
   vars:
     username: 52pickup
     guardian_dir: "/home/{{ username }}/guardian-cli-deluxe"
+    # Ubuntu 20.04 ships an old Go; guardian-cli-deluxe's setup uses `go install pkg@latest`
+    # which requires module-aware mode and a modern Go toolchain (>= 1.17).
+    go_version: "1.22.0"
+    go_root: "/home/{{ username }}/.local/go"
+    go_path: "/home/{{ username }}/go"
     # Network targets for recon/network scans
     network_targets:
       - "192.168.1.232"
@@ -52,6 +57,7 @@
           - python3
           - python3-pip
           - python3-venv
+          - ca-certificates
           - nmap
           - nikto
           - sqlmap
@@ -65,6 +71,78 @@
           - bc
         state: present
         update_cache: true
+
+    - name: Map Go architecture for download
+      ansible.builtin.set_fact:
+        go_arch: >-
+          {{ 'amd64' if ansible_architecture in ['x86_64', 'amd64'] else
+             'arm64' if ansible_architecture in ['aarch64', 'arm64'] else
+             ansible_architecture }}
+
+    - name: Download Go {{ go_version }}
+      ansible.builtin.get_url:
+        url: "https://go.dev/dl/go{{ go_version }}.linux-{{ go_arch }}.tar.gz"
+        dest: "/tmp/go{{ go_version }}.linux-{{ go_arch }}.tar.gz"
+        mode: "0644"
+
+    - name: Detect old Go toolchain installed in GOPATH location
+      ansible.builtin.stat:
+        path: "{{ go_path }}/VERSION"
+      register: gopath_contains_go_toolchain
+      become: yes
+      become_user: "{{ username }}"
+
+    - name: Remove old Go toolchain from GOPATH location (if present)
+      ansible.builtin.file:
+        path: "{{ go_path }}"
+        state: absent
+      become: yes
+      become_user: "{{ username }}"
+      when: gopath_contains_go_toolchain.stat.exists
+
+    - name: Ensure GOPATH directory exists
+      ansible.builtin.file:
+        path: "{{ go_path }}"
+        state: directory
+        mode: "0755"
+      become: yes
+      become_user: "{{ username }}"
+
+    - name: Remove existing user-local Go toolchain dir
+      ansible.builtin.file:
+        path: "{{ go_root }}"
+        state: absent
+      become: yes
+      become_user: "{{ username }}"
+
+    - name: Ensure ~/.local exists for user-local installs
+      ansible.builtin.file:
+        path: "/home/{{ username }}/.local"
+        state: directory
+        mode: "0755"
+      become: yes
+      become_user: "{{ username }}"
+
+    - name: Install Go {{ go_version }} under {{ go_root }}
+      ansible.builtin.unarchive:
+        src: "/tmp/go{{ go_version }}.linux-{{ go_arch }}.tar.gz"
+        dest: "/home/{{ username }}/.local"
+        remote_src: yes
+      become: yes
+      become_user: "{{ username }}"
+
+    - name: Ensure user-local Go and GOPATH are on PATH in .profile
+      ansible.builtin.blockinfile:
+        path: "/home/{{ username }}/.profile"
+        block: |
+          # Go toolchain + GOPATH (installed by Ansible)
+          export GOROOT="$HOME/.local/go"
+          export GOPATH="$HOME/go"
+          export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
+        marker: "# {mark} ANSIBLE MANAGED GO"
+        create: yes
+      become: yes
+      become_user: "{{ username }}"
 
     - name: Install optional wpscan package (if available)
       apt:
@@ -89,15 +167,39 @@
         force: yes
       become_user: "{{ username }}"
 
-    - name: Create Python virtual environment for Guardian
+    - name: Install uv (user-local)
       ansible.builtin.command:
         argv:
-          - python3
-          - -m
-          - venv
-          - venv
+          - /bin/bash
+          - -lc
+          - "curl -LsSf https://astral.sh/uv/install.sh | sh"
+        creates: "/home/{{ username }}/.local/bin/uv"
+      become_user: "{{ username }}"
+
+    - name: Install Python 3.12 via uv (user-local)
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - "/home/{{ username }}/.local/bin/uv python install 3.12"
+      become_user: "{{ username }}"
+
+    - name: Create Python 3.12 virtual environment for Guardian (uv)
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - "/home/{{ username }}/.local/bin/uv venv -p 3.12 venv"
         chdir: "{{ guardian_dir }}"
-        creates: "{{ guardian_dir }}/venv"
+        creates: "{{ guardian_dir }}/venv/bin/python"
+      become_user: "{{ username }}"
+
+    - name: Ensure pip exists in Guardian venv
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - "cd {{ guardian_dir }} && ./venv/bin/python -m ensurepip --upgrade && ./venv/bin/python -m pip install --upgrade pip setuptools wheel"
       become_user: "{{ username }}"
 
     - name: Check for Guardian setup script
@@ -120,9 +222,11 @@
       register: guardian_requirements_file
 
     - name: Install Guardian Python dependencies from requirements.txt
-      ansible.builtin.pip:
-        requirements: "{{ guardian_dir }}/requirements.txt"
-        virtualenv: "{{ guardian_dir }}/venv"
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - "cd {{ guardian_dir }} && ./venv/bin/python -m pip install -r requirements.txt"
       become_user: "{{ username }}"
       when: guardian_requirements_file.stat.exists
 
@@ -233,10 +337,11 @@
               local extra_args="${3:-}"
 
               cd "$GUARDIAN_DIR"
+              # Avoid relying on shell/python shims; use the venv interpreter explicitly.
               activate_venv
 
               log_info "Running Guardian workflow: $workflow against $target"
-              python -m cli.main workflow run --name "$workflow" --target "$target" $extra_args
+              "$GUARDIAN_DIR/venv/bin/python" -m cli.main workflow run --name "$workflow" --target "$target" $extra_args
           }
 
           list_targets() {
@@ -410,7 +515,7 @@
         path: "/home/{{ username }}/.bashrc"
         block: |
           # Guardian CLI aliases
-          alias guardian='cd {{ guardian_dir }} && source venv/bin/activate && python -m cli.main'
+          alias guardian='cd {{ guardian_dir }} && ./venv/bin/python -m cli.main'
           alias guardian-recon='guardian-lab-assess recon'
           alias guardian-network='guardian-lab-assess network'
           alias guardian-web='guardian-lab-assess web'
