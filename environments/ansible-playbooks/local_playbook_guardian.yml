@@ -59,6 +59,7 @@
           - python3-pip
           - python3-venv
           - ca-certificates
+          # Scanning & recon tools
           - nmap
           - nikto
           - sqlmap
@@ -70,8 +71,67 @@
           - curl
           - jq
           - bc
+          # Network/enumeration tools
+          - masscan
+          - hydra
+          - smbclient
+          - nfs-common
+          - snmp
+          - onesixtyone
+          - libpcap-dev
+          # Ruby (for wpscan)
+          - ruby
+          - ruby-dev
+          # Node.js (for retire.js)
+          - nodejs
+          - npm
         state: present
         update_cache: true
+
+    - name: Install enum4linux (if available)
+      apt:
+        name: enum4linux
+        state: present
+      register: enum4linux_install
+      failed_when: false
+
+    - name: Install amass (if available)
+      apt:
+        name: amass
+        state: present
+      register: amass_install
+      failed_when: false
+
+    - name: Install seclists (if available)
+      apt:
+        name: seclists
+        state: present
+      register: seclists_install
+      failed_when: false
+
+    # -----------------------------------------
+    # Metasploit Framework (official Rapid7 repo)
+    # -----------------------------------------
+    - name: Add Rapid7 Metasploit signing key
+      ansible.builtin.apt_key:
+        url: https://apt.metasploit.com/metasploit-framework.gpg.key
+        state: present
+      failed_when: false
+
+    - name: Add Metasploit APT repository
+      ansible.builtin.apt_repository:
+        repo: "deb https://apt.metasploit.com/ lucid main"
+        filename: metasploit-framework
+        state: present
+      failed_when: false
+
+    - name: Install Metasploit Framework
+      apt:
+        name: metasploit-framework
+        state: present
+        update_cache: true
+      register: metasploit_install
+      failed_when: false
 
     - name: Map Go architecture for download
       ansible.builtin.set_fact:
@@ -233,14 +293,25 @@
         path: "{{ guardian_dir }}/setup.sh"
       register: guardian_setup_script
 
-    - name: Run Guardian setup script
+    - name: Run Guardian setup script (with Go and pyenv on PATH)
       ansible.builtin.command:
         argv:
           - /bin/bash
           - -lc
-          - "cd {{ guardian_dir }} && source venv/bin/activate && chmod +x setup.sh && ./setup.sh 2>&1 | tee setup.log"
+          - |
+            export PYENV_ROOT="$HOME/.pyenv"
+            export PATH="$PYENV_ROOT/bin:$PATH"
+            eval "$(pyenv init --path)"
+            export GOROOT="$HOME/.local/go"
+            export GOPATH="$HOME/go"
+            export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
+            cd {{ guardian_dir }}
+            source venv/bin/activate
+            chmod +x setup.sh
+            ./setup.sh 2>&1 | tee setup.log
       become_user: "{{ username }}"
       when: guardian_setup_script.stat.exists
+      timeout: 1800
 
     - name: Check for Guardian requirements.txt
       ansible.builtin.stat:
@@ -260,6 +331,35 @@
       ansible.builtin.fail:
         msg: "Expected {{ guardian_dir }}/setup.sh, but it was not found."
       when: not guardian_setup_script.stat.exists
+
+    # ===========================================
+    # Post-setup: Docker images & system config
+    # ===========================================
+    - name: Pull BloodHound Docker image
+      ansible.builtin.command:
+        argv:
+          - docker
+          - pull
+          - ghcr.io/fuzzinglabs/bloodhound-mcp:latest
+      become_user: "{{ username }}"
+      failed_when: false
+
+    - name: Pull ZAP Docker image (if not already present)
+      ansible.builtin.command:
+        argv:
+          - docker
+          - pull
+          - ghcr.io/zaproxy/zaproxy:stable
+      become_user: "{{ username }}"
+      failed_when: false
+
+    - name: Set masscan network capabilities for non-root use
+      ansible.builtin.command:
+        argv:
+          - setcap
+          - cap_net_raw,cap_net_admin+eip
+          - /usr/sbin/masscan
+      failed_when: false
 
     # ===========================================
     # Create Guardian Configuration
