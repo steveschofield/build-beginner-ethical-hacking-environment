@@ -1,9 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Ubuntu 20.04 Vagrant configuration for Hyper-V, VirtualBox, and VMware
+# Ubuntu 22.04 Vagrant configuration for Hyper-V, VirtualBox, and VMware
 #
-# Note: bento/ubuntu-22.04 does not support Hyper-V, so we use 20.04
+# Uses generic/ubuntu2204 (Roboxes project) which supports Hyper-V,
+# VirtualBox, VMware, Parallels, and QEMU/LibVirt.
 #
 # Prerequisites:
 #   - Set SSH_PUBLIC_KEY environment variable with your public key
@@ -81,8 +82,8 @@ reboot
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  # Use Ubuntu 20.04 - it has Hyper-V support (22.04 does not)
-  config.vm.box = "bento/ubuntu-20.04"
+  # Ubuntu 22.04 via Roboxes (Hyper-V, VirtualBox, VMware, etc.)
+  config.vm.box = "generic/ubuntu2204"
 
   config.vm.define "ethicalhacking", primary: true do |vm|
     vm.vm.hostname = "ethicalhacking"

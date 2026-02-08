@@ -8,8 +8,8 @@
     username: 52pickup
     guardian_dir: "/home/{{ username }}/guardian-cli-deluxe"
     guardian_python_version: "3.13.12"
-    # Ubuntu 20.04 ships an old Go; guardian-cli-deluxe's setup uses `go install pkg@latest`
-    # which requires module-aware mode and a modern Go toolchain (>= 1.17).
+    # guardian-cli-deluxe setup uses `go install pkg@latest` which needs Go >= 1.17.
+    # We install a specific version to ensure consistency across environments.
     go_version: "1.22.0"
     go_root: "/home/{{ username }}/.local/go"
     go_path: "/home/{{ username }}/go"

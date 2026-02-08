@@ -43,18 +43,6 @@
         state: present
         update_cache: yes
 
-    - name: Enable universe repository (needed for security tools)
-      ansible.builtin.command:
-        argv:
-          - add-apt-repository
-          - --yes
-          - universe
-      changed_when: true
-
-    - name: Update apt cache after enabling universe
-      ansible.builtin.apt:
-        update_cache: yes
-
     - name: Install additional packages
       ansible.builtin.apt:
         name:
@@ -66,6 +54,7 @@
           - python3
           - python3-pip
           - python-is-python3
+          - openjdk-17-jre
           - net-tools
           - make
           - build-essential
@@ -89,19 +78,6 @@
           - iputils-arping
           - dnsutils
         state: present
-
-    - name: Install OpenJDK 17 JRE
-      ansible.builtin.apt:
-        name: openjdk-17-jre
-        state: present
-      register: jdk17_install
-      failed_when: false
-
-    - name: Fall back to OpenJDK 11 JRE if 17 not available
-      ansible.builtin.apt:
-        name: openjdk-11-jre
-        state: present
-      when: jdk17_install is failed
 
     - name: Install aptitude
       apt:
