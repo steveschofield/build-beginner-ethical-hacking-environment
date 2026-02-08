@@ -353,6 +353,41 @@
       become_user: "{{ username }}"
       failed_when: false
 
+    # -----------------------------------------
+    # Exploit-DB / SearchSploit
+    # -----------------------------------------
+    - name: Clone Exploit-DB repository
+      ansible.builtin.git:
+        repo: https://gitlab.com/exploit-database/exploitdb.git
+        dest: "/opt/exploitdb"
+        depth: 1
+        force: yes
+      register: exploitdb_clone
+      failed_when: false
+
+    - name: Symlink searchsploit into PATH
+      ansible.builtin.file:
+        src: /opt/exploitdb/searchsploit
+        dest: /usr/local/bin/searchsploit
+        state: link
+      when: exploitdb_clone is not failed
+
+    - name: Create searchsploit config directory
+      ansible.builtin.file:
+        path: "/home/{{ username }}/.searchsploit_rc"
+        state: absent
+      when: exploitdb_clone is not failed
+
+    - name: Configure searchsploit rc file
+      ansible.builtin.copy:
+        dest: "/home/{{ username }}/.searchsploit_rc"
+        owner: "{{ username }}"
+        mode: "0644"
+        content: |
+          package_array+=(EXPLOITDB "/opt/exploitdb")
+          package_array+=(EXPLOITDB_PAPERS "/opt/exploitdb/exploits")
+      when: exploitdb_clone is not failed
+
     - name: Set masscan network capabilities for non-root use
       ansible.builtin.command:
         argv:
