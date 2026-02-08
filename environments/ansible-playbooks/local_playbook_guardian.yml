@@ -112,17 +112,20 @@
     # -----------------------------------------
     # Metasploit Framework (official Rapid7 repo)
     # -----------------------------------------
-    - name: Add Rapid7 Metasploit signing key
-      ansible.builtin.apt_key:
-        url: https://apt.metasploit.com/metasploit-framework.gpg.key
-        state: present
+    - name: Download Rapid7 Metasploit signing key
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -lc
+          - "curl -fsSL https://apt.metasploit.com/metasploit-framework.gpg.key | gpg --dearmor -o /usr/share/keyrings/metasploit-framework.gpg"
+        creates: /usr/share/keyrings/metasploit-framework.gpg
       failed_when: false
 
     - name: Add Metasploit APT repository
-      ansible.builtin.apt_repository:
-        repo: "deb https://apt.metasploit.com/ lucid main"
-        filename: metasploit-framework
-        state: present
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/metasploit-framework.list
+        content: "deb [signed-by=/usr/share/keyrings/metasploit-framework.gpg] https://apt.metasploit.com/ lucid main\n"
+        mode: "0644"
       failed_when: false
 
     - name: Install Metasploit Framework
