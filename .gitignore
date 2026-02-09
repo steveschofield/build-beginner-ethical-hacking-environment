@@ -3,3 +3,4 @@ MacBook-M-Series-vagrant-ubuntu-2204/.vagrant
 vagrant-images/freebsd/.vagrant
 vagrant-images/ubuntu-utm/.vagrant
 environments/vagrant/ubuntu-hyperv-guardian/.vagrant
+environments/vagrant/ubuntu-hyperv-guardian-kali/.vagrant
