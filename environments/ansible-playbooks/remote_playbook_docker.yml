@@ -18,35 +18,30 @@
           - python3-pip
           - virtualenv
           - python3-setuptools
+          - docker.io
         state: latest
         update_cache: true
 
-    - name: Add Docker GPG apt Key
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
+    - name: Detect available Docker Compose package
+      ansible.builtin.shell: |
+        if apt-cache show docker-compose-plugin >/dev/null 2>&1; then
+          echo docker-compose-plugin
+        else
+          echo docker-compose
+        fi
+      register: docker_compose_package
+      changed_when: false
+
+    - name: Install Docker Compose package
+      ansible.builtin.apt:
+        name: "{{ docker_compose_package.stdout }}"
         state: present
 
-    - name: Add Docker Repository
-      apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
-
-    - name: Update apt and install docker-ce
-      apt:
-        name: docker-ce
-        state: latest
-        update_cache: true
-
-    - name: Create cli-plugins folder for docker-compose
-      ansible.builtin.file:
-        path: /usr/local/lib/docker/cli-plugins
-        state: directory
-
-    - name: Download and install docker-compose
-      ansible.builtin.get_url:
-        url: https://github.com/docker/compose/releases/download/v2.9.0/docker-compose-linux-aarch64
-        dest: /usr/local/lib/docker/cli-plugins/docker-compose
-        mode: "0755"
+    - name: Enable and start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
 
     - name: Install Python Docker module
       ansible.builtin.apt:

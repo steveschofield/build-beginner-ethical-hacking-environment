@@ -19,32 +19,24 @@
           - python3-pip
           - virtualenv
           - python3-setuptools
+          - docker.io
         state: present
         update_cache: true
 
-    - name: Download Docker GPG signing key
-      ansible.builtin.command:
-        argv:
-          - /bin/bash
-          - -lc
-          - "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg"
-        creates: /usr/share/keyrings/docker-archive-keyring.gpg
+    - name: Detect available Docker Compose package
+      ansible.builtin.shell: |
+        if apt-cache show docker-compose-plugin >/dev/null 2>&1; then
+          echo docker-compose-plugin
+        else
+          echo docker-compose
+        fi
+      register: docker_compose_package
+      changed_when: false
 
-    - name: Add Docker Repository
-      apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-        state: present
-
-    - name: Update apt and install docker-ce
+    - name: Install Docker Compose package
       apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
+        name: "{{ docker_compose_package.stdout }}"
         state: present
-        update_cache: true
 
     - name: Add user to docker group
       user:

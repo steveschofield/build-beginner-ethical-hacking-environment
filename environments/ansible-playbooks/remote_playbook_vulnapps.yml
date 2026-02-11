@@ -32,11 +32,17 @@
       command: docker image prune -af
       become: yes
 
-    - name: Install docker-compose
-      shell: |
-        curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        chmod +x /usr/local/bin/docker-compose
-      become: yes
+    - name: Detect Docker Compose command
+      ansible.builtin.shell: |
+        if docker compose version >/dev/null 2>&1; then
+          echo "docker compose"
+        elif command -v docker-compose >/dev/null 2>&1; then
+          echo "docker-compose"
+        else
+          exit 1
+        fi
+      register: docker_compose_cmd
+      changed_when: false
 
     - name: Create user group
       ansible.builtin.group:
@@ -113,7 +119,7 @@
     - name: musashi-js # https://github.com/52pickupWTF/musashi-js
       shell: |
         cd "/home/{{ username }}/code"
-        git clone https://github.com/52pickupWTF/musashi-js
+        git clone https://github.com/SamuraiWTF/musashi-js
         cd "/home/{{ username }}/code/musashi-js"
         docker build --tag musashi-js .
       become: yes
@@ -147,10 +153,10 @@
     - name: Start DVWA # https://github.com/digininja/DVWA
       shell: |
         cd "/home/{{ username }}/code/dvwa"
-        /usr/local/bin/docker-compose up -d
+        {{ docker_compose_cmd.stdout }} up -d
       become: yes
 
-    - name: Start Musashi JS # https://github.com/52pickupWTF/musashi-js
+    - name: Start Musashi JS # https://github.com/SamuraiWTF/musashi-js
       shell: |
         cd "/home/{{ username }}/code/musashi-js"
         docker run -d -p 8083:8080 musashi-js

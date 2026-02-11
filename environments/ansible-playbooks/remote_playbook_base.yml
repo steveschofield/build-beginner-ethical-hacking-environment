@@ -7,17 +7,23 @@
     groupname: 52pickup
     username: 52pickup
     ansible_common_remote_group: "{{ groupname }}"  # Add this line
-    ansible_python_interpreter: /usr/bin/python3.10
+    ansible_python_interpreter: /usr/bin/python3
 
   pre_tasks:
-    - name: Ensure Python 3.10+ and apt dependencies are present (minimal Ubuntu)
+    - name: Ensure Python 3 and apt dependencies are present (minimal Debian/Ubuntu)
       raw: |
         set -e
+        export DEBIAN_FRONTEND=noninteractive
+        # Recover from interrupted apt/dpkg runs before any install/update.
+        dpkg --configure -a || true
+        apt-get install -f -y || true
         apt-get update -y
         apt-get install -y sudo software-properties-common
-        add-apt-repository -y ppa:deadsnakes/ppa || true
+        if grep -qi ubuntu /etc/os-release; then
+          add-apt-repository -y ppa:deadsnakes/ppa || true
+        fi
         apt-get update -y
-        apt-get install -y python3.10 python3.10-venv python3.10-distutils python3-apt
+        apt-get install -y python3 python3-venv python3-apt
       args:
         warn: false
 
@@ -69,7 +75,7 @@
           - python3
           - python3-pip
           - python-is-python3
-          - openjdk-17-jre
+          - default-jre
           - net-tools
           - make 
           - build-essential 
