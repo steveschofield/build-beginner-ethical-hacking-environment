@@ -1,0 +1,49 @@
+- name: Run thee playbook tasks on the localhost from the /vagrant folder
+  hosts: guardian_workers
+  become: yes
+
+  vars:
+    groupname: 52pickup
+    username: 52pickup
+  
+  tasks:
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+          - docker.io
+        state: latest
+        update_cache: true
+
+    - name: Detect available Docker Compose package
+      ansible.builtin.shell: |
+        if apt-cache show docker-compose-plugin >/dev/null 2>&1; then
+          echo docker-compose-plugin
+        else
+          echo docker-compose
+        fi
+      register: docker_compose_package
+      changed_when: false
+
+    - name: Install Docker Compose package
+      ansible.builtin.apt:
+        name: "{{ docker_compose_package.stdout }}"
+        state: present
+
+    - name: Enable and start Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Install Python Docker module
+      ansible.builtin.apt:
+        name: python3-docker
+        state: present

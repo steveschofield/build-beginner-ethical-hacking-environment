@@ -1,0 +1,91 @@
+**Ethical Hacking GPT's reference**
+
+**List of uncensored LLM's on hackingBuddyGPT (which runs local)**
+
+https://github.com/ipa-lab/hackingBuddyGPT/issues/77
+
+**Local hacking "buddy"** 
+
+https://docs.hackingbuddy.ai/
+
+https://github.com/ipa-lab/hackingBuddyGPT
+
+**GetCyber** 
+
+https://github.com/Dan-Duran?tab=repositories
+
+**Run local LLM's reference to ethical hacking**
+
+https://www.youtube.com/watch?v=D8-Dd3mVYCQ&t=1001s
+
+**Uncensored LLM's**
+
+https://ollama.com/gdisney
+
+**Cybersecurity tools**
+
+https://github.com/Dan-Duran/cybersecurity-tools
+
+
+sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+
+lscr.io/linuxserver/kali-linux:latest
+
+```bash
+docker run -d \
+  --name kali-linux \
+  --security-opt seccomp=unconfined \
+  -e PUID=1000\
+  -e PGID=1000\
+  -e TZ=Etc/UTC \
+  -p 3389:3389 \
+  -p 3000:3000 \
+  -v kali-config:/config \
+  --restart unless-stopped \
+  lscr.io/linuxserver/kali-linux:latest
+```
+
+To extend a docker vm to use all space
+
+```bash
+b
+```
+
+docker pull
+
+> sudo lvextend -l+100%FREE /dev/ubuntu-vg/ubuntu-lv
+>
+> sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
+
+https://www.kali.org/docs/containers/using-kali-docker-images/
+
+**docker pull docker.io/kalilinux/kali-rolling**
+
+**sudo docker run -it kalilinux/kali-rolling:latest /bin/bash
+
+docker run** --tty** --interactive** kalilinux/kali-rolling****
+
+**`apt update && apt -y install kali-linux-large`
+**
+
+apt install -y  `kali-linux-everything`
+
+sudo docker pull lscr.io/linuxserver/rdesktop:debian-xfce
+
+sudo apt install -y vim -y
+sudo apt install -y wget -y
+
+echo "deb http://http.kali.org/kali kali-rolling main non-free contrib" | sudo tee -a /etc/apt/sources.list.d/kali.list
+sudo wget -qO - https://archive.kali.org/archive-key.asc | sudo tee /etc/apt/trusted.gpg.d/kali-archive-key.asc
+sudo apt update
+
+What is metapackage
+
+https://www.kali.org/docs/general-use/metapackages/
+
+tool list
+
+arachni-web-application
+
+https://ecsypno.com/pages/arachni-web-application-security-scanner-framework

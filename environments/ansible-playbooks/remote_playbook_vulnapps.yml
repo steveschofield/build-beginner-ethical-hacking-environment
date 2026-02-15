@@ -1,0 +1,204 @@
+---
+- name: Run thee playbook tasks on the localhost from the /vagrant folder
+  hosts: guardian_workers
+
+  become: yes
+  vars:
+    groupname: 52pickup
+    username: 52pickup
+
+  tasks:
+    # CLEANUP EXISTING CONTAINERS AND IMAGES
+    - name: Stop all running Docker containers
+      shell: docker stop $(docker ps -q) 2>/dev/null || true
+      become: yes
+
+    - name: Remove all stopped containers
+      shell: docker rm $(docker ps -aq) 2>/dev/null || true
+      become: yes
+
+    - name: Remove vulnerable app images
+      shell: |
+        docker rmi bkimminich/juice-shop 2>/dev/null || true
+        docker rmi webgoat/webgoat 2>/dev/null || true
+        docker rmi erev0s/vampi 2>/dev/null || true
+        docker rmi jeroenwillemsen/wrongsecrets:latest-no-vault 2>/dev/null || true
+        docker rmi dvwa 2>/dev/null || true
+        docker rmi musashi-js 2>/dev/null || true
+        docker rmi vuln-bank 2>/dev/null || true
+      become: yes
+
+    - name: Prune unused Docker images
+      command: docker image prune -af
+      become: yes
+
+    - name: Detect Docker Compose command
+      ansible.builtin.shell: |
+        if docker compose version >/dev/null 2>&1; then
+          echo "docker compose"
+        elif command -v docker-compose >/dev/null 2>&1; then
+          echo "docker-compose"
+        else
+          exit 1
+        fi
+      register: docker_compose_cmd
+      changed_when: false
+
+    - name: Create user group
+      ansible.builtin.group:
+        name: "{{ groupname }}"
+        state: present
+      become: yes
+
+    - name: Ensure sudo group exists
+      ansible.builtin.group:
+        name: sudo
+        state: present
+      become: yes
+
+    - name: Ensure user is present
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: "{{ groupname }},sudo,docker"
+        shell: /bin/bash
+        state: present
+      become: yes
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - curl
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: Ensure code directory exists
+      ansible.builtin.file:
+        path: "/home/{{ username }}/code"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: "0755"
+      become: yes  # If you need sudo privileges
+
+    - name: Fix ownership of code directory recursively
+      ansible.builtin.file:
+        path: "/home/{{ username }}/code"
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        recurse: yes
+        state: directory
+      become: yes
+
+    - name: Pull Juice Shop Container # https://hub.docker.com/r/bkimminich/juice-shop
+      command: docker pull bkimminich/juice-shop
+      become: yes  # If you need sudo privileges
+
+    - name: webgoat 
+      command: docker pull webgoat/webgoat #https://github.com/WebGoat/WebGoat
+      become: yes
+
+    - name: OWASP top 10 vuln API setup # https://github.com/erev0s/VAmPI
+      command: docker pull erev0s/vampi
+      become: yes
+
+    - name: Wrong Secrets # https://github.com/OWASP/wrongsecrets  - go to repo to for links to challenges
+      command: docker pull jeroenwillemsen/wrongsecrets:latest-no-vault
+      become: yes
+
+    - name: dvwa # https://github.com/digininja/dvwa
+      shell: |
+        cd "/home/{{ username }}/code"
+        git clone https://github.com/digininja/dvwa
+        cd "/home/{{ username }}/code/dvwa"
+        sed -i 's/127.0.0.1:4280:80/0.0.0.0:4280:80/g' "/home/{{ username }}/code/dvwa/compose.yml" #replace 127.0.0.1 with 0.0.0.0 thanks grok!
+        docker build --tag dvwa .
+      become: yes
+
+    - name: musashi-js # https://github.com/52pickupWTF/musashi-js
+      shell: |
+        cd "/home/{{ username }}/code"
+        git clone https://github.com/SamuraiWTF/musashi-js
+        cd "/home/{{ username }}/code/musashi-js"
+        docker build --tag musashi-js .
+      become: yes
+
+    #if running on a MacBook port 5000 / 7000 could block this from working, switch to 5001
+    - name: vuln-bank # https://github.com/Commando-X/vuln-bank
+      shell: |
+        cd "/home/{{ username }}/code"
+        git clone https://github.com/Commando-X/vuln-bank
+        cd "/home/{{ username }}/code/vuln-bank"
+        docker build --tag vuln-bank .
+      become: yes
+
+    # START APPLICATIONS
+    - name: Start Juice Shop Container # https://hub.docker.com/r/bkimminich/juice-shop
+      command: docker run -d -p 3000:3000 bkimminich/juice-shop
+      become: yes
+
+    - name: Start WebGoat # https://github.com/WebGoat/WebGoat
+      command: docker run -d -p 8082:8080 webgoat/webgoat
+      become: yes
+
+    - name: Start OWASP top 10 vuln API setup (VAmPI) # https://github.com/erev0s/VAmPI
+      command: docker run -d -p 5000:5000 erev0s/vampi:latest
+      become: yes
+
+    - name: Start Wrong Secrets # https://github.com/OWASP/wrongsecrets
+      command: docker run -d -p 8889:8888 jeroenwillemsen/wrongsecrets:latest-no-vault
+      become: yes
+
+    - name: Start DVWA # https://github.com/digininja/DVWA
+      shell: |
+        cd "/home/{{ username }}/code/dvwa"
+        {{ docker_compose_cmd.stdout }} up -d
+      become: yes
+
+    - name: Start Musashi JS # https://github.com/SamuraiWTF/musashi-js
+      shell: |
+        cd "/home/{{ username }}/code/musashi-js"
+        docker run -d -p 8083:8080 musashi-js
+      become: yes
+
+    - name: Start Vuln Bank # https://github.com/Commando-X/vuln-bank
+      shell: |
+        cd "/home/{{ username }}/code/vuln-bank"
+        docker run -d -p 5001:5000 vuln-bank
+      become: yes
+
+      # root@ubuntu2204:/home/52pickup# ps aux | grep docker
+      # root         991  0.9  2.2 2191440 90848 ?       52pickupl  Feb22   0:11 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+      # root       22534  0.0  0.1  12956  4760 tty1     S+   00:09   0:00 sudo docker compose up
+      # root       22535  0.0  0.0  12956   672 pts/0    52pickup   00:09   0:00 sudo docker compose up
+      # root       22536  0.0  0.6 1773156 25008 pts/0   Sl+  00:09   0:00 docker compose up
+
+      #####################################################################
+      # KILL off this proce52pickup if for some reason the website isn't coming up
+      # Browse using Safari if the Chrome / Edge scripts not working
+      #####################################################################
+
+      # root       22550  0.0  0.6 727956 25256 pts/0    Sl+  00:09   0:00 /usr/local/lib/docker/cli-plugins/docker-compose compose up
+
+      #####################################################################
+      # root       22889  0.0  0.0   6020  1996 pts/2    S+   00:11   0:00 grep --color=auto docker
+      # root@ubuntu2204:/home/52pickup# kill -9 22550
+      # root@ubuntu2204:/home/52pickup# ps aux | grep docker
+      # root         991  0.9  2.2 2191440 91024 ?       52pickupl  Feb22   0:11 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+      # root       23044  0.0  0.0 1671180 4004 ?        Sl   00:12   0:00 /usr/bin/docker-proxy -proto tcp -host-ip 0.0.0.0 -host-port 4280 -container-ip 172.18.0.3 -container-port 80 -use-listen-fd
+      # root       23124  0.0  0.0   6020  2000 pts/2    S+   00:12   0:00 grep --color=auto docker
+      # root@ubuntu2204:/home/52pickup# 
+
+    - name: Wait for containers to be ready
+      pause:
+        seconds: 10
+
+    - name: Display running containers
+      shell: docker ps
+      register: running_containers
+      become: yes
+
+    - name: Show running containers output
+      debug:
+        var: running_containers.stdout_lines

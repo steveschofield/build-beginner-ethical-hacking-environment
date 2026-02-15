@@ -1,0 +1,69 @@
+# Build a Beginner Ethical Hacking Environment
+
+Begin your Ethical Hacking journey.  This documentation shares tricks and free software available to start the journey.  There are several tutorials, AI can also assist, to help setup and learn the craft.  This is an exciting, frustrating and overall challenge but is rewarding.
+
+# Students and individuals have inquired **"How do I get started?"**
+
+* Check out the [Cybersecurity mentoring notes](resources/mentoring-notes/README.md)
+
+# Checklist for setting up your own environment.
+
+* Setup your environment : get started here [Computer Resources](docs/getting-started/computer-resources.md "Resources on Github")
+* Update your local VM docker instance to use network address vs. localhost for JuiceShop : [start here](docs/troubleshooting/network-configuration.md "Update Local IP address")
+* Getting started **hacking ** your JuiceShop and learn more about how to solve flags: [start here](docs/getting-started/juice-shop-setup.md "Start Hacking your Juiceshop instance")
+* [https://vagrantcloud.com/api/v2/vagrant/bento/ubuntu-22.04](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS)
+
+# Automated server building using Vagrant by Hashicorp, embedded vulnerable container apps
+
+* [YouTube covering building a machine](https://www.youtube.com/watch?v=TywK6hhFWhs)
+* [Ubuntu 22.04 Vagrant Environment for M-Series MacBooks](environments/vagrant/ubuntu-22-04-m-series/README.md)
+
+  * [JuiceShop](https://github.com/juice-shop/juice-shop)
+  * [DVWA](https://github.com/digininja/dvwa)
+  * [OWASP WebGoat](https://github.com/WebGoat/WebGoat)
+  * [VAmPI](https://github.com/erev0s/VAmPI)
+  * [musashi-js](https://github.com/52pickupWTF/musashi-js)
+  * [vuln-bank](https://github.com/Commando-X/vuln-bank)
+
+# My YouTube Channel
+
+* [YouTube channel](https://www.youtube.com/playlist?list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS) building environments videos and other things I have became obsessed with.
+
+## YouTube videos to get started in order
+
+* #1 - [Build Beginner Ethical Hacking Envionment with OWASP JuiceShop](https://www.youtube.com/watch?v=3UiBmQT7nF8&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=6)
+* #2 - [Build Ubuntu server with Vagrant on MacBook with sample vulnerable applications](https://www.youtube.com/watch?v=TywK6hhFWhs&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=3)
+* #3 - [Getting Started hacking your local JuiceShop instance](https://www.youtube.com/watch?v=DOHsK1p25Ew&list=PLTfslD-MgbHeKdfJN01rONNXmHCfRsVzS&index=4)
+
+# Misc Pentesting steps
+
+Part of a penetration test is checking for malware vulnerabilities. When performing a penetration test, the penetration tester follows a set of steps:
+
+1. Scan for open ports.
+2. Scan for running processes.
+3. Check for suspicious or unknown registry entries.
+4. Verify all running Windows services.
+5. Check startup programs.
+6. Look through event log for suspicious events.
+7. Verify all installed programs.
+8. Scan files and folders for manipulation.
+9. Verify that device drivers are legitimate.
+10. Check all network and DNS settings and activity.
+11. Scan for suspicious API calls.
+12. Run anti-malware scans.
+13. Document results and findings.
+14. Run a full TCP port sweep with `masscan` to quickly identify exposed services at scale.
+15. Validate `masscan` findings with `nmap -sV -sC` to confirm versions and default script results.
+16. Use `nmap -O` and service fingerprinting to identify unexpected operating systems and hosts.
+17. Run targeted `nmap` NSE vulnerability checks (for SMB, RDP, HTTP, SSL/TLS, and DNS).
+18. Use `nmap` UDP scans (`-sU`) for high-risk services like DNS, SNMP, and NTP.
+19. Identify weak TLS ciphers and certificate issues on exposed HTTPS services.
+20. Check SMB shares, signing settings, and anonymous access exposures.
+21. Audit RDP and SSH hardening (MFA, lockout policy, weak auth settings, legacy protocol support).
+22. Enumerate local admins and privileged groups for unauthorized or stale accounts.
+23. Verify scheduled tasks and cron jobs for persistence mechanisms and suspicious commands.
+24. Inspect PowerShell logs and command history for encoded or obfuscated execution patterns.
+25. Baseline outbound connections and detect beaconing to unknown IPs/domains.
+26. Inspect DNS query logs for tunneling patterns, DGA-like domains, and unusual record types.
+27. Check endpoint security controls (EDR/AV/firewall) for tampering, disabled agents, or policy drift.
+28. Re-test remediated findings and record evidence (commands, output, timestamps, and risk ratings).

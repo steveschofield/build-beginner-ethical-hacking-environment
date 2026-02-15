@@ -1,0 +1,78 @@
+---
+- name: Install Docker and Docker Compose
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  gather_facts: true
+  vars:
+    groupname: 52pickup
+    username: 52pickup
+
+  tasks:
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+          - docker.io
+        state: present
+        update_cache: true
+
+    - name: Detect available Docker Compose package
+      ansible.builtin.shell: |
+        if apt-cache show docker-compose-plugin >/dev/null 2>&1; then
+          echo docker-compose-plugin
+        else
+          echo docker-compose
+        fi
+      register: docker_compose_package
+      changed_when: false
+
+    - name: Install Docker Compose package
+      apt:
+        name: "{{ docker_compose_package.stdout }}"
+        state: present
+
+    - name: Add user to docker group
+      user:
+        name: "{{ username }}"
+        groups: docker
+        append: yes
+
+    - name: Ensure Docker service is started and enabled
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Install Python Docker module
+      ansible.builtin.apt:
+        name: python3-docker
+        state: present
+
+    - name: Install Ansible Docker collection (for root - provisioning)
+      ansible.builtin.command:
+        argv:
+          - ansible-galaxy
+          - collection
+          - install
+          - community.docker
+          - --force
+      changed_when: true
+
+    - name: Install Ansible Docker collection (for user)
+      ansible.builtin.command:
+        argv:
+          - ansible-galaxy
+          - collection
+          - install
+          - community.docker
+          - --force
+      become_user: "{{ username }}"
+      changed_when: true
+      ignore_errors: yes

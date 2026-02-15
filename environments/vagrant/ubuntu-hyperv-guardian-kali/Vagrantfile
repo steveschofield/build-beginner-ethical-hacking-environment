@@ -1,0 +1,145 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Ubuntu 22.04 Vagrant configuration for Hyper-V, VirtualBox, and VMware
+#
+# Uses generic/ubuntu2204 (Roboxes project) which supports Hyper-V,
+# VirtualBox, VMware, Parallels, and QEMU/LibVirt.
+#
+# Prerequisites:
+#   - Set SSH_PUBLIC_KEY environment variable with your public key
+#   - For Hyper-V: Run PowerShell as Administrator
+#   - For VirtualBox: Ensure VirtualBox is installed
+#
+# PowerShell Usage:
+#   $env:SSH_PUBLIC_KEY = Get-Content $env:USERPROFILE\.ssh\id_rsa.pub
+#   vagrant up --provider=hyperv
+#
+# Bash Usage:
+#   export SSH_PUBLIC_KEY="$(cat ~/.ssh/id_rsa.pub)"
+#   vagrant up --provider=virtualbox
+
+# Read SSH public key from environment variable
+SSH_PUBLIC_KEY = ENV['SSH_PUBLIC_KEY'] || ''
+
+# Get the absolute path to ansible-playbooks directory (works on Windows and Unix)
+ANSIBLE_PLAYBOOKS_PATH = File.expand_path("../../ansible-playbooks", __dir__)
+
+$bootstrapscript = <<-SCRIPT
+set -euxo pipefail
+
+echo ">>>>>>>>>>>>> Starting VM provisioning..."
+
+# Update system
+apt-get update -y
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+
+# Create user '52pickup' with password 'example123!'
+USERNAME="52pickup"
+PASSWORD="example123!"
+
+if ! id "$USERNAME" &>/dev/null; then
+    useradd -m -s /bin/bash "$USERNAME"
+    echo "$USERNAME:$PASSWORD" | chpasswd
+    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USERNAME
+    chmod 0440 /etc/sudoers.d/$USERNAME
+    echo "User $USERNAME created."
+else
+    echo "User $USERNAME already exists."
+fi
+
+# Inject SSH public key if provided
+SSH_KEY="#{SSH_PUBLIC_KEY}"
+if [ -n "$SSH_KEY" ]; then
+    echo ">>>>>>>>>>>>> Configuring SSH key for $USERNAME..."
+    mkdir -p /home/$USERNAME/.ssh
+    echo "$SSH_KEY" >> /home/$USERNAME/.ssh/authorized_keys
+    chmod 700 /home/$USERNAME/.ssh
+    chmod 600 /home/$USERNAME/.ssh/authorized_keys
+    chown -R $USERNAME:$USERNAME /home/$USERNAME/.ssh
+    echo "SSH key configured for $USERNAME"
+else
+    echo "WARNING: No SSH_PUBLIC_KEY environment variable set. SSH key authentication not configured."
+fi
+
+# Install ansible and git for provisioning
+apt-get install -y ansible git
+
+echo ">>>>>>>>>>>>> Running Ansible Playbooks..."
+pushd /vagrant
+
+# Run playbooks (no -K flag since we're root during provisioning)
+ansible-playbook local_playbook_base.yml
+ansible-playbook local_playbook_docker.yml
+ansible-playbook local_playbook_vulnapps.yml
+# ansible-playbook local_playbook_guardian.yml
+
+popd
+
+echo ">>>>>>>>>>>>> Provisioning complete. Rebooting..."
+reboot
+
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  # Ubuntu 22.04 via Roboxes (Hyper-V, VirtualBox, VMware, etc.)
+  config.vm.box = "kalilinux/rolling"
+
+  config.vm.define "ethicalhacking", primary: true do |vm|
+    vm.vm.hostname = "ethicalhacking"
+
+    # Sync the ansible-playbooks directory to /vagrant
+    # Using rsync for better Hyper-V compatibility
+    # ANSIBLE_PLAYBOOKS_PATH resolves to absolute path for Windows compatibility
+    vm.vm.synced_folder ANSIBLE_PLAYBOOKS_PATH, "/vagrant", type: "rsync"
+
+    # Hyper-V provider configuration
+    vm.vm.provider "hyperv" do |hv|
+      hv.vmname = "ethical-hacking-lab-kali"
+      hv.memory = 6144
+      hv.cpus = 4
+      hv.maxmemory = 8192
+      hv.vm_integration_services = {
+        guest_service_interface: true
+      }
+    end
+
+    # VirtualBox provider configuration (alternative)
+    vm.vm.provider "virtualbox" do |vb|
+      vb.gui = true
+      vb.name = "ethical-hacking-lab"
+      vb.memory = 4096
+      vb.cpus = 2
+      vb.customize ["modifyvm", :id, "--vram", "128"]
+      vb.customize ["modifyvm", :id, "--vrde", "off"]
+      vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+      vb.customize ["modifyvm", :id, "--accelerate2dvideo", "on"]
+    end
+
+    # VMware Desktop provider configuration (alternative)
+    vm.vm.provider "vmware_desktop" do |v|
+      v.linked_clone = false
+      v.vmx["displayName"] = "ethical-hacking-lab"
+      v.vmx["memsize"] = "4096"
+      v.vmx["numvcpus"] = "2"
+      v.vmx["cpuid.coresPerSocket"] = "1"
+      v.gui = true
+    end
+  end
+
+  # Network configuration
+  # Uncomment if you need port forwarding for vulnerable apps
+  # config.vm.network "forwarded_port", guest: 80, host: 8888      # Landing Page
+  # config.vm.network "forwarded_port", guest: 3000, host: 3000    # Juice Shop
+  # config.vm.network "forwarded_port", guest: 4000, host: 4000    # NodeGoat
+  # config.vm.network "forwarded_port", guest: 4280, host: 4280    # DVWA
+  # config.vm.network "forwarded_port", guest: 5000, host: 5000    # VAmPI
+  # config.vm.network "forwarded_port", guest: 5001, host: 5001    # Vuln-Bank
+  # config.vm.network "forwarded_port", guest: 8080, host: 8080    # WebGoat
+  # config.vm.network "forwarded_port", guest: 8081, host: 8081    # WrongSecrets
+  # config.vm.network "forwarded_port", guest: 8082, host: 8082    # Musashi-js
+  # config.vm.network "forwarded_port", guest: 8083, host: 8083    # Security Shepherd
+
+  # Provision with shell script
+  config.vm.provision "shell", inline: $bootstrapscript
+end

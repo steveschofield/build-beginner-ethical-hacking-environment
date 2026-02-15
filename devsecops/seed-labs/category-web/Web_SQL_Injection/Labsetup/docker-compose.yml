@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+    www:
+        build: ./image_www
+        image: seed-image-www-sqli
+        container_name: www-192.168.2.0
+        tty: true
+        networks:
+            network1:
+                ipv4_address: 192.168.2.5
+
+
+    mysql:
+        build: ./image_mysql
+        image: seed-image-mysql-sqli
+        container_name: mysql-192.168.2.0
+        command: --default-authentication-plugin=mysql_native_password
+        tty: true
+        restart: always
+        cap_add:
+            - SYS_NICE # CAP_SYS_NICE (surprise an error message)
+        volumes:
+            - ./mysql_data:/var/lib/mysql
+        networks:
+            network1:
+                ipv4_address: 192.168.2.6
+networks:
+    network1:
+        name: sqlhack
+        external: true

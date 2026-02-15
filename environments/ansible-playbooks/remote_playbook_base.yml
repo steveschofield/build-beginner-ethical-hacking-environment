@@ -1,0 +1,146 @@
+---
+- name: Run playbook on remote ubuntu servers
+  hosts: guardian_workers
+  become: yes
+  gather_facts: false
+  vars:
+    groupname: 52pickup
+    username: 52pickup
+    ansible_common_remote_group: "{{ groupname }}"  # Add this line
+    ansible_python_interpreter: /usr/bin/python3
+
+  pre_tasks:
+    - name: Ensure Python 3 and apt dependencies are present (minimal Debian/Ubuntu)
+      raw: |
+        set -e
+        export DEBIAN_FRONTEND=noninteractive
+        # Recover from interrupted apt/dpkg runs before any install/update.
+        dpkg --configure -a || true
+        apt-get install -f -y || true
+        apt-get update -y
+        apt-get install -y sudo software-properties-common
+        if grep -qi ubuntu /etc/os-release; then
+          add-apt-repository -y ppa:deadsnakes/ppa || true
+        fi
+        apt-get update -y
+        apt-get install -y python3 python3-venv python3-apt
+      args:
+        warn: false
+
+    - name: Gather facts
+      ansible.builtin.setup:
+
+  tasks:
+    - name: Abort when not on Debian/Ubuntu
+      ansible.builtin.fail:
+        msg: "This playbook is intended for Debian/Ubuntu hosts because it relies on apt."
+      when: ansible_os_family | lower != "debian"
+
+    - name: Create group
+      ansible.builtin.group:
+        name: "{{ groupname }}"
+        state: present
+
+    - name: Ensure sudo group exists
+      ansible.builtin.group:
+        name: sudo
+        state: present
+
+    - name: Ensure user is present
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: "{{ groupname }},sudo"
+        password: "$1$XF.06J/n$A1G6zX5AF33pQQOTcH0Ix."
+        shell: /bin/bash
+        state: present
+
+    - name: Install prerequisite packages
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+          - gnupg
+        state: present
+        update_cache: yes
+
+    - name: Install additional packages
+      ansible.builtin.apt:
+        name:
+          - nginx
+          - vim
+          - unzip
+          - php-fpm
+          - nano
+          - python3
+          - python3-pip
+          - python-is-python3
+          - default-jre
+          - net-tools
+          - make 
+          - build-essential 
+          - libssl-dev 
+          - zlib1g-dev 
+          - libbz2-dev 
+          - libreadline-dev 
+          - libsqlite3-dev 
+          - wget 
+          - curl 
+          - llvm 
+          - libncurses5-dev 
+          - libncursesw5-dev 
+          - xz-utils 
+          - tk-dev 
+          - libffi-dev 
+          - liblzma-dev    
+          - python3-openssl
+          - iputils-ping 
+          - iputils-tracepath
+          - iputils-arping
+          - dnsutils
+          - git
+        state: present
+
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Create user home directory if missing
+      file:
+        path: "/home/{{ username }}"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: '0755'
+
+    - name: Configure environment variables for pyenv
+      blockinfile:
+        path: "/home/{{ username }}/.profile"
+        block: |
+          export PYENV_ROOT="$HOME/.pyenv"
+          [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+          eval "$(pyenv init --path)"
+          eval "$(pyenv virtualenv-init -)"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        create: yes
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        mode: '0644'
+
+    - name: Install Pyenv
+      shell: |
+        curl https://pyenv.run | bash
+      args:
+        creates: "/home/{{ username }}/.pyenv/bin/pyenv"
+        executable: /bin/bash
+      environment:
+        HOME: "/home/{{ username }}"
+        
+    - name: Fix pyenv ownership
+      file:
+        path: "/home/{{ username }}/.pyenv"
+        owner: "{{ username }}"
+        group: "{{ groupname }}"
+        recurse: yes

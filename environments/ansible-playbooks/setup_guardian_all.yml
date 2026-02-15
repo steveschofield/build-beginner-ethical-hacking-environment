@@ -1,0 +1,6 @@
+---
+- name: Setup Guardian CLI (repo, venv, config)
+  import_playbook: setup_guardian_testing.yml
+
+- name: Setup Guardian workflow service and nginx
+  import_playbook: setup_guardian_workflow_service.yml

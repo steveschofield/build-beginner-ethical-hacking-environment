@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+    victim:
+        build: ./image_www
+        image: seed-image-www-shellshock
+        container_name: victim-10.9.0.5
+        tty: true
+        networks:
+            network1:
+                ipv4_address: 10.9.0.5
+                  
+
+networks:
+    network1:
+        name: net-10.9.0.0
+        external: true

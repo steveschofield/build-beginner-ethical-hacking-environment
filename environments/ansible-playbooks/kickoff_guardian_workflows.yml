@@ -1,0 +1,25 @@
+---
+- name: Kick off Guardian workflows (detached)
+  hosts: guardian_workers
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Verify systemd service exists
+      stat:
+        path: /etc/systemd/system/guardian-workflows.service
+      register: guardian_service_stat
+
+    - name: Fail if service is missing
+      fail:
+        msg: "guardian-workflows.service not found. Run setup_guardian_workflow_service.yml first."
+      when: not guardian_service_stat.stat.exists
+
+    - name: Start workflow run without blocking
+      command: systemctl start --no-block guardian-workflows.service
+
+    - name: Display kick-off confirmation
+      debug:
+        msg:
+          - "Guardian workflows started in the background."
+          - "Check logs under /apps/results/ on the server."
