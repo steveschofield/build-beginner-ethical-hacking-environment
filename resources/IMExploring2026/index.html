@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050710">
+  <title>See Yourself in AI — IM Exploring 2026</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="vendor/mediapipe/holistic/holistic.js" defer></script>
+  <script src="vendor/mediapipe/hands/hands.js" defer></script>
+  <script src="activities.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="experience" aria-live="polite">
+    <div class="ambient" aria-hidden="true">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="grid"></div>
+    </div>
+
+    <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+      <p class="eyebrow">IM Exploring 2026 · Interactive AI</p>
+      <h1 id="welcome-title">See yourself<br><span>through AI.</span></h1>
+      <p class="welcome-copy">
+        Step into the frame. Move your hands. Watch a computer find the shape of
+        your body, face, and gestures—in real time.
+      </p>
+      <button class="primary-button" id="start-button" type="button">
+        <span>Start the camera</span>
+        <span class="button-arrow" aria-hidden="true">↗</span>
+      </button>
+      <div class="privacy-note">
+        <span class="privacy-icon" aria-hidden="true"></span>
+        <span><strong>Private by design.</strong> Processed on this laptop. Nothing is recorded, saved, or uploaded.</span>
+      </div>
+      <p class="welcome-status" id="welcome-status"></p>
+    </section>
+
+    <section class="camera-experience" id="camera-experience" aria-label="Live camera tracking" hidden>
+      <video id="camera" autoplay muted playsinline aria-hidden="true"></video>
+      <canvas id="video-canvas" aria-hidden="true"></canvas>
+      <canvas id="particle-canvas" aria-hidden="true"></canvas>
+      <canvas id="activity-canvas" aria-label="Interactive activity visualization"></canvas>
+      <canvas id="overlay-canvas" aria-label="Live body, face, and hand outline visualization"></canvas>
+
+      <header class="top-bar">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div>
+            <p class="brand-title">SEE YOURSELF IN AI</p>
+            <p class="brand-subtitle">Local computer vision · Live</p>
+          </div>
+        </div>
+        <div class="privacy-pill"><span></span>On-device only</div>
+      </header>
+
+      <section class="activity-guide" id="activity-guide" aria-live="polite">
+        <p class="activity-kicker">ACTIVITY <span id="activity-number">1 OF 3</span></p>
+        <h2 id="activity-title">AI Mirror</h2>
+        <p id="activity-instruction">Move closer, raise your hands, and watch landmarks become an outline.</p>
+        <p class="activity-lesson" id="activity-lesson">A silhouette shows shape; landmarks show coordinates. Neither one needs to know who you are.</p>
+      </section>
+
+      <aside class="tracking-panel" aria-label="Tracking status">
+        <p class="panel-label">AI IS FINDING</p>
+        <div class="tracking-row" id="track-body">
+          <span class="tracking-dot"></span>
+          <span>Body silhouette</span>
+          <span class="tracking-state">Waiting</span>
+        </div>
+        <div class="tracking-row" id="track-face">
+          <span class="tracking-dot"></span>
+          <span>Face landmarks</span>
+          <span class="tracking-state">Waiting</span>
+        </div>
+        <div class="tracking-row" id="track-hands">
+          <span class="tracking-dot"></span>
+          <span>Hand landmarks</span>
+          <span class="tracking-state">Waiting</span>
+        </div>
+        <div class="performance" id="performance">Preparing model…</div>
+      </aside>
+
+      <div class="activity-feedback" id="activity-feedback" hidden></div>
+      <div class="score-pill" id="shield-score" hidden>Cyber score 0</div>
+
+      <div class="walk-up-prompt" id="walk-up-prompt">
+        <span class="prompt-ring" aria-hidden="true"></span>
+        <p><strong>Step into the frame</strong><br>Raise a hand and move around</p>
+      </div>
+
+      <div class="utility-controls" aria-label="Experience controls">
+        <button class="control-button" id="theme-button" type="button">
+          <span class="control-key">T</span>
+          <span>Change look</span>
+        </button>
+        <button class="control-button" id="sound-button" type="button" aria-pressed="false" hidden>
+          <span class="control-icon" aria-hidden="true">♪</span>
+          <span class="sound-state">Sound off</span>
+        </button>
+        <button class="control-button" id="reset-button" type="button">
+          <span class="control-key">R</span>
+          <span>Reset</span>
+        </button>
+        <button class="control-button" id="performance-button" type="button" aria-pressed="false">
+          <span class="control-icon" aria-hidden="true">◫</span>
+          <span class="performance-state">Full effects</span>
+        </button>
+        <button class="control-button" id="fullscreen-button" type="button">
+          <span class="control-icon" aria-hidden="true">⛶</span>
+          <span>Full screen</span>
+        </button>
+      </div>
+
+      <nav class="activity-dock" id="activity-dock" aria-label="Choose an activity">
+        <button class="activity-button active" type="button" data-activity="mirror" aria-pressed="true">
+          <span class="activity-icon" aria-hidden="true">◉</span><span>AI Mirror</span><kbd>1</kbd>
+        </button>
+        <button class="activity-button" type="button" data-activity="shield" aria-pressed="false">
+          <span class="activity-icon" aria-hidden="true">⬡</span><span>Cyber Shield</span><kbd>2</kbd>
+        </button>
+        <button class="activity-button" type="button" data-activity="painter" aria-pressed="false">
+          <span class="activity-icon" aria-hidden="true">〰</span><span>Music Painter</span><kbd>3</kbd>
+        </button>
+      </nav>
+    </section>
+
+    <section class="error-card" id="error-card" role="alertdialog" aria-modal="true" aria-labelledby="error-title" hidden>
+      <div class="error-symbol" aria-hidden="true">!</div>
+      <p class="eyebrow">Camera check</p>
+      <h2 id="error-title">We couldn’t start the camera</h2>
+      <p id="error-message">Check the browser camera permission, then try again.</p>
+      <div class="error-actions">
+        <button class="primary-button compact" id="retry-button" type="button">Try again</button>
+        <button class="text-button" id="back-button" type="button">Back</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
