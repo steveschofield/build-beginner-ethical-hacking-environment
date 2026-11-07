@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102818">
+  <title>Cable Clash · Ethernet quiz</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffca05'/%3E%3Ctext x='12' y='45' font-size='42'%3E↔%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/montcalm-theme.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-defs" aria-hidden="true"><defs><symbol id="plug" viewBox="0 0 32 40"><path d="M5 12h22v24H5zM10 4h12v8H10z" fill="currentColor" fill-opacity=".12" stroke="currentColor" stroke-width="2"/><path d="M10 17v9m4-9v9m4-9v9m4-9v9M10 31h12" stroke="currentColor" stroke-width="2"/></symbol></defs></svg>
+  <main class="shell">
+    <header class="masthead"><div class="brand"><span class="brand-icon" aria-hidden="true">↔</span> CABLE CLASH <span class="brand-note">THE ETHERNET CHALLENGE</span></div><div id="connection" class="connection" role="status">Connecting…</div></header>
+    <section class="question" aria-labelledby="question-title">
+      <div><div class="eyebrow">THREE CABLES. ONE QUESTION.</div><h1 id="question-title">Which cable sends data fastest?</h1><p id="instruction">Look at the cables on the table. Tap your pick and see what everyone thinks.</p></div>
+      <div class="total-badge"><strong id="total">0</strong><span>VOTES THIS ROUND</span></div>
+    </section>
+    <section class="choices" aria-label="Choose a cable">
+      <button class="cable-card short" data-choice="short" disabled><span class="card-top"><span class="letter">A</span><span class="card-label">SHORT</span><span class="tap-label">TAP TO VOTE ↗</span></span><svg class="cable-art" viewBox="0 0 320 90" aria-hidden="true"><use href="#plug" x="66" y="25" width="32" height="40"/><path class="wire" d="M98 45H231"/><path class="strands" d="M231 45l15-13m-15 13h21m-21 0l16 13"/></svg><span class="card-bottom"><strong>The short one</strong><span>One RJ45 plug · one unfinished end</span></span></button>
+      <button class="cable-card medium" data-choice="medium" disabled><span class="card-top"><span class="letter">B</span><span class="card-label">MEDIUM</span><span class="tap-label">TAP TO VOTE ↗</span></span><svg class="cable-art" viewBox="0 0 320 90" aria-hidden="true"><use href="#plug" x="24" y="25" width="32" height="40"/><path class="wire" d="M56 45H264"/><use href="#plug" x="264" y="25" width="32" height="40"/></svg><span class="card-bottom"><strong>The middle one</strong><span>RJ45 plugs on both ends</span></span></button>
+      <button class="cable-card long" data-choice="long" disabled><span class="card-top"><span class="letter">C</span><span class="card-label">LONG</span><span class="tap-label">TAP TO VOTE ↗</span></span><svg class="cable-art" viewBox="0 0 320 90" aria-hidden="true"><use href="#plug" x="12" y="25" width="32" height="40"/><path class="wire" d="M44 45h20c16 0 16-25 32-25s16 50 32 50 16-50 32-50 16 50 32 50 16-50 32-50 16 25 32 25h20"/><use href="#plug" x="276" y="25" width="32" height="40"/></svg><span class="card-bottom"><strong>The long one</strong><span>RJ45 plugs on both ends</span></span></button>
+    </section>
+    <section id="feedback" class="feedback" aria-live="polite" aria-atomic="true"><span class="feedback-icon" aria-hidden="true">?</span><div><strong id="feedback-title">Trust your instincts. Then test your thinking.</strong><p id="feedback-detail">Each tap adds an anonymous vote. No names, no sign-in.</p></div><button id="retry" class="small-button" hidden>Retry this vote</button><button id="next" class="small-button" hidden>Next student</button></section>
+    <section class="dashboard" aria-label="Live poll results">
+      <div class="panel results"><div class="panel-heading"><h2>What the room thinks</h2><span class="live-tag">LIVE TOTALS</span></div><div id="results"></div></div>
+      <div class="panel trend"><div class="panel-heading"><h2>The rolling trend</h2><span id="recent-label">LAST 0 VOTES</span></div><div id="trend-bars" class="trend-bars" aria-label="Share of the last 20 votes"></div><div class="trend-legend" id="trend-legend"></div><div class="recent-heading"><span>RECENT PICKS</span><span>OLDEST → NEWEST</span></div><div id="recent-picks" class="recent-picks" aria-label="Recent votes in order"></div><p id="trend-note" class="trend-note">Be the first to get the trend moving.</p></div>
+    </section>
+    <footer><span>THINK. CONNECT. DISCOVER.<span class="footer-note"> Offline · anonymous · saved on booth computer</span></span><nav aria-label="Quiz controls"><button id="science-button">The science</button><button id="fullscreen">Full screen</button><button id="facilitator">Facilitator</button></nav></footer>
+  </main>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+  <dialog id="science-dialog"><form method="dialog"><button class="close" aria-label="Close explanation">×</button></form><div class="eyebrow">THE TWIST</div><h2>Shorter isn’t automatically faster.</h2><p><strong>The short cable cannot connect two Ethernet ports as shown.</strong> It needs a correctly terminated plug on both ends.</p><p><strong>Medium and long can deliver the same data rate.</strong> If both are properly made, compatible with the devices and within the relevant Ethernet specification, a longer cable does not automatically mean lower throughput.</p><p>A shorter cable has slightly less signal travel time. That is different from the negotiated link speed. Cable category, condition, length limits and the connected devices all matter.</p><div class="science-callout">Want one clear winner? Measure the cables and test their links first. Only call the medium one uniquely correct if the long cable has a verified limitation.</div><p class="dialog-note">This is a prediction poll, not a speed test. The app cannot measure the physical cables.</p><form method="dialog"><button class="primary">Back to the challenge</button></form></dialog>
+  <dialog id="admin-dialog"><form method="dialog"><button class="close" aria-label="Close facilitator controls">×</button></form><div class="eyebrow">FACILITATOR CONTROLS</div><h2>Ready for the next group?</h2><p>Votes are stored on this computer. Starting a new round archives the current votes; it does not delete them.</p><div class="admin-links"><a href="/api/export.csv" download>Export this round (CSV) ↗</a><a href="/api/export.csv?all=1" download>Export all rounds (CSV) ↗</a><a href="/?display=1" target="_blank" rel="noopener">Open live display only ↗</a></div><form id="round-form"><label for="confirmation">Type <strong>NEW</strong> to start an empty round.</label><input id="confirmation" name="confirmation" autocomplete="off" maxlength="3" placeholder="NEW"><button class="primary" type="submit">Archive & start new round</button><p id="admin-status" role="status"></p></form><p class="dialog-note">These controls prevent accidental taps, not deliberate access. Supervise the kiosk. The display tab shares votes only with this local server.</p></dialog>
+</body>
+</html>

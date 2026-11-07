@@ -5,7 +5,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 project_dir="$(cd "${script_dir}/.." && pwd)"
 port="${1:-8080}"
 url="http://127.0.0.1:${port}"
-server_log="${TMPDIR:-/tmp}/imexploring2026-server-${port}.log"
+server_log="${IMEXPLORING_SERVER_LOG:-${TMPDIR:-/tmp}/imexploring2026-server-${port}.log}"
 
 if ! command -v python3 >/dev/null 2>&1; then
   echo "Python 3 is required to run the local kiosk server."
@@ -13,7 +13,7 @@ if ! command -v python3 >/dev/null 2>&1; then
 fi
 
 cd "${project_dir}"
-python3 -m http.server "${port}" --bind 127.0.0.1 >"${server_log}" 2>&1 &
+python3 -m http.server "${port}" --bind 127.0.0.1 >>"${server_log}" 2>&1 &
 server_pid=$!
 
 cleanup() {
@@ -46,7 +46,11 @@ fi
 
 echo "See Yourself in AI is running locally at ${url}"
 echo "Camera frames stay in the browser and are not exposed by this server."
-echo "Keep this window open. Press Ctrl+C to stop."
+if [[ "${IMEXPLORING_BACKGROUND:-0}" == "1" ]]; then
+  echo "Background mode. Use Stop IM Exploring 2026 to stop the server."
+else
+  echo "Keep this window open. Press Ctrl+C to stop."
+fi
 
 if [[ "${IMEXPLORING_NO_OPEN:-0}" != "1" ]]; then
   case "$(uname -s)" in

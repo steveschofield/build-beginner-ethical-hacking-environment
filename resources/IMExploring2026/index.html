@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050710">
+  <meta name="theme-color" content="#074225">
   <title>See Yourself in AI — IM Exploring 2026</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="montcalm-theme.css">
   <script src="vendor/mediapipe/holistic/holistic.js" defer></script>
   <script src="vendor/mediapipe/hands/hands.js" defer></script>
   <script src="activities.js" defer></script>
@@ -21,6 +22,7 @@
 
     <section class="welcome" id="welcome" aria-labelledby="welcome-title">
       <p class="eyebrow">IM Exploring 2026 · Interactive AI</p>
+      <div class="welcome-brand" aria-hidden="true">AI</div>
       <h1 id="welcome-title">See yourself<br><span>through AI.</span></h1>
       <p class="welcome-copy">
         Step into the frame. Move your hands. Watch a computer find the shape of
@@ -34,6 +36,7 @@
         <span class="privacy-icon" aria-hidden="true"></span>
         <span><strong>Private by design.</strong> Processed on this laptop. Nothing is recorded, saved, or uploaded.</span>
       </div>
+      <p class="welcome-hint">Keep the frame clear. Open <strong>Controls &amp; help</strong> in the upper right when you need it.</p>
       <p class="welcome-status" id="welcome-status"></p>
     </section>
 
@@ -52,9 +55,11 @@
             <p class="brand-subtitle">Local computer vision · Live</p>
           </div>
         </div>
-        <div class="privacy-pill"><span></span>On-device only</div>
       </header>
 
+      <details class="details-panel" id="details-panel">
+        <summary id="details-toggle"><span>Controls &amp; help</span><kbd>H</kbd></summary>
+        <div class="details-content">
       <section class="activity-guide" id="activity-guide" aria-live="polite">
         <p class="activity-kicker">ACTIVITY <span id="activity-number">1 OF 3</span></p>
         <h2 id="activity-title">AI Mirror</h2>
@@ -83,7 +88,6 @@
       </aside>
 
       <div class="activity-feedback" id="activity-feedback" hidden></div>
-      <div class="score-pill" id="shield-score" hidden>Cyber score 0</div>
 
       <div class="walk-up-prompt" id="walk-up-prompt">
         <span class="prompt-ring" aria-hidden="true"></span>
@@ -91,27 +95,33 @@
       </div>
 
       <div class="utility-controls" aria-label="Experience controls">
-        <button class="control-button" id="theme-button" type="button">
+        <button class="control-button" id="theme-button" type="button" aria-label="Current look: Montcalm Green & Gold. Change look">
           <span class="control-key">T</span>
           <span>Change look</span>
         </button>
-        <button class="control-button" id="sound-button" type="button" aria-pressed="false" hidden>
+        <button class="control-button" id="sound-button" type="button" aria-label="Toggle sound" aria-pressed="false" hidden>
           <span class="control-icon" aria-hidden="true">♪</span>
           <span class="sound-state">Sound off</span>
         </button>
-        <button class="control-button" id="reset-button" type="button">
+        <button class="control-button" id="reset-button" type="button" aria-label="Reset activity">
           <span class="control-key">R</span>
           <span>Reset</span>
         </button>
-        <button class="control-button" id="performance-button" type="button" aria-pressed="false">
+        <button class="control-button" id="performance-button" type="button" aria-label="Toggle reduced effects" aria-pressed="false">
           <span class="control-icon" aria-hidden="true">◫</span>
           <span class="performance-state">Full effects</span>
         </button>
-        <button class="control-button" id="fullscreen-button" type="button">
+        <button class="control-button" id="fullscreen-button" type="button" aria-label="Toggle full screen">
           <span class="control-icon" aria-hidden="true">⛶</span>
           <span>Full screen</span>
         </button>
       </div>
+
+        <div class="privacy-pill"><span></span>On-device only</div>
+        </div>
+      </details>
+
+      <div class="score-pill" id="shield-score" hidden>Cyber score 0</div>
 
       <nav class="activity-dock" id="activity-dock" aria-label="Choose an activity">
         <button class="activity-button active" type="button" data-activity="mirror" aria-pressed="true">

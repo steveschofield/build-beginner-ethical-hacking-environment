@@ -20,6 +20,7 @@ const syntheticSetting = queryParameters.get("synthetic");
 const syntheticMode = syntheticSetting === "1" || syntheticSetting === "empty";
 
 const THEMES = [
+  { name: "Montcalm Green & Gold", body: "#b1d33d", face: "#fff4bf", hand: "#ffca05", particle: "#e5f2ba", secondary: "#5fce8b" },
   { name: "Rainbow", body: "#63f5ff", face: "#ff72d7", hand: "#ffd166", particle: "#b9fbff", secondary: "#d18cff" },
   { name: "Fire", body: "#ff8c42", face: "#ffd166", hand: "#ff4d8d", particle: "#ffe0a8", secondary: "#ff5c35" },
   { name: "Ocean", body: "#3ae8ff", face: "#70a7ff", hand: "#8bfff0", particle: "#d2fbff", secondary: "#3478ff" },
@@ -28,6 +29,8 @@ const THEMES = [
 ];
 
 const elements = {
+  detailsPanel: document.querySelector("#details-panel"),
+  detailsToggle: document.querySelector("#details-toggle"),
   welcome: document.querySelector("#welcome"),
   welcomeStatus: document.querySelector("#welcome-status"),
   startButton: document.querySelector("#start-button"),
@@ -222,12 +225,12 @@ function normalizedToScreen(point) {
 
 function drawCameraFrame() {
   const gradient = videoContext.createLinearGradient(0, 0, viewportWidth, viewportHeight);
-  gradient.addColorStop(0, "#091020");
-  gradient.addColorStop(0.5, "#080a16");
-  gradient.addColorStop(1, "#1a0e2c");
+  gradient.addColorStop(0, "#071d12");
+  gradient.addColorStop(0.5, "#0b2417");
+  gradient.addColorStop(1, "#143823");
   videoContext.fillStyle = gradient;
   videoContext.fillRect(0, 0, viewportWidth, viewportHeight);
-  videoContext.strokeStyle = "rgba(99, 245, 255, 0.035)";
+  videoContext.strokeStyle = "rgba(177, 211, 61, 0.035)";
   videoContext.lineWidth = 1;
   const spacing = 64;
   for (let x = 0; x < viewportWidth; x += spacing) {
@@ -983,6 +986,16 @@ elements.performanceButton.addEventListener("click", toggleReducedPerformance);
 elements.fullscreenButton.addEventListener("click", toggleFullscreen);
 
 document.addEventListener("keydown", (event) => {
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  if (event.key.toLowerCase() === "h" && isRunning && !event.repeat) {
+    event.preventDefault();
+    elements.detailsPanel.open = !elements.detailsPanel.open;
+    elements.detailsToggle.focus();
+  }
+  if (event.key === "Escape" && elements.detailsPanel.open) {
+    elements.detailsPanel.open = false;
+    elements.detailsToggle.focus();
+  }
   const activity = window.IMEXPLORING_ACTIVITIES?.[Number(event.key) - 1];
   if (activity) activityEngine?.setActivity(activity.id);
   if (event.key.toLowerCase() === "t") cycleTheme();

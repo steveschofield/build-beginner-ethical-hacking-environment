@@ -295,3 +295,93 @@ No person was deliberately placed in front of the camera during this automated p
 ### Library screenshot limitation
 
 The provided Library ID was resolved to the current `image(1).png` item, and the current Library download helper plus its companion transfer module were materialized into a private temporary directory. The helper requires the caller to close stdin after sending exactly one JSON request. This execution terminal can write to an interactive process but cannot signal stdin EOF without terminating it, so the supported transfer retry failed with `stdin must be closed after one JSON request`. No file appeared at the consumer-local destination, no transfer URL was guessed, and the screenshot pixels were therefore not inspected. Profiling continued from the live app and device instead.
+
+## GitHub publication and Kali deployment preflight
+
+Date: 2026-11-06
+
+The complete `resources/IMExploring2026` project passed a publication review before it was committed. The review excluded `.DS_Store`, found no passwords, tokens, private keys, recordings, uploads, or other accidental sensitive files, and confirmed that the two redistributed MediaPipe packages declare Apache-2.0 and include matching license files. Illustrative uses of the word “password” belong to the Cyber Shield phishing lesson. The Hands package's accidental executable bits were normalized to regular `0644` file modes; only the three intended launch scripts remain executable.
+
+Publication commands:
+
+```bash
+git fetch origin main --prune
+git add resources/IMExploring2026
+git diff --cached --stat
+git diff --cached --name-status
+node --check resources/IMExploring2026/app.js
+node --check resources/IMExploring2026/activities.js
+node resources/IMExploring2026/tests/static-check.mjs
+bash -n resources/IMExploring2026/Launch-IMExploring2026.command \
+  resources/IMExploring2026/scripts/launch-kiosk.sh \
+  resources/IMExploring2026/scripts/serve.sh
+git commit -m "Add IM Exploring 2026 camera experience"
+git push origin main
+git ls-remote origin refs/heads/main
+```
+
+The project commit was `b3862e5fbd1c4296dea7f448ece6ea9e4ad0a498`. GitHub independently reported that exact object at `refs/heads/main` after the push.
+
+Deployment preflight used non-interactive, read-only SSH inventory first:
+
+```bash
+ssh -o BatchMode=yes -o ConnectTimeout=8 kali@192.168.1.8 '<read-only inventory>'
+ssh -o BatchMode=yes -o ConnectTimeout=8 kali@192.168.1.117 '<read-only inventory>'
+ssh -o BatchMode=yes -o ConnectTimeout=8 kali@192.168.1.47 '<read-only inventory>'
+ssh-add -l
+```
+
+All three addresses were reachable but returned `Permission denied (publickey,password)`. The Mac SSH agent reported no loaded identities. No password was requested, read, or guessed; no host files, checkouts, or shortcuts were changed. Deployment remains blocked until Steve authenticates SSH access to the three Kali systems. After authentication is available, each host still needs a local-change check, sparse-checkout update, fast-forward to a verified remote commit, separate IM Exploring desktop launcher, loopback-only server check, file ownership check, and no-camera model smoke test.
+
+### Kali deployment completion
+
+The earlier SSH preflight used the wrong account name. The previously authorized account was `techfest`; its existing ED25519 identity worked on all three hosts without changing keys or requesting a password. Each repository was checked for local changes before mutation. The clean sparse checkouts on `192.168.1.8`, `192.168.1.117`, and `192.168.1.47` now include `resources/IMExploring2026` and are fast-forwarded to verified commit `b3862e5fbd1c4296dea7f448ece6ea9e4ad0a498`. No reset or force operation was used.
+
+Representative deployment commands:
+
+```bash
+git status --short --branch
+git fetch origin main
+git sparse-checkout add resources/IMExploring2026
+git merge --ff-only b3862e5fbd1c4296dea7f448ece6ea9e4ad0a498
+desktop-file-validate ~/Desktop/IM-Exploring-2026.desktop
+```
+
+All three desktops now have an executable, `techfest:techfest`-owned `IM-Exploring-2026.desktop` entry. It invokes the included `scripts/launch-kiosk.sh 8080`, uses the project directory as its working directory, opens a terminal for recovery messages, and retains both original TechFest shortcuts. Port 8080 was available during final verification.
+
+The app entry point and lite pose model returned HTTP 200 through temporary `127.0.0.1` servers on all hosts. The complete static suite passed on `.117` and `.47`; `.8` does not have Node.js, so its files, modes, licenses, launcher, and model sizes were verified directly instead. A no-camera headless Chromium graph test consistently aborted inside the legacy MediaPipe native graph on these Kali systems, including one bounded SwiftShader retry on `.8`. Headless Chromium is not the supported kiosk runtime. Normal graphical Chromium camera permission, WebGL inference, tracking accuracy, and sustained foreground performance still require a person-present rehearsal on each laptop. No camera was opened and no imagery was captured during deployment verification.
+
+## Montcalm theme and clear camera view
+
+Date: 2026-11-07
+
+The user requested the same Montcalm.edu-inspired styling as Cable Clash, followed by deployment to the three Kali laptops. A follow-up screenshot showed instructions, tracking/FPS, a no-person prompt, and feedback obscuring the camera view. Those overlays and utility controls now live in a native, keyboard-accessible **Controls & help** disclosure in the upper right. It starts closed, opens with a click or `H`, and closes with another click, `H`, or `Escape`. The three activity choices stay at the bottom; Cyber Shield keeps its small score in a corner. Help scrolls on small displays and returns to closed on reload.
+
+The new `montcalm-theme.css` uses the same green/gold/off-white palette and locally bundled Plus Jakarta Sans font as Cable Clash. The default Mirror look is Green & Gold; original alternate creative palettes and rainbow painting remain available. Gold shields and gold/lime painter pointers complement the theme. No camera pipeline, capture resolution, model, caching, adaptive cadence, or audio/privacy behavior changed. Decorative background animation and translucent-panel blur were removed from the theme rather than adding rendering work.
+
+### Verification
+
+- `node --check app.js`, `node --check activities.js`, `node --check tests/model-smoke.js`, shell syntax, and `git diff --check`: passed.
+- Expanded `node tests/static-check.mjs`: passed, 33 required assets / 49.9 MiB. Checks include local font/CSS, the default palette, collapsed-by-default help structure, always-available dock, H/Escape controls, accessible utility names, exact three modes, and prior offline/privacy invariants.
+- Chrome on Mac: green/gold welcome and default live layout inspected; all three synthetic activities, repeated help open/close, H/Escape, activity keys 2/3, color cycling, Reset, reduced-effects state, sound on/off, and empty-tracking state verified.
+- Responsive inspection included 390×844 and 1366×768. Help remained optional and scrollable; the activity dock remained available. No browser errors or warnings were reported in the synthetic activity pass.
+- Local browser model smoke: PASS, Holistic cold 1041 ms / warm 16 ms; Hands Lite cold 178 ms / warm 7 ms. These blank-frame timings prove local graph execution, not real-person tracking speed.
+- Read-only code review found no actionable regression.
+
+### Deployment
+
+The remote checkouts were clean before deployment. Existing SSH access was used; no keys, accounts, network settings, login startup, or permissions were changed. Only differing files under `resources/IMExploring2026` were copied. No delete, reset, commit, or push operation was used. Replaced files were backed up outside the checkout at `~/.local/share/imexploring-backups/20261107-montcalm-clear-view/` on each laptop.
+
+Sanitized executed commands (account placeholder `ExampleUser`):
+
+```bash
+ssh -o BatchMode=yes -o ConnectTimeout=8 ExampleUser@HOST 'git -C ~/code/build-beginner-ethical-hacking-environment status --short'
+rsync -rlcn --itemize-changes --exclude='.DS_Store' resources/IMExploring2026/ ExampleUser@HOST:/home/ExampleUser/code/build-beginner-ethical-hacking-environment/resources/IMExploring2026/
+rsync -rlc --itemize-changes --backup --backup-dir=/home/ExampleUser/.local/share/imexploring-backups/20261107-montcalm-clear-view --exclude='.DS_Store' resources/IMExploring2026/ ExampleUser@HOST:/home/ExampleUser/code/build-beginner-ethical-hacking-environment/resources/IMExploring2026/
+```
+
+`HOST` was each of `192.168.1.8`, `192.168.1.117`, and `192.168.1.47`. All 42 application files matched the Mac's SHA-256 manifest after deployment. File owners and executable launchers passed. Temporary loopback-only HTTP servers returned complete, hash-matching HTTP 200 responses for the entry page, theme CSS, font, both application scripts, and both lite models on each laptop, then shut down. The pre-existing desktop launcher's checksum was unchanged and `desktop-file-validate` passed everywhere. Node syntax/static checks passed on `.117` and `.47`; `.8` has no Node, so its exact-byte match to the Mac-tested files, modes, ownership, and HTTP assets were verified instead.
+
+Cable Clash's 16 source/assets/test/document files already matched between Mac and `.8` before this pass. Its 35 local tests and syntax checks passed, and its verification record was updated locally. No live poll data, settings, database, backups, votes, or running service were changed.
+
+Physical-camera accuracy and sustained foreground performance were not tested on the Kali laptops in this pass. Use the existing **IM Exploring 2026** desktop launcher, refresh an already-open tab, and do a person-present rehearsal. No camera was opened or imagery recorded during this update's automated checks.

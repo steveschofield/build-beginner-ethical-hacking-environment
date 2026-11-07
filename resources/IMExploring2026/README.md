@@ -22,15 +22,17 @@ The pinned MediaPipe runtime and model are included under `vendor/`, so the expe
 
 The bundled AI model uses browser fetches for its graph, WebAssembly, and model files. Browsers block those fetches from a `file://` page. The app must therefore use the included loopback-only server.
 
-### Mac: double-click launcher
+### Mac or Kali: no Terminal window
 
-In Finder, double-click:
+Double-click **IM Exploring 2026** on the desktop. On Mac it is an `.app`; on Kali it is a desktop shortcut. It starts the loopback-only server in the background and opens the browser. Repeated launches reuse the same background server.
 
-```text
-Launch-IMExploring2026.command
-```
+Close the camera tab when finished, then double-click **Stop IM Exploring 2026** to stop the local server. Closing the tab releases the webcam; the stop shortcut does not close your browser. Nothing starts automatically at login or after reboot.
 
-It starts the server on `127.0.0.1`, opens the correct page in the default browser, and keeps a Terminal window open. Press `Control-C` in that window to stop it.
+On a new Mac checkout, run `./scripts/build-mac-apps.sh` once, then double-click `IM Exploring 2026.app` in this directory. Keep the generated apps beside the `scripts` folder. Desktop shortcuts may be aliases or symbolic links to those apps.
+
+If the old Terminal launcher is already running, finish that session and press `Control-C` in its Terminal before using the new launcher. The new launcher will not interrupt an existing session.
+
+`Launch-IMExploring2026.command` and `./scripts/launch-kiosk.sh` remain available for foreground troubleshooting. See [BACKGROUND-LAUNCHER.md](docs/BACKGROUND-LAUNCHER.md) for logs, terminal commands, and checks.
 
 ### Kali Linux or macOS terminal
 
@@ -40,7 +42,7 @@ From this directory:
 ./scripts/launch-kiosk.sh
 ```
 
-The launcher opens <http://127.0.0.1:8080>. Choose **Start the camera**, allow camera access, then select **Full screen** or press `F` for kiosk presentation.
+The launcher opens <http://127.0.0.1:8080>. Choose **Start the camera**, allow camera access, then open **Controls & help** and select **Full screen**, or press `F` for kiosk presentation.
 
 To use a different port:
 
@@ -50,9 +52,16 @@ To use a different port:
 
 For manual server-only operation, `./scripts/serve.sh` remains available.
 
+## Montcalm-inspired theme and clear camera view
+
+The welcome screen, controls, and default AI Mirror colors use the same green/gold palette and locally bundled Plus Jakarta Sans font as Cable Clash. This is an independent educational design, not an official college product.
+
+The camera view starts with instructions, tracking/FPS, walk-up messages, and utility settings tucked away. Open **Controls & help** in the upper right (or press `H`) to see them. Click again, press `H`, or press `Escape` to close the panel. The three activity buttons stay available along the bottom; Cyber Shield keeps its score in a corner. Help is collapsed again on page reload.
+
 ## Visitor controls
 
 - Select an activity from the dock or press `1`–`3`.
+- Open **Controls & help** (upper right or `H`) for instructions, tracking status, sound, Reset, Reduced effects, and Full screen.
 - Press `R` to reset the current activity.
 - In AI Mirror, make a fist or press `T` to change colors.
 - In Music Painter, use the sound control or press `M` to toggle output-only notes. Sound starts muted.
@@ -63,7 +72,7 @@ For manual server-only operation, `./scripts/serve.sh` remains available.
 
 1. Confirm the camera is enabled in the laptop firmware and visible to Chromium.
 2. Start the local server and open the localhost URL—not the HTML file directly.
-3. Allow camera permission and wait for the on-screen tracking panel to change from **Waiting**.
+3. Allow camera permission and wait for the tracking panel under **Controls & help** to change from **Waiting**.
 4. Enter full screen and leave the browser running. The experience needs a single initial click; visitors do not need to restart it.
 5. Select each activity and verify its title, instruction, Reset control, and visual response.
 6. Test with the laptop disconnected from Wi-Fi before the event. Reload the page and confirm the model still starts.

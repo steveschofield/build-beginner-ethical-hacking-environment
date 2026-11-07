@@ -12,6 +12,12 @@ The same build should be used on all three systems.
 
 The kiosk includes three activities. The activity dock stays visible at the bottom of the 1080p display; number keys `1`–`3` provide a backup. See [ACTIVITIES.md](ACTIVITIES.md) for interaction and teaching notes.
 
+## Daily launch without a Terminal
+
+Double-click **IM Exploring 2026** on the desktop. The local server runs in the background, while the camera experience stays in the browser. Close the camera tab to release the webcam, and double-click **Stop IM Exploring 2026** when finished. The server is not configured to start at login or reboot.
+
+If an old launcher Terminal is still running, finish that session and press `Control-C` there before using the new desktop shortcut. New launchers never stop an unmanaged server or unrelated browser session.
+
 ## One-time setup on each laptop
 
 ```bash
@@ -41,4 +47,10 @@ This rehearsal is the final proof that the specific browser profile and laptop c
 
 ## End of day
 
-Close the browser tab or window. The app stops every camera track on page unload. No visitor images are stored by the application.
+Close the browser tab or window. The app stops every camera track on page unload. Then double-click **Stop IM Exploring 2026** to stop the background server. No visitor images are stored by the application.
+
+## Green/gold theme and optional overlays (2026-11-07)
+
+The default live view intentionally leaves the person unobstructed. Open **Controls & help** in the upper right, or press `H`, to view activity instructions, tracking/FPS, walk-up help, sound, Reset, Reduced effects, and Full screen. Click the summary again, press `H`, or press `Escape` to collapse it. The three activity choices remain visible; Cyber Shield retains its small score in the lower-right corner. The panel scrolls on smaller displays and resets to closed after a page reload.
+
+The default Mirror look is Montcalm Green & Gold. The `T` key / Change look control still cycles through the original creative color options. No camera, model, network, or privacy behavior changed. The font is bundled locally, so the theme adds no internet dependency.

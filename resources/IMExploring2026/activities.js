@@ -404,7 +404,7 @@
       context.translate(point.x, point.y);
       context.rotate(item.rotation);
       roundedRect(context, -width / 2, -height / 2, width, height, 14);
-      context.fillStyle = "rgba(8, 12, 27, 0.92)";
+      context.fillStyle = "rgba(7, 29, 18, 0.96)";
       context.fill();
       context.strokeStyle = item.suspicious ? "rgba(255, 103, 145, 0.72)" : "rgba(93, 235, 181, 0.72)";
       context.lineWidth = 2;
@@ -413,7 +413,7 @@
       context.fillStyle = "#f6f8ff";
       context.font = "700 13px system-ui";
       context.fillText(item.label.slice(0, 29), -width / 2 + 16, -7, width - 32);
-      context.fillStyle = "#9ca6bc";
+      context.fillStyle = "#c3d6c8";
       context.font = "11px system-ui";
       context.fillText(item.detail.slice(0, 34), -width / 2 + 16, 16, width - 32);
       context.restore();
@@ -432,10 +432,10 @@
       context.quadraticCurveTo(0, 62, -40, 27);
       context.lineTo(-48, -34);
       context.closePath();
-      context.fillStyle = "rgba(69, 225, 255, 0.12)";
-      context.strokeStyle = "#63f5ff";
+      context.fillStyle = "rgba(255, 202, 5, 0.12)";
+      context.strokeStyle = "#ffca05";
       context.lineWidth = 3;
-      context.shadowColor = "#63f5ff";
+      context.shadowColor = "#ffca05";
       context.shadowBlur = 20;
       context.fill();
       context.stroke();
@@ -451,7 +451,7 @@
         if (!points.length) return;
         const latest = this.mapPoint(points.at(-1));
         context.globalAlpha = 0.9;
-        context.fillStyle = side === "left" ? "#63f5ff" : "#ff72d7";
+        context.fillStyle = side === "left" ? "#ffca05" : "#b1d33d";
         context.beginPath();
         context.arc(latest.x, latest.y, 8 + Math.sin(time * 0.008) * 2, 0, Math.PI * 2);
         context.fill();

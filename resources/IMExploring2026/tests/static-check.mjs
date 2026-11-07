@@ -9,6 +9,9 @@ const projectDirectory = path.resolve(testDirectory, "..");
 const requiredAssets = [
   "index.html",
   "styles.css",
+  "montcalm-theme.css",
+  "vendor/fonts/plus-jakarta-sans-latin.woff2",
+  "vendor/fonts/OFL.txt",
   "app.js",
   "activities.js",
   "docs/ACTIVITIES.md",
@@ -43,9 +46,10 @@ for (const asset of requiredAssets) {
   await access(path.join(projectDirectory, asset), constants.R_OK);
 }
 
-const [html, css, app, activities, packageText, handsPackageText] = await Promise.all([
+const [html, css, themeCss, app, activities, packageText, handsPackageText] = await Promise.all([
   readFile(path.join(projectDirectory, "index.html"), "utf8"),
   readFile(path.join(projectDirectory, "styles.css"), "utf8"),
+  readFile(path.join(projectDirectory, "montcalm-theme.css"), "utf8"),
   readFile(path.join(projectDirectory, "app.js"), "utf8"),
   readFile(path.join(projectDirectory, "activities.js"), "utf8"),
   readFile(path.join(projectDirectory, "vendor/mediapipe/holistic/package.json"), "utf8"),
@@ -57,7 +61,7 @@ const [macLauncher, kioskLauncher] = await Promise.all([
   readFile(path.join(projectDirectory, "scripts/launch-kiosk.sh"), "utf8"),
 ]);
 
-for (const [name, source] of [["index.html", html], ["styles.css", css], ["app.js", app], ["activities.js", activities]]) {
+for (const [name, source] of [["index.html", html], ["styles.css", css], ["montcalm-theme.css", themeCss], ["app.js", app], ["activities.js", activities]]) {
   if (/https?:\/\//i.test(source)) throw new Error(`${name} contains a remote runtime URL`);
 }
 
@@ -70,7 +74,18 @@ if (handsPackageMetadata.name !== "@mediapipe/hands") throw new Error("Unexpecte
 if (handsPackageMetadata.version !== "0.4.1675469240") throw new Error("MediaPipe Hands version is not pinned");
 if (handsPackageMetadata.license !== "Apache-2.0") throw new Error("Unexpected MediaPipe Hands license metadata");
 
+const helpPanel = html.match(/<details class="details-panel" id="details-panel">([\s\S]*?)<\/details>/)?.[1] || "";
 const assertions = [
+  [html.includes('<link rel="stylesheet" href="montcalm-theme.css">'), "Montcalm stylesheet is not linked"],
+  [themeCss.includes('url("vendor/fonts/plus-jakarta-sans-latin.woff2")'), "offline theme font is missing"],
+  [themeCss.includes("--brand-gold: #ffca05") && themeCss.includes("--brand-green: #117b47"), "shared green/gold palette is missing"],
+  [/const THEMES = \[\s*\{ name: "Montcalm Green & Gold"/.test(app), "green/gold is not the default mirror look"],
+  [helpPanel.length > 0, "help panel must exist and start collapsed"],
+  [["activity-guide", "tracking-panel", "walk-up-prompt", "utility-controls", "activity-feedback"].every((name) => helpPanel.includes(`class="${name}"`)), "camera distractions must be contained in the optional help panel"],
+  [html.indexOf('id="activity-dock"') > html.indexOf("</details>"), "activity dock must remain outside optional help"],
+  [app.includes('event.key.toLowerCase() === "h"') && app.includes('event.key === "Escape" && elements.detailsPanel.open'), "help keyboard open/close controls are missing"],
+  [["theme-button", "sound-button", "reset-button", "performance-button", "fullscreen-button"].every((id) => new RegExp(`id="${id}"[^>]*aria-label=`).test(html)), "utility controls need accessible names"],
+
   [app.includes("getUserMedia"), "camera API is missing"],
   [app.includes("enableSegmentation: true"), "body segmentation is not enabled"],
   [app.includes("modelComplexity: 0"), "lite pose model is not selected"],
